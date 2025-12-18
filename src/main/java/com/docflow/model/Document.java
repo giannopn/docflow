@@ -1,4 +1,4 @@
-package com.dockflow.model;
+package com.docflow.model;
 
 public class Document {
 

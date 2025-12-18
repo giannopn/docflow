@@ -1,8 +1,8 @@
-package com.dockflow.storage;
+package com.docflow.storage;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.dockflow.model.Document;
+import com.docflow.model.Document;
 
 import java.io.FileReader;
 import java.lang.reflect.Type;
