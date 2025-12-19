@@ -1,4 +1,4 @@
-package com.docflow.storage;
+package com.docflow.repository;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

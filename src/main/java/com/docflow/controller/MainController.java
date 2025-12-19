@@ -4,7 +4,7 @@
 package com.docflow.controller;
 
 import com.docflow.model.Document;
-import com.docflow.storage.JsonStorage;
+import com.docflow.repository.JsonStorage;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;

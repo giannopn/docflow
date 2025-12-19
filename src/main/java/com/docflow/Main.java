@@ -1,12 +1,12 @@
 package com.docflow;
 
 import com.docflow.model.Document;
-import com.docflow.storage.JsonStorage;
+import com.docflow.repository.JsonStorage;
 
 import java.util.List;
 
 public class Main {
-    public static void main(String[] args) {
+    static void main() {
         System.out.println("DocFlow backend test");
 
         List<Document> docs = JsonStorage.loadDocuments();
