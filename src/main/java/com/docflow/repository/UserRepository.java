@@ -4,59 +4,60 @@ import com.docflow.model.Admin;
 import com.docflow.model.Author;
 import com.docflow.model.SimpleUser;
 import com.docflow.model.User;
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
-import java.util.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * Repository responsible for loading and saving users to JSON files.
- * <p>
- * Data folder: "medialab"
- * File: "users.json"
  */
 public class UserRepository {
 
     private static final String DATA_FOLDER = "medialab";
     private static final String USERS_FILE = "users.json";
 
+    private static final String DEFAULT_ADMIN_FIRST_NAME = "Media";
+    private static final String DEFAULT_ADMIN_LAST_NAME = "Lab";
+    private static final String DEFAULT_ADMIN_USERNAME = "medialab";
+    private static final String DEFAULT_ADMIN_PASSWORD = "medialab_2025";
+
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private final Path usersPath;
-
     private final Map<String, User> usersByUsername = new LinkedHashMap<>();
 
-    /**
-     * Creates a repository using the default data folder ("medialab") in the working directory.
-     */
     public UserRepository() {
         this(Paths.get(DATA_FOLDER));
     }
 
-    /**
-     * Creates a repository using a custom base directory.
-     *
-     * @param baseDir base directory where JSON files are stored
-     */
     public UserRepository(Path baseDir) {
         this.usersPath = baseDir.resolve(USERS_FILE);
     }
 
-    /**
-     * Loads users from JSON into memory. If the file does not exist, it is created.
-     * Ensures that the default admin user exists (username: "medialab", password: "medialab_2025").
-     *
-     * @throws IOException if file operations fail
-     */
     public void load() throws IOException {
         usersByUsername.clear();
-
         Files.createDirectories(usersPath.getParent());
 
-        if (!Files.exists(usersPath)) {
+        if (!Files.exists(usersPath) || Files.size(usersPath) == 0) {
             ensureDefaultAdmin();
             save();
             return;
@@ -64,7 +65,6 @@ public class UserRepository {
 
         try (Reader reader = Files.newBufferedReader(usersPath, StandardCharsets.UTF_8)) {
             JsonElement root = JsonParser.parseReader(reader);
-
             if (root == null || root.isJsonNull()) {
                 ensureDefaultAdmin();
                 save();
@@ -72,17 +72,14 @@ public class UserRepository {
             }
 
             if (!root.isJsonArray()) {
-                throw new IllegalStateException("Invalid users.json format: expected a JSON array");
+                throw new IllegalStateException("Invalid users.json format: expected array");
             }
 
-            JsonArray arr = root.getAsJsonArray();
-            for (JsonElement el : arr) {
-                if (!el.isJsonObject()) continue;
-
-                JsonObject obj = el.getAsJsonObject();
-                User user = deserializeUser(obj);
-                if (user == null) continue;
-
+            for (JsonElement element : root.getAsJsonArray()) {
+                if (!element.isJsonObject()) {
+                    continue;
+                }
+                User user = deserializeUser(element.getAsJsonObject());
                 usersByUsername.put(user.getUsername(), user);
             }
         }
@@ -90,18 +87,12 @@ public class UserRepository {
         ensureDefaultAdmin();
     }
 
-    /**
-     * Saves all in-memory users to JSON.
-     *
-     * @throws IOException if file operations fail
-     */
     public void save() throws IOException {
         Files.createDirectories(usersPath.getParent());
 
-        JsonArray arr = new JsonArray();
+        JsonArray array = new JsonArray();
         for (User user : usersByUsername.values()) {
-            JsonObject obj = serializeUser(user);
-            arr.add(obj);
+            array.add(serializeUser(user));
         }
 
         try (Writer writer = Files.newBufferedWriter(
@@ -110,35 +101,21 @@ public class UserRepository {
                 StandardOpenOption.CREATE,
                 StandardOpenOption.TRUNCATE_EXISTING
         )) {
-            gson.toJson(arr, writer);
+            gson.toJson(array, writer);
         }
     }
 
-    /**
-     * Returns all users as a list (copy).
-     *
-     * @return list of users
-     */
     public List<User> findAll() {
         return new ArrayList<>(usersByUsername.values());
     }
 
-    /**
-     * Finds a user by username.
-     *
-     * @param username the username
-     * @return optional user
-     */
     public Optional<User> findByUsername(String username) {
-        if (username == null) return Optional.empty();
+        if (username == null) {
+            return Optional.empty();
+        }
         return Optional.ofNullable(usersByUsername.get(username));
     }
 
-    /**
-     * Adds a new user. Username must be unique.
-     *
-     * @param user the user to add
-     */
     public void add(User user) {
         Objects.requireNonNull(user, "User cannot be null");
         String username = user.getUsername();
@@ -147,3 +124,129 @@ public class UserRepository {
         }
         if (usersByUsername.containsKey(username)) {
             throw new IllegalArgumentException("Username already exists: " + username);
+        }
+        usersByUsername.put(username, user);
+    }
+
+    public boolean remove(String username) {
+        if (username == null || username.isBlank()) {
+            return false;
+        }
+        if (DEFAULT_ADMIN_USERNAME.equals(username)) {
+            return false;
+        }
+        return usersByUsername.remove(username) != null;
+    }
+
+    public void update(User user) {
+        Objects.requireNonNull(user, "User cannot be null");
+        if (!usersByUsername.containsKey(user.getUsername())) {
+            throw new IllegalArgumentException("User does not exist: " + user.getUsername());
+        }
+        usersByUsername.put(user.getUsername(), user);
+    }
+
+    private void ensureDefaultAdmin() {
+        if (usersByUsername.containsKey(DEFAULT_ADMIN_USERNAME)) {
+            return;
+        }
+
+        Set<String> adminCategories = new LinkedHashSet<>();
+        adminCategories.add("Multimedia");
+        adminCategories.add("Programming");
+
+        Admin admin = new Admin(
+                DEFAULT_ADMIN_FIRST_NAME,
+                DEFAULT_ADMIN_LAST_NAME,
+                DEFAULT_ADMIN_USERNAME,
+                DEFAULT_ADMIN_PASSWORD,
+                adminCategories
+        );
+
+        usersByUsername.put(admin.getUsername(), admin);
+    }
+
+    private JsonObject serializeUser(User user) {
+        JsonObject obj = new JsonObject();
+        obj.addProperty("firstName", user.getFirstName());
+        obj.addProperty("lastName", user.getLastName());
+        obj.addProperty("username", user.getUsername());
+        obj.addProperty("password", user.getPassword());
+        obj.addProperty("role", extractRole(user));
+
+        JsonArray categories = new JsonArray();
+        for (String category : user.getAllowedCategories()) {
+            categories.add(category);
+        }
+        obj.add("allowedCategories", categories);
+
+        JsonArray followed = new JsonArray();
+        for (String documentId : user.getFollowedDocuments()) {
+            followed.add(documentId);
+        }
+        obj.add("followedDocuments", followed);
+
+        return obj;
+    }
+
+    private User deserializeUser(JsonObject obj) {
+        String firstName = getAsString(obj, "firstName", "");
+        String lastName = getAsString(obj, "lastName", "");
+        String username = getAsString(obj, "username", "");
+        String password = getAsString(obj, "password", "");
+        String role = getAsString(obj, "role", "SIMPLE_USER");
+
+        Set<String> allowedCategories = getAsStringSet(obj, "allowedCategories");
+        Set<String> followedDocuments = getAsStringSet(obj, "followedDocuments");
+
+        User user;
+        switch (role) {
+            case "ADMIN":
+                user = new Admin(firstName, lastName, username, password, allowedCategories);
+                break;
+            case "AUTHOR":
+                user = new Author(firstName, lastName, username, password, allowedCategories);
+                break;
+            default:
+                user = new SimpleUser(firstName, lastName, username, password, allowedCategories);
+                break;
+        }
+
+        user.setFollowedDocuments(followedDocuments);
+        return user;
+    }
+
+    private String extractRole(User user) {
+        if (user instanceof Admin) {
+            return "ADMIN";
+        }
+        if (user instanceof Author) {
+            return "AUTHOR";
+        }
+        return "SIMPLE_USER";
+    }
+
+    private String getAsString(JsonObject obj, String key, String defaultValue) {
+        JsonElement value = obj.get(key);
+        if (value == null || value.isJsonNull()) {
+            return defaultValue;
+        }
+        return value.getAsString();
+    }
+
+    private Set<String> getAsStringSet(JsonObject obj, String key) {
+        Set<String> result = new LinkedHashSet<>();
+        JsonElement value = obj.get(key);
+        if (value == null || !value.isJsonArray()) {
+            return result;
+        }
+
+        for (JsonElement element : value.getAsJsonArray()) {
+            if (element.isJsonNull()) {
+                continue;
+            }
+            result.add(element.getAsString());
+        }
+        return result;
+    }
+}

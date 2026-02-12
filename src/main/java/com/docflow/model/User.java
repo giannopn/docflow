@@ -54,12 +54,28 @@ public abstract class User {
         return username;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public Set<String> getAllowedCategories() {
         return new HashSet<>(allowedCategories);
     }
 
     public Set<String> getFollowedDocuments() {
         return new HashSet<>(followedDocuments);
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setAllowedCategories(Set<String> categories) {
+        this.allowedCategories = new HashSet<>(categories);
+    }
+
+    public void setFollowedDocuments(Set<String> followedDocuments) {
+        this.followedDocuments = new HashSet<>(followedDocuments);
     }
 
     /* =======================
