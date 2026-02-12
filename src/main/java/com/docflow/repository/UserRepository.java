@@ -4,6 +4,7 @@ import com.docflow.model.Admin;
 import com.docflow.model.Author;
 import com.docflow.model.SimpleUser;
 import com.docflow.model.User;
+import com.docflow.model.UserRole;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -172,7 +173,7 @@ public class UserRepository {
         obj.addProperty("lastName", user.getLastName());
         obj.addProperty("username", user.getUsername());
         obj.addProperty("password", user.getPassword());
-        obj.addProperty("role", extractRole(user));
+        obj.addProperty("role", user.getRole().name());
 
         JsonArray categories = new JsonArray();
         for (String category : user.getAllowedCategories()) {
@@ -194,17 +195,17 @@ public class UserRepository {
         String lastName = getAsString(obj, "lastName", "");
         String username = getAsString(obj, "username", "");
         String password = getAsString(obj, "password", "");
-        String role = getAsString(obj, "role", "SIMPLE_USER");
+        UserRole role = UserRole.fromStorageValue(getAsString(obj, "role", UserRole.SIMPLE_USER.name()));
 
         Set<String> allowedCategories = getAsStringSet(obj, "allowedCategories");
         Set<String> followedDocuments = getAsStringSet(obj, "followedDocuments");
 
         User user;
         switch (role) {
-            case "ADMIN":
+            case ADMIN:
                 user = new Admin(firstName, lastName, username, password, allowedCategories);
                 break;
-            case "AUTHOR":
+            case AUTHOR:
                 user = new Author(firstName, lastName, username, password, allowedCategories);
                 break;
             default:
@@ -214,16 +215,6 @@ public class UserRepository {
 
         user.setFollowedDocuments(followedDocuments);
         return user;
-    }
-
-    private String extractRole(User user) {
-        if (user instanceof Admin) {
-            return "ADMIN";
-        }
-        if (user instanceof Author) {
-            return "AUTHOR";
-        }
-        return "SIMPLE_USER";
     }
 
     private String getAsString(JsonObject obj, String key, String defaultValue) {

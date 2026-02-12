@@ -13,7 +13,7 @@ public class Admin extends Author {
     }
 
     @Override
-    public String getRole() {
-        return "ADMIN";
+    public UserRole getRole() {
+        return UserRole.ADMIN;
     }
 }

@@ -53,7 +53,7 @@ public class Author extends SimpleUser {
     }
 
     @Override
-    public String getRole() {
-        return "AUTHOR";
+    public UserRole getRole() {
+        return UserRole.AUTHOR;
     }
 }

@@ -118,6 +118,20 @@ public abstract class User {
         return firstName + " " + lastName;
     }
 
+    public abstract UserRole getRole();
+
+    public boolean canManageDocuments() {
+        return getRole() == UserRole.AUTHOR || getRole() == UserRole.ADMIN;
+    }
+
+    public boolean canManageUsers() {
+        return getRole() == UserRole.ADMIN;
+    }
+
+    public boolean canManageCategories() {
+        return getRole() == UserRole.ADMIN;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

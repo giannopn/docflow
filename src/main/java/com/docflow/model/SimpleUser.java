@@ -19,7 +19,7 @@ public class SimpleUser extends User {
     /**
      * Returns the role name for simple UI/persistence logic.
      */
-    public String getRole() {
-        return "SIMPLE_USER";
+    public UserRole getRole() {
+        return UserRole.SIMPLE_USER;
     }
 }
