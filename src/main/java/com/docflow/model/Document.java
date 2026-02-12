@@ -1,6 +1,8 @@
 package com.docflow.model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class Document {
@@ -10,8 +12,10 @@ public class Document {
     private String author;
     private String category;
     private String createdAt;
+    // Legacy fields kept for JSON compatibility in this phase.
     private int version;
     private String content;
+    private List<DocumentVersion> versions;
     private boolean deleted;
 
     public Document(String id, String title, String author,
@@ -24,6 +28,8 @@ public class Document {
         this.createdAt = createdAt;
         this.version = version;
         this.content = content;
+        this.versions = new ArrayList<>();
+        this.versions.add(new DocumentVersion(version, content));
         this.deleted = false;
     }
 
@@ -62,11 +68,18 @@ public class Document {
     }
 
     public int getVersion() {
-        return version;
+        ensureVersionsInitialized();
+        return versions.get(versions.size() - 1).getVersionNumber();
     }
 
     public String getContent() {
-        return content;
+        ensureVersionsInitialized();
+        return versions.get(versions.size() - 1).getContent();
+    }
+
+    public List<DocumentVersion> getVersions() {
+        ensureVersionsInitialized();
+        return new ArrayList<>(versions);
     }
 
     public boolean isDeleted() {
@@ -74,12 +87,26 @@ public class Document {
     }
 
     public void updateContent(String newContent) {
+        ensureVersionsInitialized();
+        int newVersionNumber = versions.get(versions.size() - 1).getVersionNumber() + 1;
+        versions.add(new DocumentVersion(newVersionNumber, newContent));
+
+        // Keep legacy fields in sync until persistence is redesigned.
+        this.version = newVersionNumber;
         this.content = newContent;
-        this.version++;
     }
 
     public void markDeleted() {
         this.deleted = true;
+    }
+
+    private void ensureVersionsInitialized() {
+        if (versions == null) {
+            versions = new ArrayList<>();
+        }
+        if (versions.isEmpty()) {
+            versions.add(new DocumentVersion(version, content));
+        }
     }
 
     @Override
