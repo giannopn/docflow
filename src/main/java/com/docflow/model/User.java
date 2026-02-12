@@ -1,6 +1,8 @@
 package com.docflow.model;
 
 import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -24,6 +26,11 @@ public abstract class User {
      */
     protected Set<String> followedDocuments;
 
+    /**
+     * Last seen version number per followed document.
+     */
+    protected Map<String, Integer> lastSeenVersions;
+
     protected User(String firstName,
                    String lastName,
                    String username,
@@ -36,6 +43,7 @@ public abstract class User {
         this.password = password;
         this.allowedCategories = new HashSet<>(allowedCategories);
         this.followedDocuments = new HashSet<>();
+        this.lastSeenVersions = new HashMap<>();
     }
 
     /* =======================
@@ -66,6 +74,10 @@ public abstract class User {
         return new HashSet<>(followedDocuments);
     }
 
+    public Map<String, Integer> getLastSeenVersions() {
+        return new HashMap<>(lastSeenVersions);
+    }
+
     public void setPassword(String password) {
         this.password = password;
     }
@@ -76,6 +88,10 @@ public abstract class User {
 
     public void setFollowedDocuments(Set<String> followedDocuments) {
         this.followedDocuments = new HashSet<>(followedDocuments);
+    }
+
+    public void setLastSeenVersions(Map<String, Integer> lastSeenVersions) {
+        this.lastSeenVersions = new HashMap<>(lastSeenVersions);
     }
 
     /* =======================
@@ -100,14 +116,27 @@ public abstract class User {
 
     public void followDocument(String documentId) {
         followedDocuments.add(documentId);
+        lastSeenVersions.putIfAbsent(documentId, 0);
     }
 
     public void unfollowDocument(String documentId) {
         followedDocuments.remove(documentId);
+        lastSeenVersions.remove(documentId);
     }
 
     public boolean isFollowing(String documentId) {
         return followedDocuments.contains(documentId);
+    }
+
+    public int getLastSeenVersion(String documentId) {
+        return lastSeenVersions.getOrDefault(documentId, 0);
+    }
+
+    public void markDocumentVersionSeen(String documentId, int versionNumber) {
+        if (!followedDocuments.contains(documentId)) {
+            return;
+        }
+        lastSeenVersions.put(documentId, versionNumber);
     }
 
     /* =======================

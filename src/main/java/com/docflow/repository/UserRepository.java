@@ -187,6 +187,12 @@ public class UserRepository {
         }
         obj.add("followedDocuments", followed);
 
+        JsonObject lastSeen = new JsonObject();
+        for (Map.Entry<String, Integer> entry : user.getLastSeenVersions().entrySet()) {
+            lastSeen.addProperty(entry.getKey(), entry.getValue());
+        }
+        obj.add("lastSeenVersions", lastSeen);
+
         return obj;
     }
 
@@ -199,6 +205,7 @@ public class UserRepository {
 
         Set<String> allowedCategories = getAsStringSet(obj, "allowedCategories");
         Set<String> followedDocuments = getAsStringSet(obj, "followedDocuments");
+        Map<String, Integer> lastSeenVersions = getAsIntMap(obj, "lastSeenVersions");
 
         User user;
         switch (role) {
@@ -214,6 +221,7 @@ public class UserRepository {
         }
 
         user.setFollowedDocuments(followedDocuments);
+        user.setLastSeenVersions(lastSeenVersions);
         return user;
     }
 
@@ -237,6 +245,24 @@ public class UserRepository {
                 continue;
             }
             result.add(element.getAsString());
+        }
+        return result;
+    }
+
+    private Map<String, Integer> getAsIntMap(JsonObject obj, String key) {
+        Map<String, Integer> result = new LinkedHashMap<>();
+        JsonElement value = obj.get(key);
+        if (value == null || !value.isJsonObject()) {
+            return result;
+        }
+
+        JsonObject mapObj = value.getAsJsonObject();
+        for (Map.Entry<String, JsonElement> entry : mapObj.entrySet()) {
+            JsonElement entryValue = entry.getValue();
+            if (entryValue == null || entryValue.isJsonNull()) {
+                continue;
+            }
+            result.put(entry.getKey(), entryValue.getAsInt());
         }
         return result;
     }
