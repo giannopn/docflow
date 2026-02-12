@@ -1,10 +1,11 @@
 package com.docflow.model;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 public class Document {
 
-    private int id;
+    private String id;
     private String title;
     private String author;
     private String category;
@@ -13,7 +14,7 @@ public class Document {
     private String content;
     private boolean deleted;
 
-    public Document(int id, String title, String author,
+    public Document(String id, String title, String author,
                     String category, String createdAt,
                     int version, String content) {
         this.id = id;
@@ -26,15 +27,21 @@ public class Document {
         this.deleted = false;
     }
 
+    public Document(int id, String title, String author,
+                    String category, String createdAt,
+                    int version, String content) {
+        this(String.valueOf(id), title, author, category, createdAt, version, content);
+    }
+
     public Document(String title,
                     String author,
                     String category,
                     LocalDate createdAt,
                     String content) {
-        this(0, title, author, category, createdAt.toString(), 1, content);
+        this(UUID.randomUUID().toString(), title, author, category, createdAt.toString(), 1, content);
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
