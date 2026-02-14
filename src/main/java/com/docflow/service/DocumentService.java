@@ -116,12 +116,14 @@ public class DocumentService {
         if (documentId == null || documentId.isBlank()) {
             return false;
         }
-
         Optional<Document> doc = documentRepository.findById(documentId);
         if (doc.isEmpty()) {
             return false;
         }
         Document document = doc.get();
+        if (document.isDeleted()) {
+            throw new IllegalStateException("Document is deleted");
+        }
         if (!user.hasAccessToCategory(document.getCategory())) {
             throw new IllegalStateException("User has no access to this category");
         }

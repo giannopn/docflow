@@ -5,6 +5,7 @@ import com.docflow.repository.DocumentRepository;
 import com.docflow.repository.UserRepository;
 import com.docflow.service.AuthService;
 import com.docflow.service.DocumentService;
+import com.docflow.service.WatchService;
 
 import java.io.IOException;
 
@@ -17,6 +18,7 @@ public final class AppState {
     private final CategoryRepository categoryRepository = new CategoryRepository();
     private final AuthService authService = new AuthService(userRepository);
     private final DocumentService documentService = new DocumentService(documentRepository);
+    private final WatchService watchService = new WatchService(documentRepository);
 
     private AppState() {}
 
@@ -42,6 +44,10 @@ public final class AppState {
 
     public DocumentService getDocumentService() {
         return documentService;
+    }
+
+    public WatchService getWatchService() {
+        return watchService;
     }
 
     public void loadAll() {
