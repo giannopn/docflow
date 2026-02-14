@@ -39,10 +39,8 @@ public class CategoryRepository {
 
     public void load() throws IOException {
         categories.clear();
-        Files.createDirectories(categoriesPath.getParent());
 
         if (!Files.exists(categoriesPath) || Files.size(categoriesPath) == 0) {
-            save();
             return;
         }
 

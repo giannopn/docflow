@@ -56,11 +56,9 @@ public class UserRepository {
 
     public void load() throws IOException {
         usersByUsername.clear();
-        Files.createDirectories(usersPath.getParent());
 
         if (!Files.exists(usersPath) || Files.size(usersPath) == 0) {
             ensureDefaultAdmin();
-            save();
             return;
         }
 
@@ -68,7 +66,6 @@ public class UserRepository {
             JsonElement root = JsonParser.parseReader(reader);
             if (root == null || root.isJsonNull()) {
                 ensureDefaultAdmin();
-                save();
                 return;
             }
 

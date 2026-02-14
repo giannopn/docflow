@@ -41,10 +41,8 @@ public class DocumentRepository {
 
     public void load() throws IOException {
         documentsById.clear();
-        Files.createDirectories(documentsPath.getParent());
 
         if (!Files.exists(documentsPath) || Files.size(documentsPath) == 0) {
-            save();
             return;
         }
 

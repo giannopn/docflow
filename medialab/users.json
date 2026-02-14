@@ -1,0 +1,15 @@
+[
+  {
+    "firstName": "Media",
+    "lastName": "Lab",
+    "username": "medialab",
+    "password": "medialab_2025",
+    "role": "ADMIN",
+    "allowedCategories": [
+      "Multimedia",
+      "Programming"
+    ],
+    "followedDocuments": [],
+    "lastSeenVersions": {}
+  }
+]
