@@ -3,6 +3,8 @@ package com.docflow;
 import com.docflow.repository.CategoryRepository;
 import com.docflow.repository.DocumentRepository;
 import com.docflow.repository.UserRepository;
+import com.docflow.service.AuthService;
+import com.docflow.service.DocumentService;
 
 import java.io.IOException;
 
@@ -13,6 +15,8 @@ public final class AppState {
     private final UserRepository userRepository = new UserRepository();
     private final DocumentRepository documentRepository = new DocumentRepository();
     private final CategoryRepository categoryRepository = new CategoryRepository();
+    private final AuthService authService = new AuthService(userRepository);
+    private final DocumentService documentService = new DocumentService(documentRepository);
 
     private AppState() {}
 
@@ -30,6 +34,14 @@ public final class AppState {
 
     public CategoryRepository getCategoryRepository() {
         return categoryRepository;
+    }
+
+    public AuthService getAuthService() {
+        return authService;
+    }
+
+    public DocumentService getDocumentService() {
+        return documentService;
     }
 
     public void loadAll() {
