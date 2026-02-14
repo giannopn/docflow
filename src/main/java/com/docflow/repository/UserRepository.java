@@ -144,6 +144,10 @@ public class UserRepository {
         usersByUsername.put(user.getUsername(), user);
     }
 
+    public void ensureDefaultAdminExists() {
+        ensureDefaultAdmin();
+    }
+
     private void ensureDefaultAdmin() {
         if (usersByUsername.containsKey(DEFAULT_ADMIN_USERNAME)) {
             return;
