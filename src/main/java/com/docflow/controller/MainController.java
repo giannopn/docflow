@@ -3,8 +3,9 @@
 
 package com.docflow.controller;
 
+import com.docflow.AppState;
 import com.docflow.model.Document;
-import com.docflow.repository.JsonStorage;
+import com.docflow.repository.DocumentRepository;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -20,7 +21,8 @@ public class MainController {
     private void onLoadDocuments() {
         documentsList.getItems().clear();
 
-        List<Document> documents = JsonStorage.loadDocuments();
+        DocumentRepository documentRepository = AppState.getInstance().getDocumentRepository();
+        List<Document> documents = documentRepository.findAll();
         for (Document doc : documents) {
             documentsList.getItems().add(doc.toString());
         }

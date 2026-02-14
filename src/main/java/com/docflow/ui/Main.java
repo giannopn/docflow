@@ -9,6 +9,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        com.docflow.AppState.getInstance().loadAll();
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
 
         Scene scene = new Scene(loader.load());
@@ -17,6 +19,11 @@ public class Main extends Application {
         stage.setTitle("DocFlow");
         stage.setScene(scene);
         stage.show();
+    }
+
+    @Override
+    public void stop() {
+        com.docflow.AppState.getInstance().saveAll();
     }
 
     public static void main(String[] args) {
