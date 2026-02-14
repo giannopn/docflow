@@ -9,6 +9,22 @@
       "Multimedia",
       "Programming"
     ],
+    "followedDocuments": [
+      "2"
+    ],
+    "lastSeenVersions": {
+      "2": 1
+    }
+  },
+  {
+    "firstName": "Test",
+    "lastName": "User",
+    "username": "testuser",
+    "password": "test123",
+    "role": "SIMPLE_USER",
+    "allowedCategories": [
+      "General"
+    ],
     "followedDocuments": [],
     "lastSeenVersions": {}
   }

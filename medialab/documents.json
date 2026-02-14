@@ -17,6 +17,12 @@
     "createdAt": "2024-10-05",
     "version": 1,
     "content": "Introduction to Java.",
+    "versions": [
+      {
+        "versionNumber": 1,
+        "content": "Introduction to Java."
+      }
+    ],
     "deleted": false
   }
 ]
