@@ -4,6 +4,7 @@ import com.docflow.repository.CategoryRepository;
 import com.docflow.repository.DocumentRepository;
 import com.docflow.repository.UserRepository;
 import com.docflow.service.AuthService;
+import com.docflow.service.AdminService;
 import com.docflow.service.DocumentService;
 import com.docflow.service.WatchService;
 
@@ -19,6 +20,7 @@ public final class AppState {
     private final AuthService authService = new AuthService(userRepository);
     private final DocumentService documentService = new DocumentService(documentRepository);
     private final WatchService watchService = new WatchService(documentRepository);
+    private final AdminService adminService = new AdminService(userRepository, categoryRepository, documentRepository);
 
     private AppState() {}
 
@@ -48,6 +50,10 @@ public final class AppState {
 
     public WatchService getWatchService() {
         return watchService;
+    }
+
+    public AdminService getAdminService() {
+        return adminService;
     }
 
     public void loadAll() {
