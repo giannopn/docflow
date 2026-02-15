@@ -13,7 +13,6 @@ public class Main extends Application {
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/LoginView.fxml"));
         Scene scene = new Scene(loader.load());
-        scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
 
         stage.setTitle("MediaLab Documents");
         stage.setScene(scene);

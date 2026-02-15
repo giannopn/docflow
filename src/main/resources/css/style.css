@@ -3,9 +3,9 @@
    ========================================================= */
 
 .root {
-    -fx-font-family: "Inter", "SF Pro Display", "Segoe UI", Arial, sans-serif;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
     -fx-font-size: 13px;
-    -fx-background-color: #0f172a; /* dark blue-gray */
+    -fx-background-color: #f8fafc;
 }
 
 /* =========================================================
@@ -13,23 +13,23 @@
    ========================================================= */
 
 .label {
-    -fx-text-fill: #e5e7eb; /* light gray, very readable */
+    -fx-text-fill: #1f2937;
 }
 
 .h1 {
     -fx-font-size: 20px;
     -fx-font-weight: 800;
-    -fx-text-fill: #f9fafb;
+    -fx-text-fill: #111827;
 }
 
 .h2 {
     -fx-font-size: 16px;
     -fx-font-weight: 700;
-    -fx-text-fill: #f3f4f6;
+    -fx-text-fill: #111827;
 }
 
 .muted {
-    -fx-text-fill: #9ca3af;
+    -fx-text-fill: #6b7280;
 }
 
 /* =========================================================
@@ -37,13 +37,12 @@
    ========================================================= */
 
 .card {
-    -fx-background-color: #111827;
-    -fx-background-radius: 14;
-    -fx-border-radius: 14;
-    -fx-border-color: #1f2933;
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #e5e7eb;
     -fx-border-width: 1;
-    -fx-padding: 18;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.45), 16, 0.25, 0, 6);
+    -fx-padding: 14;
 }
 
 /* =========================================================
@@ -51,7 +50,7 @@
    ========================================================= */
 
 .button {
-    -fx-background-radius: 10;
+    -fx-background-radius: 8;
     -fx-padding: 8 14;
     -fx-font-weight: 600;
     -fx-cursor: hand;
@@ -72,12 +71,12 @@
 
 /* Secondary / neutral button */
 .btn-secondary {
-    -fx-background-color: #1f2937;
-    -fx-text-fill: #e5e7eb;
+    -fx-background-color: #e5e7eb;
+    -fx-text-fill: #111827;
 }
 
 .btn-secondary:hover {
-    -fx-background-color: #374151;
+    -fx-background-color: #d1d5db;
 }
 
 /* =========================================================
@@ -85,33 +84,33 @@
    ========================================================= */
 
 .list-view {
-    -fx-background-color: transparent;
-    -fx-border-color: #1f2937;
-    -fx-border-radius: 10;
-    -fx-background-radius: 10;
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
     -fx-padding: 4;
 }
 
 .list-view .virtual-flow {
-    -fx-background-color: transparent;
+    -fx-background-color: #ffffff;
 }
 
 /* list items */
 .list-cell {
     -fx-background-color: transparent;
-    -fx-text-fill: #e5e7eb;
+    -fx-text-fill: #111827;
     -fx-padding: 8 10;
 }
 
 .list-cell:filled:hover {
-    -fx-background-color: #1f2937;
-    -fx-background-radius: 8;
+    -fx-background-color: #f3f4f6;
+    -fx-background-radius: 6;
 }
 
 .list-cell:filled:selected {
-    -fx-background-color: #2563eb;
-    -fx-text-fill: white;
-    -fx-background-radius: 8;
+    -fx-background-color: #e5e7eb;
+    -fx-text-fill: #111827;
+    -fx-background-radius: 6;
 }
 
 /* =========================================================
@@ -119,10 +118,10 @@
    ========================================================= */
 
 .chip {
-    -fx-background-color: #1f2937;
+    -fx-background-color: #e5e7eb;
     -fx-background-radius: 999;
     -fx-padding: 6 12;
-    -fx-text-fill: #d1d5db;
+    -fx-text-fill: #111827;
     -fx-font-size: 12px;
 }
 
@@ -132,12 +131,12 @@
 
 .text-field,
 .password-field {
-    -fx-background-color: #020617;
-    -fx-text-fill: #f9fafb;
-    -fx-prompt-text-fill: #6b7280;
-    -fx-background-radius: 10;
-    -fx-border-radius: 10;
-    -fx-border-color: #1f2937;
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #111827;
+    -fx-prompt-text-fill: #9ca3af;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: #e5e7eb;
     -fx-padding: 8 10;
 }
 
@@ -156,10 +155,10 @@
 }
 
 .scroll-bar .thumb {
-    -fx-background-color: #374151;
+    -fx-background-color: #cbd5f5;
     -fx-background-radius: 10;
 }
 
 .scroll-bar .thumb:hover {
-    -fx-background-color: #4b5563;
+    -fx-background-color: #a5b4fc;
 }
