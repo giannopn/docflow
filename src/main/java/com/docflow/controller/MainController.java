@@ -6,6 +6,7 @@ package com.docflow.controller;
 import com.docflow.AppState;
 import com.docflow.model.Document;
 import com.docflow.model.User;
+import com.docflow.model.UserRole;
 import com.docflow.repository.DocumentRepository;
 import com.docflow.service.AdminService;
 import com.docflow.service.AuthService;
@@ -19,6 +20,8 @@ import javafx.scene.control.TextField;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.LinkedHashSet;
 
 public class MainController {
 
@@ -40,6 +43,14 @@ public class MainController {
     @FXML private Label updatedWatchLabel;
     @FXML private Label usersStatusLabel;
     @FXML private Label categoriesStatusLabel;
+    @FXML private TextField categoryNameField;
+    @FXML private TextField categoryRenameField;
+    @FXML private TextField userFirstNameField;
+    @FXML private TextField userLastNameField;
+    @FXML private TextField userUsernameField;
+    @FXML private TextField userPasswordField;
+    @FXML private TextField userRoleField;
+    @FXML private TextField userCategoriesField;
 
     @FXML
     private void initialize() {
@@ -316,6 +327,85 @@ public class MainController {
     }
 
     @FXML
+    private void onAddUser() {
+        AuthService authService = AppState.getInstance().getAuthService();
+        Optional<User> currentUser = authService.getCurrentUser();
+        if (currentUser.isEmpty() || !currentUser.get().canManageUsers()) {
+            usersStatusLabel.setText("Admin only");
+            return;
+        }
+
+        AdminService adminService = AppState.getInstance().getAdminService();
+        try {
+            adminService.addUser(
+                    currentUser.get(),
+                    userFirstNameField.getText(),
+                    userLastNameField.getText(),
+                    userUsernameField.getText(),
+                    userPasswordField.getText(),
+                    parseRole(userRoleField.getText()),
+                    parseCategories(userCategoriesField.getText())
+            );
+            usersStatusLabel.setText("Added");
+            onLoadUsers();
+        } catch (RuntimeException ex) {
+            usersStatusLabel.setText(ex.getMessage());
+        }
+    }
+
+    @FXML
+    private void onEditUser() {
+        AuthService authService = AppState.getInstance().getAuthService();
+        Optional<User> currentUser = authService.getCurrentUser();
+        if (currentUser.isEmpty() || !currentUser.get().canManageUsers()) {
+            usersStatusLabel.setText("Admin only");
+            return;
+        }
+
+        String username = userUsernameField.getText();
+        if (username == null || username.isBlank()) {
+            usersStatusLabel.setText("Username required");
+            return;
+        }
+
+        AdminService adminService = AppState.getInstance().getAdminService();
+        try {
+            adminService.updateUser(
+                    currentUser.get(),
+                    username,
+                    userPasswordField.getText(),
+                    parseRoleNullable(userRoleField.getText()),
+                    parseCategories(userCategoriesField.getText())
+            );
+            usersStatusLabel.setText("Updated");
+            onLoadUsers();
+        } catch (RuntimeException ex) {
+            usersStatusLabel.setText(ex.getMessage());
+        }
+    }
+
+    @FXML
+    private void onDeleteUser() {
+        AuthService authService = AppState.getInstance().getAuthService();
+        Optional<User> currentUser = authService.getCurrentUser();
+        if (currentUser.isEmpty() || !currentUser.get().canManageUsers()) {
+            usersStatusLabel.setText("Admin only");
+            return;
+        }
+
+        String username = userUsernameField.getText();
+        if (username == null || username.isBlank()) {
+            usersStatusLabel.setText("Username required");
+            return;
+        }
+
+        AdminService adminService = AppState.getInstance().getAdminService();
+        boolean removed = adminService.deleteUser(currentUser.get(), username);
+        usersStatusLabel.setText(removed ? "Deleted" : "Not found");
+        onLoadUsers();
+    }
+
+    @FXML
     private void onLoadCategories() {
         categoriesList.getItems().clear();
         AuthService authService = AppState.getInstance().getAuthService();
@@ -331,6 +421,74 @@ public class MainController {
         categoriesStatusLabel.setText("Loaded " + categories.size());
     }
 
+    @FXML
+    private void onAddCategory() {
+        AuthService authService = AppState.getInstance().getAuthService();
+        Optional<User> currentUser = authService.getCurrentUser();
+        if (currentUser.isEmpty() || !currentUser.get().canManageCategories()) {
+            categoriesStatusLabel.setText("Admin only");
+            return;
+        }
+
+        String name = categoryNameField.getText();
+        if (name == null || name.isBlank()) {
+            categoriesStatusLabel.setText("Category required");
+            return;
+        }
+
+        AdminService adminService = AppState.getInstance().getAdminService();
+        try {
+            adminService.addCategory(currentUser.get(), name);
+            categoriesStatusLabel.setText("Added");
+            onLoadCategories();
+        } catch (RuntimeException ex) {
+            categoriesStatusLabel.setText(ex.getMessage());
+        }
+    }
+
+    @FXML
+    private void onRenameCategory() {
+        AuthService authService = AppState.getInstance().getAuthService();
+        Optional<User> currentUser = authService.getCurrentUser();
+        if (currentUser.isEmpty() || !currentUser.get().canManageCategories()) {
+            categoriesStatusLabel.setText("Admin only");
+            return;
+        }
+
+        String oldName = categoryNameField.getText();
+        String newName = categoryRenameField.getText();
+        if (oldName == null || oldName.isBlank() || newName == null || newName.isBlank()) {
+            categoriesStatusLabel.setText("Old and new names required");
+            return;
+        }
+
+        AdminService adminService = AppState.getInstance().getAdminService();
+        boolean renamed = adminService.renameCategory(currentUser.get(), oldName, newName);
+        categoriesStatusLabel.setText(renamed ? "Renamed" : "Not found");
+        onLoadCategories();
+    }
+
+    @FXML
+    private void onDeleteCategory() {
+        AuthService authService = AppState.getInstance().getAuthService();
+        Optional<User> currentUser = authService.getCurrentUser();
+        if (currentUser.isEmpty() || !currentUser.get().canManageCategories()) {
+            categoriesStatusLabel.setText("Admin only");
+            return;
+        }
+
+        String name = categoryNameField.getText();
+        if (name == null || name.isBlank()) {
+            categoriesStatusLabel.setText("Category required");
+            return;
+        }
+
+        AdminService adminService = AppState.getInstance().getAdminService();
+        boolean removed = adminService.deleteCategory(currentUser.get(), name);
+        categoriesStatusLabel.setText(removed ? "Deleted" : "Not found");
+        onLoadCategories();
+    }
+
     private void refreshSummary() {
         DocumentRepository documentRepository = AppState.getInstance().getDocumentRepository();
         int documentsCount = documentRepository.findAll().size();
@@ -343,5 +501,34 @@ public class MainController {
         documentsCountLabel.setText(String.valueOf(documentsCount));
         categoriesCountLabel.setText(String.valueOf(categoriesCount));
         watchedCountLabel.setText(String.valueOf(watchedCount));
+    }
+
+    private UserRole parseRole(String value) {
+        if (value == null || value.isBlank()) {
+            throw new IllegalArgumentException("Role is required");
+        }
+        return UserRole.valueOf(value.trim().toUpperCase());
+    }
+
+    private UserRole parseRoleNullable(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+        return UserRole.valueOf(value.trim().toUpperCase());
+    }
+
+    private Set<String> parseCategories(String value) {
+        Set<String> result = new LinkedHashSet<>();
+        if (value == null || value.isBlank()) {
+            return result;
+        }
+        String[] parts = value.split(",");
+        for (String part : parts) {
+            String trimmed = part.trim();
+            if (!trimmed.isEmpty()) {
+                result.add(trimmed);
+            }
+        }
+        return result;
     }
 }

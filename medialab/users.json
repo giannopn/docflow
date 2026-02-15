@@ -22,9 +22,10 @@
     "firstName": "Test",
     "lastName": "User",
     "username": "testuser",
-    "password": "test123",
+    "password": "test12345",
     "role": "SIMPLE_USER",
     "allowedCategories": [
+      "Multimedia",
       "General"
     ],
     "followedDocuments": [],

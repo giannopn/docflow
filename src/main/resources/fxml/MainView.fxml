@@ -98,7 +98,20 @@
                         </padding>
                         <HBox spacing="10">
                             <Button text="Refresh" onAction="#onLoadUsers"/>
+                            <Button text="Add" onAction="#onAddUser"/>
+                            <Button text="Edit" onAction="#onEditUser"/>
+                            <Button text="Delete" onAction="#onDeleteUser"/>
                             <Label fx:id="usersStatusLabel" text=""/>
+                        </HBox>
+                        <HBox spacing="10">
+                            <TextField fx:id="userFirstNameField" promptText="First name"/>
+                            <TextField fx:id="userLastNameField" promptText="Last name"/>
+                            <TextField fx:id="userUsernameField" promptText="Username"/>
+                        </HBox>
+                        <HBox spacing="10">
+                            <TextField fx:id="userPasswordField" promptText="Password"/>
+                            <TextField fx:id="userRoleField" promptText="Role (SIMPLE_USER/AUTHOR/ADMIN)"/>
+                            <TextField fx:id="userCategoriesField" promptText="Categories (comma-separated)"/>
                         </HBox>
                         <ListView fx:id="usersList" />
                     </VBox>
@@ -110,7 +123,14 @@
                         </padding>
                         <HBox spacing="10">
                             <Button text="Refresh" onAction="#onLoadCategories"/>
+                            <Button text="Add" onAction="#onAddCategory"/>
+                            <Button text="Rename" onAction="#onRenameCategory"/>
+                            <Button text="Delete" onAction="#onDeleteCategory"/>
                             <Label fx:id="categoriesStatusLabel" text=""/>
+                        </HBox>
+                        <HBox spacing="10">
+                            <TextField fx:id="categoryNameField" promptText="Category name"/>
+                            <TextField fx:id="categoryRenameField" promptText="New name"/>
                         </HBox>
                         <ListView fx:id="categoriesList" />
                     </VBox>
