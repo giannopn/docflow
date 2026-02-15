@@ -14,6 +14,7 @@ import com.docflow.service.WatchService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.TextField;
 
 import java.util.List;
@@ -29,10 +30,14 @@ public class MainController {
     @FXML private TextField searchTitleField;
     @FXML private TextField searchAuthorField;
     @FXML private TextField searchCategoryField;
+    @FXML private TextField createTitleField;
+    @FXML private TextField createCategoryField;
+    @FXML private TextField createContentField;
     @FXML private ListView<String> watchList;
     @FXML private ListView<String> usersList;
     @FXML private ListView<String> categoriesList;
     @FXML private Label watchStatusLabel;
+    @FXML private Label updatedWatchLabel;
     @FXML private Label usersStatusLabel;
     @FXML private Label categoriesStatusLabel;
 
@@ -110,6 +115,114 @@ public class MainController {
     }
 
     @FXML
+    private void onCreateDocument() {
+        AuthService authService = AppState.getInstance().getAuthService();
+        Optional<User> currentUser = authService.getCurrentUser();
+        if (currentUser.isEmpty() || !currentUser.get().canManageDocuments()) {
+            statusLabel.setText("Author/Admin only");
+            return;
+        }
+
+        String title = createTitleField.getText();
+        String category = createCategoryField.getText();
+        String content = createContentField.getText();
+
+        DocumentService documentService = AppState.getInstance().getDocumentService();
+        try {
+            documentService.create(currentUser.get(), title, category, content);
+            statusLabel.setText("Created");
+            onLoadDocuments();
+        } catch (RuntimeException ex) {
+            statusLabel.setText(ex.getMessage());
+        }
+    }
+
+    @FXML
+    private void onEditDocument() {
+        AuthService authService = AppState.getInstance().getAuthService();
+        Optional<User> currentUser = authService.getCurrentUser();
+        if (currentUser.isEmpty() || !currentUser.get().canManageDocuments()) {
+            statusLabel.setText("Author/Admin only");
+            return;
+        }
+
+        String selected = documentsList.getSelectionModel().getSelectedItem();
+        if (selected == null || selected.isBlank()) {
+            statusLabel.setText("Select a document");
+            return;
+        }
+
+        DocumentService documentService = AppState.getInstance().getDocumentService();
+        List<Document> accessible = documentService.listAccessible(currentUser.get());
+        Document target = null;
+        for (Document doc : accessible) {
+            if (selected.equals(doc.toString())) {
+                target = doc;
+                break;
+            }
+        }
+        if (target == null) {
+            statusLabel.setText("Document not found");
+            return;
+        }
+
+        TextInputDialog dialog = new TextInputDialog(target.getContent());
+        dialog.setTitle("Edit Document");
+        dialog.setHeaderText("Update content");
+        dialog.setContentText("Content:");
+        Optional<String> result = dialog.showAndWait();
+        if (result.isEmpty()) {
+            return;
+        }
+
+        try {
+            documentService.updateContent(currentUser.get(), target.getId(), result.get());
+            statusLabel.setText("Updated");
+            onLoadDocuments();
+        } catch (RuntimeException ex) {
+            statusLabel.setText(ex.getMessage());
+        }
+    }
+
+    @FXML
+    private void onDeleteDocument() {
+        AuthService authService = AppState.getInstance().getAuthService();
+        Optional<User> currentUser = authService.getCurrentUser();
+        if (currentUser.isEmpty() || !currentUser.get().canManageDocuments()) {
+            statusLabel.setText("Author/Admin only");
+            return;
+        }
+
+        String selected = documentsList.getSelectionModel().getSelectedItem();
+        if (selected == null || selected.isBlank()) {
+            statusLabel.setText("Select a document");
+            return;
+        }
+
+        DocumentService documentService = AppState.getInstance().getDocumentService();
+        List<Document> accessible = documentService.listAccessible(currentUser.get());
+        Document target = null;
+        for (Document doc : accessible) {
+            if (selected.equals(doc.toString())) {
+                target = doc;
+                break;
+            }
+        }
+        if (target == null) {
+            statusLabel.setText("Document not found");
+            return;
+        }
+
+        try {
+            boolean removed = documentService.delete(currentUser.get(), target.getId());
+            statusLabel.setText(removed ? "Deleted" : "Delete failed");
+            onLoadDocuments();
+        } catch (RuntimeException ex) {
+            statusLabel.setText(ex.getMessage());
+        }
+    }
+
+    @FXML
     private void onLoadWatchlist() {
         watchList.getItems().clear();
         AuthService authService = AppState.getInstance().getAuthService();
@@ -124,6 +237,9 @@ public class MainController {
             watchList.getItems().add(doc.toString());
         }
         watchStatusLabel.setText("Loaded " + docs.size());
+
+        int updatedCount = watchService.listUpdatedSinceLastSeen(currentUser.get()).size();
+        updatedWatchLabel.setText("Updated: " + updatedCount);
     }
 
     @FXML

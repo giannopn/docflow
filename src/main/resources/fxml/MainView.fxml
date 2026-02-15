@@ -54,6 +54,9 @@
                         <HBox spacing="10">
                             <Button text="Refresh" onAction="#onLoadDocuments"/>
                             <Button text="Follow selected" onAction="#onFollowSelectedDocument"/>
+                            <Button text="Create" onAction="#onCreateDocument"/>
+                            <Button text="Edit content" onAction="#onEditDocument"/>
+                            <Button text="Delete" onAction="#onDeleteDocument"/>
                             <Label fx:id="statusLabel" text="Ready"/>
                         </HBox>
 
@@ -63,6 +66,12 @@
                             <TextField fx:id="searchCategoryField" promptText="Category"/>
                             <Button text="Search" onAction="#onSearch"/>
                         </HBox>
+
+                        <HBox spacing="10">
+                            <TextField fx:id="createTitleField" promptText="New title"/>
+                            <TextField fx:id="createCategoryField" promptText="Category"/>
+                        </HBox>
+                        <TextField fx:id="createContentField" promptText="Content"/>
 
                         <ListView fx:id="documentsList" />
                     </VBox>
@@ -77,6 +86,7 @@
                             <Button text="Follow selected" onAction="#onFollowSelected"/>
                             <Button text="Unfollow selected" onAction="#onUnfollowSelected"/>
                             <Label fx:id="watchStatusLabel" text=""/>
+                            <Label fx:id="updatedWatchLabel" text="Updated: 0"/>
                         </HBox>
                         <ListView fx:id="watchList" />
                     </VBox>
