@@ -12,9 +12,15 @@ import com.docflow.service.AdminService;
 import com.docflow.service.AuthService;
 import com.docflow.service.DocumentService;
 import com.docflow.service.WatchService;
+import javafx.beans.property.ReadOnlyBooleanWrapper;
+import javafx.beans.property.ReadOnlyIntegerWrapper;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.TextField;
@@ -26,7 +32,13 @@ import java.util.LinkedHashSet;
 
 public class MainController {
 
-    @FXML private ListView<String> documentsList;
+    @FXML private TableView<Document> documentsTable;
+    @FXML private TableColumn<Document, String> titleColumn;
+    @FXML private TableColumn<Document, String> authorColumn;
+    @FXML private TableColumn<Document, String> categoryColumn;
+    @FXML private TableColumn<Document, String> createdAtColumn;
+    @FXML private TableColumn<Document, Number> versionColumn;
+    @FXML private TableColumn<Document, Boolean> followingColumn;
     @FXML private Label statusLabel;
     @FXML private Label categoriesCountLabel;
     @FXML private Label documentsCountLabel;
@@ -57,15 +69,50 @@ public class MainController {
 
     @FXML
     private void initialize() {
+        configureDocumentTable();
         refreshSummary();
         applyRoleVisibility();
         onLoadDocuments();
     }
 
+    private void configureDocumentTable() {
+        titleColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getTitle()));
+        authorColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getAuthor()));
+        categoryColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getCategory()));
+        createdAtColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getCreatedAt()));
+        versionColumn.setCellValueFactory(cellData -> new ReadOnlyIntegerWrapper(cellData.getValue().getVersion()));
+        followingColumn.setCellValueFactory(cellData ->
+                new ReadOnlyBooleanWrapper(isFollowedByCurrentUser(cellData.getValue())));
+        followingColumn.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(Boolean followed, boolean empty) {
+                super.updateItem(followed, empty);
+                if (empty || followed == null) {
+                    setText(null);
+                    setGraphic(null);
+                    return;
+                }
+
+                Label badge = new Label("\uD83D\uDC41");
+                badge.setStyle(
+                        followed
+                                ? "-fx-font-size: 14px; -fx-text-fill: #2563eb;"
+                                : "-fx-font-size: 14px; -fx-text-fill: #9ca3af; -fx-opacity: 0.45;"
+                );
+                setText(null);
+                setGraphic(badge);
+            }
+        });
+    }
+
+    private boolean isFollowedByCurrentUser(Document document) {
+        AuthService authService = AppState.getInstance().getAuthService();
+        Optional<User> currentUser = authService.getCurrentUser();
+        return currentUser.isPresent() && currentUser.get().getFollowedDocuments().contains(document.getId());
+    }
+
     @FXML
     private void onLoadDocuments() {
-        documentsList.getItems().clear();
-
         DocumentRepository documentRepository = AppState.getInstance().getDocumentRepository();
         DocumentService documentService = AppState.getInstance().getDocumentService();
         AuthService authService = AppState.getInstance().getAuthService();
@@ -75,9 +122,7 @@ public class MainController {
                 ? documentService.listAccessible(currentUser.get())
                 : documentRepository.findAll();
 
-        for (Document doc : documents) {
-            documentsList.getItems().add(doc.toString());
-        }
+        documentsTable.getItems().setAll(documents);
 
         statusLabel.setText("Loaded " + documents.size());
     }
@@ -90,27 +135,20 @@ public class MainController {
             return;
         }
 
-        String selected = documentsList.getSelectionModel().getSelectedItem();
-        if (selected == null || selected.isBlank()) {
+        Document selected = documentsTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
             return;
         }
 
-        DocumentService documentService = AppState.getInstance().getDocumentService();
         WatchService watchService = AppState.getInstance().getWatchService();
-        List<Document> accessible = documentService.listAccessible(currentUser.get());
-        for (Document doc : accessible) {
-            if (selected.equals(doc.toString())) {
-                watchService.follow(currentUser.get(), doc.getId());
-                break;
-            }
-        }
+        watchService.follow(currentUser.get(), selected.getId());
+        documentsTable.refresh();
 
         refreshSummary();
     }
 
     @FXML
     private void onSearch() {
-        documentsList.getItems().clear();
         AuthService authService = AppState.getInstance().getAuthService();
         Optional<User> currentUser = authService.getCurrentUser();
         if (currentUser.isEmpty()) {
@@ -124,9 +162,8 @@ public class MainController {
                 searchAuthorField.getText(),
                 searchCategoryField.getText()
         );
-        for (Document doc : results) {
-            documentsList.getItems().add(doc.toString());
-        }
+        documentsTable.getItems().setAll(results);
+        statusLabel.setText("Found " + results.size());
     }
 
     @FXML
@@ -161,27 +198,14 @@ public class MainController {
             return;
         }
 
-        String selected = documentsList.getSelectionModel().getSelectedItem();
-        if (selected == null || selected.isBlank()) {
+        Document selected = documentsTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
             statusLabel.setText("Select a document");
             return;
         }
 
         DocumentService documentService = AppState.getInstance().getDocumentService();
-        List<Document> accessible = documentService.listAccessible(currentUser.get());
-        Document target = null;
-        for (Document doc : accessible) {
-            if (selected.equals(doc.toString())) {
-                target = doc;
-                break;
-            }
-        }
-        if (target == null) {
-            statusLabel.setText("Document not found");
-            return;
-        }
-
-        TextInputDialog dialog = new TextInputDialog(target.getContent());
+        TextInputDialog dialog = new TextInputDialog(selected.getContent());
         dialog.setTitle("Edit Document");
         dialog.setHeaderText("Update content");
         dialog.setContentText("Content:");
@@ -191,7 +215,7 @@ public class MainController {
         }
 
         try {
-            documentService.updateContent(currentUser.get(), target.getId(), result.get());
+            documentService.updateContent(currentUser.get(), selected.getId(), result.get());
             statusLabel.setText("Updated");
             onLoadDocuments();
         } catch (RuntimeException ex) {
@@ -208,28 +232,15 @@ public class MainController {
             return;
         }
 
-        String selected = documentsList.getSelectionModel().getSelectedItem();
-        if (selected == null || selected.isBlank()) {
+        Document selected = documentsTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
             statusLabel.setText("Select a document");
             return;
         }
 
         DocumentService documentService = AppState.getInstance().getDocumentService();
-        List<Document> accessible = documentService.listAccessible(currentUser.get());
-        Document target = null;
-        for (Document doc : accessible) {
-            if (selected.equals(doc.toString())) {
-                target = doc;
-                break;
-            }
-        }
-        if (target == null) {
-            statusLabel.setText("Document not found");
-            return;
-        }
-
         try {
-            boolean removed = documentService.delete(currentUser.get(), target.getId());
+            boolean removed = documentService.delete(currentUser.get(), selected.getId());
             statusLabel.setText(removed ? "Deleted" : "Delete failed");
             onLoadDocuments();
         } catch (RuntimeException ex) {
@@ -265,22 +276,14 @@ public class MainController {
             return;
         }
 
-        String selected = documentsList.getSelectionModel().getSelectedItem();
-        if (selected == null || selected.isBlank()) {
+        Document selected = documentsTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
             return;
         }
 
-        DocumentRepository documentRepository = AppState.getInstance().getDocumentRepository();
-        DocumentService documentService = AppState.getInstance().getDocumentService();
         WatchService watchService = AppState.getInstance().getWatchService();
-
-        List<Document> accessible = documentService.listAccessible(currentUser.get());
-        for (Document doc : accessible) {
-            if (selected.equals(doc.toString())) {
-                watchService.follow(currentUser.get(), doc.getId());
-                break;
-            }
-        }
+        watchService.follow(currentUser.get(), selected.getId());
+        documentsTable.refresh();
 
         onLoadWatchlist();
         refreshSummary();
@@ -308,6 +311,7 @@ public class MainController {
             }
         }
 
+        documentsTable.refresh();
         onLoadWatchlist();
         refreshSummary();
     }
