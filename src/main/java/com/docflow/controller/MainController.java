@@ -7,11 +7,14 @@ import com.docflow.AppState;
 import com.docflow.model.Document;
 import com.docflow.model.User;
 import com.docflow.repository.DocumentRepository;
+import com.docflow.service.AdminService;
 import com.docflow.service.AuthService;
 import com.docflow.service.DocumentService;
+import com.docflow.service.WatchService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +26,15 @@ public class MainController {
     @FXML private Label categoriesCountLabel;
     @FXML private Label documentsCountLabel;
     @FXML private Label watchedCountLabel;
+    @FXML private TextField searchTitleField;
+    @FXML private TextField searchAuthorField;
+    @FXML private TextField searchCategoryField;
+    @FXML private ListView<String> watchList;
+    @FXML private ListView<String> usersList;
+    @FXML private ListView<String> categoriesList;
+    @FXML private Label watchStatusLabel;
+    @FXML private Label usersStatusLabel;
+    @FXML private Label categoriesStatusLabel;
 
     @FXML
     private void initialize() {
@@ -48,6 +60,78 @@ public class MainController {
         }
 
         statusLabel.setText("Loaded " + documents.size());
+    }
+
+    @FXML
+    private void onSearch() {
+        documentsList.getItems().clear();
+        AuthService authService = AppState.getInstance().getAuthService();
+        Optional<User> currentUser = authService.getCurrentUser();
+        if (currentUser.isEmpty()) {
+            return;
+        }
+
+        DocumentService documentService = AppState.getInstance().getDocumentService();
+        List<Document> results = documentService.search(
+                currentUser.get(),
+                searchTitleField.getText(),
+                searchAuthorField.getText(),
+                searchCategoryField.getText()
+        );
+        for (Document doc : results) {
+            documentsList.getItems().add(doc.toString());
+        }
+    }
+
+    @FXML
+    private void onLoadWatchlist() {
+        watchList.getItems().clear();
+        AuthService authService = AppState.getInstance().getAuthService();
+        Optional<User> currentUser = authService.getCurrentUser();
+        if (currentUser.isEmpty()) {
+            return;
+        }
+
+        WatchService watchService = AppState.getInstance().getWatchService();
+        List<Document> docs = watchService.listFollowed(currentUser.get());
+        for (Document doc : docs) {
+            watchList.getItems().add(doc.toString());
+        }
+        watchStatusLabel.setText("Loaded " + docs.size());
+    }
+
+    @FXML
+    private void onLoadUsers() {
+        usersList.getItems().clear();
+        AuthService authService = AppState.getInstance().getAuthService();
+        Optional<User> currentUser = authService.getCurrentUser();
+        if (currentUser.isEmpty() || !currentUser.get().canManageUsers()) {
+            usersStatusLabel.setText("Admin only");
+            return;
+        }
+
+        AdminService adminService = AppState.getInstance().getAdminService();
+        List<User> users = adminService.listUsers(currentUser.get());
+        for (User user : users) {
+            usersList.getItems().add(user.getUsername() + " (" + user.getRole() + ")");
+        }
+        usersStatusLabel.setText("Loaded " + users.size());
+    }
+
+    @FXML
+    private void onLoadCategories() {
+        categoriesList.getItems().clear();
+        AuthService authService = AppState.getInstance().getAuthService();
+        Optional<User> currentUser = authService.getCurrentUser();
+        if (currentUser.isEmpty() || !currentUser.get().canManageCategories()) {
+            categoriesStatusLabel.setText("Admin only");
+            return;
+        }
+
+        AdminService adminService = AppState.getInstance().getAdminService();
+        List<String> categories = adminService.listCategories(currentUser.get());
+        categoriesList.getItems().addAll(categories);
+        categoriesStatusLabel.setText("Loaded " + categories.size());
     }
 
     private void refreshSummary() {

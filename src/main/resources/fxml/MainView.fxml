@@ -6,6 +6,7 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -55,15 +56,14 @@
                             <Label fx:id="statusLabel" text="Ready"/>
                         </HBox>
 
+                        <HBox spacing="10">
+                            <TextField fx:id="searchTitleField" promptText="Title"/>
+                            <TextField fx:id="searchAuthorField" promptText="Author"/>
+                            <TextField fx:id="searchCategoryField" promptText="Category"/>
+                            <Button text="Search" onAction="#onSearch"/>
+                        </HBox>
+
                         <ListView fx:id="documentsList" />
-                    </VBox>
-                </Tab>
-                <Tab text="Search">
-                    <VBox spacing="12">
-                        <padding>
-                            <Insets top="18" right="18" bottom="18" left="18"/>
-                        </padding>
-                        <Label text="Search view placeholder"/>
                     </VBox>
                 </Tab>
                 <Tab text="Watchlist">
@@ -71,7 +71,11 @@
                         <padding>
                             <Insets top="18" right="18" bottom="18" left="18"/>
                         </padding>
-                        <Label text="Watchlist view placeholder"/>
+                        <HBox spacing="10">
+                            <Button text="Refresh" onAction="#onLoadWatchlist"/>
+                            <Label fx:id="watchStatusLabel" text=""/>
+                        </HBox>
+                        <ListView fx:id="watchList" />
                     </VBox>
                 </Tab>
                 <Tab text="Users">
@@ -79,7 +83,11 @@
                         <padding>
                             <Insets top="18" right="18" bottom="18" left="18"/>
                         </padding>
-                        <Label text="User management placeholder"/>
+                        <HBox spacing="10">
+                            <Button text="Refresh" onAction="#onLoadUsers"/>
+                            <Label fx:id="usersStatusLabel" text=""/>
+                        </HBox>
+                        <ListView fx:id="usersList" />
                     </VBox>
                 </Tab>
                 <Tab text="Categories">
@@ -87,7 +95,11 @@
                         <padding>
                             <Insets top="18" right="18" bottom="18" left="18"/>
                         </padding>
-                        <Label text="Category management placeholder"/>
+                        <HBox spacing="10">
+                            <Button text="Refresh" onAction="#onLoadCategories"/>
+                            <Label fx:id="categoriesStatusLabel" text=""/>
+                        </HBox>
+                        <ListView fx:id="categoriesList" />
                     </VBox>
                 </Tab>
             </tabs>
