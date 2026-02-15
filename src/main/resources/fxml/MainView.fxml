@@ -91,7 +91,7 @@
                         <ListView fx:id="watchList" />
                     </VBox>
                 </Tab>
-                <Tab text="Users">
+                <Tab fx:id="usersTab" text="Users">
                     <VBox spacing="12">
                         <padding>
                             <Insets top="18" right="18" bottom="18" left="18"/>
@@ -116,7 +116,7 @@
                         <ListView fx:id="usersList" />
                     </VBox>
                 </Tab>
-                <Tab text="Categories">
+                <Tab fx:id="categoriesTab" text="Categories">
                     <VBox spacing="12">
                         <padding>
                             <Insets top="18" right="18" bottom="18" left="18"/>

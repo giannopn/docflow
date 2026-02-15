@@ -15,6 +15,7 @@ import com.docflow.service.WatchService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.TextField;
 
@@ -51,10 +52,13 @@ public class MainController {
     @FXML private TextField userPasswordField;
     @FXML private TextField userRoleField;
     @FXML private TextField userCategoriesField;
+    @FXML private Tab usersTab;
+    @FXML private Tab categoriesTab;
 
     @FXML
     private void initialize() {
         refreshSummary();
+        applyRoleVisibility();
         onLoadDocuments();
     }
 
@@ -501,6 +505,19 @@ public class MainController {
         documentsCountLabel.setText(String.valueOf(documentsCount));
         categoriesCountLabel.setText(String.valueOf(categoriesCount));
         watchedCountLabel.setText(String.valueOf(watchedCount));
+    }
+
+    private void applyRoleVisibility() {
+        AuthService authService = AppState.getInstance().getAuthService();
+        Optional<User> currentUser = authService.getCurrentUser();
+        boolean isAdmin = currentUser.isPresent() && currentUser.get().canManageUsers();
+
+        if (usersTab != null) {
+            usersTab.setDisable(!isAdmin);
+        }
+        if (categoriesTab != null) {
+            categoriesTab.setDisable(!isAdmin);
+        }
     }
 
     private UserRole parseRole(String value) {
