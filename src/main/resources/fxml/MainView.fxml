@@ -53,6 +53,7 @@
 
                         <HBox spacing="10">
                             <Button text="Refresh" onAction="#onLoadDocuments"/>
+                            <Button text="Follow selected" onAction="#onFollowSelectedDocument"/>
                             <Label fx:id="statusLabel" text="Ready"/>
                         </HBox>
 
@@ -73,6 +74,8 @@
                         </padding>
                         <HBox spacing="10">
                             <Button text="Refresh" onAction="#onLoadWatchlist"/>
+                            <Button text="Follow selected" onAction="#onFollowSelected"/>
+                            <Button text="Unfollow selected" onAction="#onUnfollowSelected"/>
                             <Label fx:id="watchStatusLabel" text=""/>
                         </HBox>
                         <ListView fx:id="watchList" />

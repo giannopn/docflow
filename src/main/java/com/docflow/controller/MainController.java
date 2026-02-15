@@ -63,6 +63,32 @@ public class MainController {
     }
 
     @FXML
+    private void onFollowSelectedDocument() {
+        AuthService authService = AppState.getInstance().getAuthService();
+        Optional<User> currentUser = authService.getCurrentUser();
+        if (currentUser.isEmpty()) {
+            return;
+        }
+
+        String selected = documentsList.getSelectionModel().getSelectedItem();
+        if (selected == null || selected.isBlank()) {
+            return;
+        }
+
+        DocumentService documentService = AppState.getInstance().getDocumentService();
+        WatchService watchService = AppState.getInstance().getWatchService();
+        List<Document> accessible = documentService.listAccessible(currentUser.get());
+        for (Document doc : accessible) {
+            if (selected.equals(doc.toString())) {
+                watchService.follow(currentUser.get(), doc.getId());
+                break;
+            }
+        }
+
+        refreshSummary();
+    }
+
+    @FXML
     private void onSearch() {
         documentsList.getItems().clear();
         AuthService authService = AppState.getInstance().getAuthService();
@@ -98,6 +124,61 @@ public class MainController {
             watchList.getItems().add(doc.toString());
         }
         watchStatusLabel.setText("Loaded " + docs.size());
+    }
+
+    @FXML
+    private void onFollowSelected() {
+        AuthService authService = AppState.getInstance().getAuthService();
+        Optional<User> currentUser = authService.getCurrentUser();
+        if (currentUser.isEmpty()) {
+            return;
+        }
+
+        String selected = documentsList.getSelectionModel().getSelectedItem();
+        if (selected == null || selected.isBlank()) {
+            return;
+        }
+
+        DocumentRepository documentRepository = AppState.getInstance().getDocumentRepository();
+        DocumentService documentService = AppState.getInstance().getDocumentService();
+        WatchService watchService = AppState.getInstance().getWatchService();
+
+        List<Document> accessible = documentService.listAccessible(currentUser.get());
+        for (Document doc : accessible) {
+            if (selected.equals(doc.toString())) {
+                watchService.follow(currentUser.get(), doc.getId());
+                break;
+            }
+        }
+
+        onLoadWatchlist();
+        refreshSummary();
+    }
+
+    @FXML
+    private void onUnfollowSelected() {
+        AuthService authService = AppState.getInstance().getAuthService();
+        Optional<User> currentUser = authService.getCurrentUser();
+        if (currentUser.isEmpty()) {
+            return;
+        }
+
+        String selected = watchList.getSelectionModel().getSelectedItem();
+        if (selected == null || selected.isBlank()) {
+            return;
+        }
+
+        WatchService watchService = AppState.getInstance().getWatchService();
+        DocumentRepository documentRepository = AppState.getInstance().getDocumentRepository();
+        for (Document doc : documentRepository.findAll()) {
+            if (selected.equals(doc.toString())) {
+                watchService.unfollow(currentUser.get(), doc.getId());
+                break;
+            }
+        }
+
+        onLoadWatchlist();
+        refreshSummary();
     }
 
     @FXML
