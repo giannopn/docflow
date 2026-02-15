@@ -16,10 +16,13 @@ import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.fxml.FXML;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextInputDialog;
@@ -102,6 +105,47 @@ public class MainController {
                 setText(null);
                 setGraphic(badge);
             }
+        });
+
+        documentsTable.setRowFactory(table -> {
+            TableRow<Document> row = new TableRow<>();
+
+            MenuItem followItem = new MenuItem("Follow");
+            followItem.setOnAction(event -> {
+                documentsTable.getSelectionModel().select(row.getItem());
+                onFollowSelectedDocument();
+            });
+
+            MenuItem unfollowItem = new MenuItem("Unfollow");
+            unfollowItem.setOnAction(event -> {
+                Document doc = row.getItem();
+                if (doc == null) {
+                    return;
+                }
+                AuthService authService = AppState.getInstance().getAuthService();
+                Optional<User> currentUser = authService.getCurrentUser();
+                if (currentUser.isEmpty()) {
+                    return;
+                }
+                WatchService watchService = AppState.getInstance().getWatchService();
+                watchService.unfollow(currentUser.get(), doc.getId());
+                documentsTable.refresh();
+                onLoadWatchlist();
+                refreshSummary();
+            });
+
+            MenuItem deleteItem = new MenuItem("Delete");
+            deleteItem.setOnAction(event -> {
+                documentsTable.getSelectionModel().select(row.getItem());
+                onDeleteDocument();
+            });
+
+            ContextMenu contextMenu = new ContextMenu(followItem, unfollowItem, deleteItem);
+            row.contextMenuProperty().bind(javafx.beans.binding.Bindings.when(row.emptyProperty())
+                    .then((ContextMenu) null)
+                    .otherwise(contextMenu));
+
+            return row;
         });
     }
 
