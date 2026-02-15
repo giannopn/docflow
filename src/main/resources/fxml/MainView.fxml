@@ -4,28 +4,93 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.docflow.controller.MainController"
-      spacing="14"
-      prefWidth="520" prefHeight="380">
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.docflow.controller.MainController"
+            prefWidth="900" prefHeight="600">
 
-    <padding>
-        <Insets top="18" right="18" bottom="18" left="18"/>
-    </padding>
+    <left>
+        <VBox spacing="12" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets top="18" right="18" bottom="18" left="18"/>
+            </padding>
 
-    <Label text="DocFlow"/>
+            <Label text="MediaLab Documents" styleClass="h1"/>
+            <Label text="Summary" styleClass="h2"/>
 
-    <Label text="Load and view documents from JSON."/>
+            <VBox spacing="6" styleClass="card">
+                <Label text="Categories"/>
+                <Label fx:id="categoriesCountLabel" text="0" styleClass="h2"/>
+            </VBox>
 
-    <HBox spacing="10">
-        <Button text="Load documents" onAction="#onLoadDocuments"/>
-        <Label fx:id="statusLabel" text="Ready"/>
-    </HBox>
+            <VBox spacing="6" styleClass="card">
+                <Label text="Documents"/>
+                <Label fx:id="documentsCountLabel" text="0" styleClass="h2"/>
+            </VBox>
 
-    <ListView fx:id="documentsList" />
+            <VBox spacing="6" styleClass="card">
+                <Label text="Watched"/>
+                <Label fx:id="watchedCountLabel" text="0" styleClass="h2"/>
+            </VBox>
+        </VBox>
+    </left>
 
-</VBox>
+    <center>
+        <TabPane tabClosingPolicy="UNAVAILABLE">
+            <tabs>
+                <Tab text="Documents">
+                    <VBox spacing="12">
+                        <padding>
+                            <Insets top="18" right="18" bottom="18" left="18"/>
+                        </padding>
+
+                        <HBox spacing="10">
+                            <Button text="Refresh" onAction="#onLoadDocuments"/>
+                            <Label fx:id="statusLabel" text="Ready"/>
+                        </HBox>
+
+                        <ListView fx:id="documentsList" />
+                    </VBox>
+                </Tab>
+                <Tab text="Search">
+                    <VBox spacing="12">
+                        <padding>
+                            <Insets top="18" right="18" bottom="18" left="18"/>
+                        </padding>
+                        <Label text="Search view placeholder"/>
+                    </VBox>
+                </Tab>
+                <Tab text="Watchlist">
+                    <VBox spacing="12">
+                        <padding>
+                            <Insets top="18" right="18" bottom="18" left="18"/>
+                        </padding>
+                        <Label text="Watchlist view placeholder"/>
+                    </VBox>
+                </Tab>
+                <Tab text="Users">
+                    <VBox spacing="12">
+                        <padding>
+                            <Insets top="18" right="18" bottom="18" left="18"/>
+                        </padding>
+                        <Label text="User management placeholder"/>
+                    </VBox>
+                </Tab>
+                <Tab text="Categories">
+                    <VBox spacing="12">
+                        <padding>
+                            <Insets top="18" right="18" bottom="18" left="18"/>
+                        </padding>
+                        <Label text="Category management placeholder"/>
+                    </VBox>
+                </Tab>
+            </tabs>
+        </TabPane>
+    </center>
+</BorderPane>

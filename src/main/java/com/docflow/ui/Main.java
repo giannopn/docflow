@@ -11,12 +11,11 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
         com.docflow.AppState.getInstance().loadAll();
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
-
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/LoginView.fxml"));
         Scene scene = new Scene(loader.load());
-        // scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
 
-        stage.setTitle("DocFlow");
+        stage.setTitle("MediaLab Documents");
         stage.setScene(scene);
         stage.show();
     }
