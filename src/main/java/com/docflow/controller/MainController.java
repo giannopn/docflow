@@ -16,7 +16,12 @@ import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
@@ -25,8 +30,11 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Tab;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 
 import java.util.List;
 import java.util.Optional;
@@ -109,6 +117,17 @@ public class MainController {
 
         documentsTable.setRowFactory(table -> {
             TableRow<Document> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && !row.isEmpty()) {
+                    documentsTable.getSelectionModel().select(row.getItem());
+                    onOpenDocument();
+                }
+            });
+            MenuItem openItem = new MenuItem("Open");
+            openItem.setOnAction(event -> {
+                documentsTable.getSelectionModel().select(row.getItem());
+                onOpenDocument();
+            });
 
             MenuItem followItem = new MenuItem("Follow");
             followItem.setOnAction(event -> {
@@ -140,7 +159,7 @@ public class MainController {
                 onDeleteDocument();
             });
 
-            ContextMenu contextMenu = new ContextMenu(followItem, unfollowItem, deleteItem);
+            ContextMenu contextMenu = new ContextMenu(openItem, followItem, unfollowItem, deleteItem);
             row.contextMenuProperty().bind(javafx.beans.binding.Bindings.when(row.emptyProperty())
                     .then((ContextMenu) null)
                     .otherwise(contextMenu));
@@ -234,11 +253,10 @@ public class MainController {
     }
 
     @FXML
-    private void onEditDocument() {
+    private void onOpenDocument() {
         AuthService authService = AppState.getInstance().getAuthService();
         Optional<User> currentUser = authService.getCurrentUser();
-        if (currentUser.isEmpty() || !currentUser.get().canManageDocuments()) {
-            statusLabel.setText("Author/Admin only");
+        if (currentUser.isEmpty()) {
             return;
         }
 
@@ -248,23 +266,12 @@ public class MainController {
             return;
         }
 
-        DocumentService documentService = AppState.getInstance().getDocumentService();
-        TextInputDialog dialog = new TextInputDialog(selected.getContent());
-        dialog.setTitle("Edit Document");
-        dialog.setHeaderText("Update content");
-        dialog.setContentText("Content:");
-        Optional<String> result = dialog.showAndWait();
-        if (result.isEmpty()) {
-            return;
-        }
+        showDocumentWindow(selected, currentUser.get());
+    }
 
-        try {
-            documentService.updateContent(currentUser.get(), selected.getId(), result.get());
-            statusLabel.setText("Updated");
-            onLoadDocuments();
-        } catch (RuntimeException ex) {
-            statusLabel.setText(ex.getMessage());
-        }
+    @FXML
+    private void onEditDocument() {
+        onOpenDocument();
     }
 
     @FXML
@@ -595,5 +602,65 @@ public class MainController {
             }
         }
         return result;
+    }
+
+    private void showDocumentWindow(Document document, User currentUser) {
+        boolean canEdit = currentUser.canManageDocuments();
+        ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
+
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle(document.getTitle());
+        dialog.setHeaderText(null);
+        DialogPane pane = dialog.getDialogPane();
+        pane.setPrefWidth(760);
+        pane.setPrefHeight(560);
+
+        Label titleLabel = new Label(document.getTitle());
+        titleLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: 700;");
+
+        GridPane metaGrid = new GridPane();
+        metaGrid.setHgap(10);
+        metaGrid.setVgap(8);
+        metaGrid.add(new Label("Author:"), 0, 0);
+        metaGrid.add(new Label(document.getAuthor()), 1, 0);
+        metaGrid.add(new Label("Category:"), 0, 1);
+        metaGrid.add(new Label(document.getCategory()), 1, 1);
+        metaGrid.add(new Label("Created:"), 0, 2);
+        metaGrid.add(new Label(document.getCreatedAt()), 1, 2);
+        metaGrid.add(new Label("Version:"), 0, 3);
+        metaGrid.add(new Label(String.valueOf(document.getVersion())), 1, 3);
+
+        TextArea contentArea = new TextArea(document.getContent());
+        contentArea.setWrapText(true);
+        contentArea.setEditable(canEdit);
+        contentArea.setDisable(!canEdit);
+        contentArea.setPrefRowCount(18);
+
+        VBox root = new VBox(10, titleLabel, metaGrid, contentArea);
+        root.setAlignment(Pos.TOP_LEFT);
+        root.setPadding(new Insets(10));
+        pane.setContent(root);
+
+        if (canEdit) {
+            pane.getButtonTypes().addAll(ButtonType.CANCEL, saveButtonType);
+        } else {
+            pane.getButtonTypes().add(ButtonType.CLOSE);
+        }
+
+        Optional<ButtonType> result = dialog.showAndWait();
+        if (!canEdit || result.isEmpty() || result.get() != saveButtonType) {
+            return;
+        }
+
+        try {
+            DocumentService documentService = AppState.getInstance().getDocumentService();
+            documentService.updateContent(currentUser, document.getId(), contentArea.getText());
+            statusLabel.setText("Updated");
+            onLoadDocuments();
+            onLoadWatchlist();
+            refreshSummary();
+        } catch (RuntimeException ex) {
+            statusLabel.setText(ex.getMessage());
+        }
     }
 }

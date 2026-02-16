@@ -57,7 +57,7 @@
                             <Button text="Refresh" onAction="#onLoadDocuments"/>
                             <Button text="Follow selected" onAction="#onFollowSelectedDocument"/>
                             <Button text="Create" onAction="#onCreateDocument"/>
-                            <Button text="Edit content" onAction="#onEditDocument"/>
+                            <Button text="Open" onAction="#onOpenDocument"/>
                             <Button text="Delete" onAction="#onDeleteDocument"/>
                             <Label fx:id="statusLabel" text="Ready"/>
                         </HBox>
