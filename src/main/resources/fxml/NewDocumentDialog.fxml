@@ -28,7 +28,7 @@
 
     <VBox spacing="8">
         <Label text="Category"/>
-        <ComboBox fx:id="categorySelector" promptText="Select category"/>
+        <ComboBox fx:id="categorySelector" promptText="Select category" styleClass="clean-combo"/>
     </VBox>
 
     <VBox spacing="8" VBox.vgrow="ALWAYS">

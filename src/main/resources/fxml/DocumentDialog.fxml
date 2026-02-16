@@ -37,7 +37,7 @@
 
         <VBox spacing="4" alignment="TOP_RIGHT">
             <Label text="View version:" alignment="CENTER_RIGHT"/>
-            <ComboBox fx:id="versionSelector"/>
+            <ComboBox fx:id="versionSelector" styleClass="clean-combo"/>
         </VBox>
     </HBox>
 

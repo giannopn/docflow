@@ -65,6 +65,7 @@ public class LoginController {
     private void openMainView() throws IOException {
         Stage stage = (Stage) usernameField.getScene().getWindow();
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/MainView.fxml"));
-        stage.setScene(new Scene(root));
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
     }
 }

@@ -620,7 +620,8 @@ public class MainController {
             dialogStage.initModality(Modality.WINDOW_MODAL);
             dialogStage.initOwner(documentsTable.getScene().getWindow());
             dialogStage.setTitle(document.getTitle());
-            dialogStage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            dialogStage.setScene(scene);
             dialogStage.showAndWait();
 
             if (controller.isSaved()) {
@@ -646,7 +647,8 @@ public class MainController {
             dialogStage.initModality(Modality.WINDOW_MODAL);
             dialogStage.initOwner(documentsTable.getScene().getWindow());
             dialogStage.setTitle("New document");
-            dialogStage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            dialogStage.setScene(scene);
             dialogStage.showAndWait();
 
             if (controller.isCreated()) {
