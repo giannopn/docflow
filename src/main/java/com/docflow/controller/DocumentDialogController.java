@@ -17,6 +17,7 @@ import javafx.util.StringConverter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 public class DocumentDialogController {
 
@@ -33,6 +34,7 @@ public class DocumentDialogController {
     private User currentUser;
     private DocumentService documentService;
     private int latestVersion;
+    private String latestContent;
     private boolean canEdit;
     private boolean saved;
 
@@ -40,6 +42,7 @@ public class DocumentDialogController {
     private void initialize() {
         versionSelector.getSelectionModel().selectedItemProperty()
                 .addListener((obs, oldValue, newValue) -> updateViewState());
+        contentArea.textProperty().addListener((obs, oldValue, newValue) -> updateSaveButtonState());
     }
 
     public void setContext(Document document, User currentUser) {
@@ -48,6 +51,7 @@ public class DocumentDialogController {
         this.documentService = AppState.getInstance().getDocumentService();
         this.canEdit = currentUser.canManageDocuments();
         this.latestVersion = document.getVersion();
+        this.latestContent = document.getContent();
         this.saved = false;
 
         titleLabel.setText(document.getTitle());
@@ -129,7 +133,19 @@ public class DocumentDialogController {
         contentArea.setText(selectedVersion.getContent());
         boolean editable = canEdit && latestSelected;
         contentArea.setEditable(editable);
-        saveButton.setDisable(!editable);
+        updateSaveButtonState();
+    }
+
+    private void updateSaveButtonState() {
+        DocumentVersion selectedVersion = versionSelector.getSelectionModel().getSelectedItem();
+        if (selectedVersion == null || !canEdit) {
+            saveButton.setDisable(true);
+            return;
+        }
+
+        boolean latestSelected = selectedVersion.getVersionNumber() == latestVersion;
+        boolean unchanged = Objects.equals(contentArea.getText(), latestContent);
+        saveButton.setDisable(!latestSelected || unchanged);
     }
 
     private void closeWindow() {

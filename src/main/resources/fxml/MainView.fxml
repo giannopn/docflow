@@ -11,6 +11,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane xmlns="http://javafx.com/javafx"
@@ -54,19 +55,13 @@
                         </padding>
 
                         <HBox spacing="10">
-                            <Button text="Refresh" onAction="#onLoadDocuments"/>
-                            <Button text="Follow selected" onAction="#onFollowSelectedDocument"/>
-                            <Button text="Create" onAction="#onCreateDocument"/>
-                            <Button text="Open" onAction="#onOpenDocument"/>
-                            <Button text="Delete" onAction="#onDeleteDocument"/>
-                            <Label fx:id="statusLabel" text="Ready"/>
-                        </HBox>
-
-                        <HBox spacing="10">
                             <TextField fx:id="searchTitleField" promptText="Title"/>
                             <TextField fx:id="searchAuthorField" promptText="Author"/>
                             <TextField fx:id="searchCategoryField" promptText="Category"/>
                             <Button text="Search" onAction="#onSearch"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Label fx:id="statusLabel" text="Ready"/>
+                            <Button text="New document" onAction="#onCreateDocument"/>
                         </HBox>
 
                         <HBox spacing="10">
