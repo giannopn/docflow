@@ -5,12 +5,24 @@
     "author": "Nikos Papadopoulos",
     "category": "Multimedia",
     "createdAt": "2024-10-01",
-    "version": 1,
-    "content": "This is the first document.",
+    "version": 4,
+    "content": "This is the first document.\nOK\nOK\nOK",
     "versions": [
       {
         "versionNumber": 1,
         "content": "This is the first document."
+      },
+      {
+        "versionNumber": 2,
+        "content": "This is the first document.\nOK"
+      },
+      {
+        "versionNumber": 3,
+        "content": "This is the first document.\nOK\nOK"
+      },
+      {
+        "versionNumber": 4,
+        "content": "This is the first document.\nOK\nOK\nOK"
       }
     ],
     "deleted": false

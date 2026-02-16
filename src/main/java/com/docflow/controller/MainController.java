@@ -5,6 +5,7 @@ package com.docflow.controller;
 
 import com.docflow.AppState;
 import com.docflow.model.Document;
+import com.docflow.model.DocumentVersion;
 import com.docflow.model.User;
 import com.docflow.model.UserRole;
 import com.docflow.repository.DocumentRepository;
@@ -22,9 +23,12 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
+import javafx.scene.Node;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
@@ -34,8 +38,14 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.util.StringConverter;
 
+import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -607,6 +617,10 @@ public class MainController {
     private void showDocumentWindow(Document document, User currentUser) {
         boolean canEdit = currentUser.canManageDocuments();
         ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
+        DocumentService documentService = AppState.getInstance().getDocumentService();
+        List<DocumentVersion> visibleVersions = new ArrayList<>(documentService.getVisibleVersions(currentUser, document));
+        visibleVersions.sort(Comparator.comparingInt(DocumentVersion::getVersionNumber).reversed());
+        int latestVersion = document.getVersion();
 
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle(document.getTitle());
@@ -627,25 +641,80 @@ public class MainController {
         metaGrid.add(new Label(document.getCategory()), 1, 1);
         metaGrid.add(new Label("Created:"), 0, 2);
         metaGrid.add(new Label(document.getCreatedAt()), 1, 2);
-        metaGrid.add(new Label("Version:"), 0, 3);
-        metaGrid.add(new Label(String.valueOf(document.getVersion())), 1, 3);
+
+        ComboBox<DocumentVersion> versionSelector = new ComboBox<>();
+        versionSelector.getItems().setAll(visibleVersions);
+        versionSelector.setConverter(new StringConverter<>() {
+            @Override
+            public String toString(DocumentVersion version) {
+                if (version == null) {
+                    return "";
+                }
+                return version.getVersionNumber() == latestVersion
+                        ? "v" + version.getVersionNumber() + " (latest)"
+                        : "v" + version.getVersionNumber() + " (read-only)";
+            }
+
+            @Override
+            public DocumentVersion fromString(String string) {
+                return null;
+            }
+        });
+        versionSelector.setCellFactory(listView -> new ListCell<>() {
+            @Override
+            protected void updateItem(DocumentVersion item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : versionSelector.getConverter().toString(item));
+            }
+        });
+        if (!visibleVersions.isEmpty()) {
+            versionSelector.getSelectionModel().selectFirst();
+        }
+        versionSelector.setDisable(!canEdit);
+
+        Label viewVersionLabel = new Label("View version:");
+        VBox versionBox = new VBox(4, viewVersionLabel, versionSelector);
+        versionBox.setAlignment(Pos.TOP_RIGHT);
+        Region headerSpacer = new Region();
+        HBox.setHgrow(headerSpacer, Priority.ALWAYS);
+        HBox detailsRow = new HBox(12, metaGrid, headerSpacer, versionBox);
+        detailsRow.setAlignment(Pos.TOP_LEFT);
 
         TextArea contentArea = new TextArea(document.getContent());
         contentArea.setWrapText(true);
-        contentArea.setEditable(canEdit);
-        contentArea.setDisable(!canEdit);
         contentArea.setPrefRowCount(18);
 
-        VBox root = new VBox(10, titleLabel, metaGrid, contentArea);
+        VBox root = new VBox(10, titleLabel, detailsRow, contentArea);
         root.setAlignment(Pos.TOP_LEFT);
         root.setPadding(new Insets(10));
         pane.setContent(root);
 
+        Node saveButton = null;
         if (canEdit) {
             pane.getButtonTypes().addAll(ButtonType.CANCEL, saveButtonType);
+            saveButton = pane.lookupButton(saveButtonType);
         } else {
             pane.getButtonTypes().add(ButtonType.CLOSE);
         }
+
+        Node finalSaveButton = saveButton;
+        Runnable updateViewState = () -> {
+            DocumentVersion selectedVersion = versionSelector.getSelectionModel().getSelectedItem();
+            if (selectedVersion == null) {
+                return;
+            }
+
+            boolean latestSelected = selectedVersion.getVersionNumber() == latestVersion;
+            contentArea.setText(selectedVersion.getContent());
+            boolean editable = canEdit && latestSelected;
+            contentArea.setEditable(editable);
+            if (finalSaveButton != null) {
+                finalSaveButton.setDisable(!editable);
+            }
+        };
+        updateViewState.run();
+        versionSelector.getSelectionModel().selectedItemProperty()
+                .addListener((obs, oldSelection, newSelection) -> updateViewState.run());
 
         Optional<ButtonType> result = dialog.showAndWait();
         if (!canEdit || result.isEmpty() || result.get() != saveButtonType) {
@@ -653,7 +722,6 @@ public class MainController {
         }
 
         try {
-            DocumentService documentService = AppState.getInstance().getDocumentService();
             documentService.updateContent(currentUser, document.getId(), contentArea.getText());
             statusLabel.setText("Updated");
             onLoadDocuments();
