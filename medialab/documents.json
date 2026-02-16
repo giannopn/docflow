@@ -33,11 +33,15 @@
     "author": "Maria Ioannou",
     "category": "Programming",
     "createdAt": "2024-10-05",
-    "version": 1,
+    "version": 2,
     "content": "Introduction to Java.",
     "versions": [
       {
         "versionNumber": 1,
+        "content": "Introduction to Java."
+      },
+      {
+        "versionNumber": 2,
         "content": "Introduction to Java."
       }
     ],

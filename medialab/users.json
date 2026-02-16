@@ -9,14 +9,8 @@
       "Multimedia",
       "Programming"
     ],
-    "followedDocuments": [
-      "1",
-      "2"
-    ],
-    "lastSeenVersions": {
-      "1": 0,
-      "2": 0
-    }
+    "followedDocuments": [],
+    "lastSeenVersions": {}
   },
   {
     "firstName": "Test",

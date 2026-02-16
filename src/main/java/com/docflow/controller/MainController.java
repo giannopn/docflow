@@ -5,7 +5,6 @@ package com.docflow.controller;
 
 import com.docflow.AppState;
 import com.docflow.model.Document;
-import com.docflow.model.DocumentVersion;
 import com.docflow.model.User;
 import com.docflow.model.UserRole;
 import com.docflow.repository.DocumentRepository;
@@ -17,35 +16,23 @@ import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.DialogPane;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
-import javafx.scene.Node;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Tab;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
-import javafx.util.StringConverter;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
-import java.util.Comparator;
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -141,12 +128,6 @@ public class MainController {
 
             MenuItem followItem = new MenuItem("Follow");
             followItem.setOnAction(event -> {
-                documentsTable.getSelectionModel().select(row.getItem());
-                onFollowSelectedDocument();
-            });
-
-            MenuItem unfollowItem = new MenuItem("Unfollow");
-            unfollowItem.setOnAction(event -> {
                 Document doc = row.getItem();
                 if (doc == null) {
                     return;
@@ -157,7 +138,11 @@ public class MainController {
                     return;
                 }
                 WatchService watchService = AppState.getInstance().getWatchService();
-                watchService.unfollow(currentUser.get(), doc.getId());
+                if (isFollowedByCurrentUser(doc)) {
+                    watchService.unfollow(currentUser.get(), doc.getId());
+                } else {
+                    watchService.follow(currentUser.get(), doc.getId());
+                }
                 documentsTable.refresh();
                 onLoadWatchlist();
                 refreshSummary();
@@ -169,7 +154,15 @@ public class MainController {
                 onDeleteDocument();
             });
 
-            ContextMenu contextMenu = new ContextMenu(openItem, followItem, unfollowItem, deleteItem);
+            ContextMenu contextMenu = new ContextMenu(openItem, followItem, deleteItem);
+            contextMenu.setOnShowing(event -> {
+                Document doc = row.getItem();
+                if (doc == null) {
+                    followItem.setText("Follow");
+                    return;
+                }
+                followItem.setText(isFollowedByCurrentUser(doc) ? "Unfollow" : "Follow");
+            });
             row.contextMenuProperty().bind(javafx.beans.binding.Bindings.when(row.emptyProperty())
                     .then((ContextMenu) null)
                     .otherwise(contextMenu));
@@ -615,119 +608,27 @@ public class MainController {
     }
 
     private void showDocumentWindow(Document document, User currentUser) {
-        boolean canEdit = currentUser.canManageDocuments();
-        ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
-        DocumentService documentService = AppState.getInstance().getDocumentService();
-        List<DocumentVersion> visibleVersions = new ArrayList<>(documentService.getVisibleVersions(currentUser, document));
-        visibleVersions.sort(Comparator.comparingInt(DocumentVersion::getVersionNumber).reversed());
-        int latestVersion = document.getVersion();
-
-        Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setTitle(document.getTitle());
-        dialog.setHeaderText(null);
-        DialogPane pane = dialog.getDialogPane();
-        pane.setPrefWidth(760);
-        pane.setPrefHeight(560);
-
-        Label titleLabel = new Label(document.getTitle());
-        titleLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: 700;");
-
-        GridPane metaGrid = new GridPane();
-        metaGrid.setHgap(10);
-        metaGrid.setVgap(8);
-        metaGrid.add(new Label("Author:"), 0, 0);
-        metaGrid.add(new Label(document.getAuthor()), 1, 0);
-        metaGrid.add(new Label("Category:"), 0, 1);
-        metaGrid.add(new Label(document.getCategory()), 1, 1);
-        metaGrid.add(new Label("Created:"), 0, 2);
-        metaGrid.add(new Label(document.getCreatedAt()), 1, 2);
-
-        ComboBox<DocumentVersion> versionSelector = new ComboBox<>();
-        versionSelector.getItems().setAll(visibleVersions);
-        versionSelector.setConverter(new StringConverter<>() {
-            @Override
-            public String toString(DocumentVersion version) {
-                if (version == null) {
-                    return "";
-                }
-                return version.getVersionNumber() == latestVersion
-                        ? "v" + version.getVersionNumber() + " (latest)"
-                        : "v" + version.getVersionNumber() + " (read-only)";
-            }
-
-            @Override
-            public DocumentVersion fromString(String string) {
-                return null;
-            }
-        });
-        versionSelector.setCellFactory(listView -> new ListCell<>() {
-            @Override
-            protected void updateItem(DocumentVersion item, boolean empty) {
-                super.updateItem(item, empty);
-                setText(empty || item == null ? null : versionSelector.getConverter().toString(item));
-            }
-        });
-        if (!visibleVersions.isEmpty()) {
-            versionSelector.getSelectionModel().selectFirst();
-        }
-        versionSelector.setDisable(!canEdit);
-
-        Label viewVersionLabel = new Label("View version:");
-        VBox versionBox = new VBox(4, viewVersionLabel, versionSelector);
-        versionBox.setAlignment(Pos.TOP_RIGHT);
-        Region headerSpacer = new Region();
-        HBox.setHgrow(headerSpacer, Priority.ALWAYS);
-        HBox detailsRow = new HBox(12, metaGrid, headerSpacer, versionBox);
-        detailsRow.setAlignment(Pos.TOP_LEFT);
-
-        TextArea contentArea = new TextArea(document.getContent());
-        contentArea.setWrapText(true);
-        contentArea.setPrefRowCount(18);
-
-        VBox root = new VBox(10, titleLabel, detailsRow, contentArea);
-        root.setAlignment(Pos.TOP_LEFT);
-        root.setPadding(new Insets(10));
-        pane.setContent(root);
-
-        Node saveButton = null;
-        if (canEdit) {
-            pane.getButtonTypes().addAll(ButtonType.CANCEL, saveButtonType);
-            saveButton = pane.lookupButton(saveButtonType);
-        } else {
-            pane.getButtonTypes().add(ButtonType.CLOSE);
-        }
-
-        Node finalSaveButton = saveButton;
-        Runnable updateViewState = () -> {
-            DocumentVersion selectedVersion = versionSelector.getSelectionModel().getSelectedItem();
-            if (selectedVersion == null) {
-                return;
-            }
-
-            boolean latestSelected = selectedVersion.getVersionNumber() == latestVersion;
-            contentArea.setText(selectedVersion.getContent());
-            boolean editable = canEdit && latestSelected;
-            contentArea.setEditable(editable);
-            if (finalSaveButton != null) {
-                finalSaveButton.setDisable(!editable);
-            }
-        };
-        updateViewState.run();
-        versionSelector.getSelectionModel().selectedItemProperty()
-                .addListener((obs, oldSelection, newSelection) -> updateViewState.run());
-
-        Optional<ButtonType> result = dialog.showAndWait();
-        if (!canEdit || result.isEmpty() || result.get() != saveButtonType) {
-            return;
-        }
-
         try {
-            documentService.updateContent(currentUser, document.getId(), contentArea.getText());
-            statusLabel.setText("Updated");
-            onLoadDocuments();
-            onLoadWatchlist();
-            refreshSummary();
-        } catch (RuntimeException ex) {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/DocumentDialog.fxml"));
+            Parent root = loader.load();
+
+            DocumentDialogController controller = loader.getController();
+            controller.setContext(document, currentUser);
+
+            Stage dialogStage = new Stage();
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(documentsTable.getScene().getWindow());
+            dialogStage.setTitle(document.getTitle());
+            dialogStage.setScene(new Scene(root));
+            dialogStage.showAndWait();
+
+            if (controller.isSaved()) {
+                statusLabel.setText("Updated");
+                onLoadDocuments();
+                onLoadWatchlist();
+                refreshSummary();
+            }
+        } catch (IOException ex) {
             statusLabel.setText(ex.getMessage());
         }
     }
