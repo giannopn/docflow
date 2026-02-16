@@ -7,7 +7,9 @@
     "role": "ADMIN",
     "allowedCategories": [
       "Multimedia",
-      "Programming"
+      "Computer Science",
+      "Programming",
+      "General"
     ],
     "followedDocuments": [],
     "lastSeenVersions": {}

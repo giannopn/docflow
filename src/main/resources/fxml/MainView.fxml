@@ -61,14 +61,8 @@
                             <Button text="Search" onAction="#onSearch"/>
                             <Region HBox.hgrow="ALWAYS"/>
                             <Label fx:id="statusLabel" text="Ready"/>
-                            <Button text="New document" onAction="#onCreateDocument"/>
+                            <Button fx:id="newDocumentButton" text="New document" onAction="#onCreateDocument"/>
                         </HBox>
-
-                        <HBox spacing="10">
-                            <TextField fx:id="createTitleField" promptText="New title"/>
-                            <TextField fx:id="createCategoryField" promptText="Category"/>
-                        </HBox>
-                        <TextField fx:id="createContentField" promptText="Content"/>
 
                         <TableView fx:id="documentsTable">
                             <columns>

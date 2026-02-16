@@ -19,6 +19,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -54,9 +55,7 @@ public class MainController {
     @FXML private TextField searchTitleField;
     @FXML private TextField searchAuthorField;
     @FXML private TextField searchCategoryField;
-    @FXML private TextField createTitleField;
-    @FXML private TextField createCategoryField;
-    @FXML private TextField createContentField;
+    @FXML private Button newDocumentButton;
     @FXML private ListView<String> watchList;
     @FXML private ListView<String> usersList;
     @FXML private ListView<String> categoriesList;
@@ -241,18 +240,7 @@ public class MainController {
             return;
         }
 
-        String title = createTitleField.getText();
-        String category = createCategoryField.getText();
-        String content = createContentField.getText();
-
-        DocumentService documentService = AppState.getInstance().getDocumentService();
-        try {
-            documentService.create(currentUser.get(), title, category, content);
-            statusLabel.setText("Created");
-            onLoadDocuments();
-        } catch (RuntimeException ex) {
-            statusLabel.setText(ex.getMessage());
-        }
+        showNewDocumentWindow(currentUser.get());
     }
 
     @FXML
@@ -569,12 +557,17 @@ public class MainController {
         AuthService authService = AppState.getInstance().getAuthService();
         Optional<User> currentUser = authService.getCurrentUser();
         boolean isAdmin = currentUser.isPresent() && currentUser.get().canManageUsers();
+        boolean canCreateDocuments = currentUser.isPresent() && currentUser.get().canManageDocuments();
 
         if (usersTab != null) {
             usersTab.setDisable(!isAdmin);
         }
         if (categoriesTab != null) {
             categoriesTab.setDisable(!isAdmin);
+        }
+        if (newDocumentButton != null) {
+            newDocumentButton.setVisible(canCreateDocuments);
+            newDocumentButton.setManaged(canCreateDocuments);
         }
     }
 
@@ -626,6 +619,31 @@ public class MainController {
                 statusLabel.setText("Updated");
                 onLoadDocuments();
                 onLoadWatchlist();
+                refreshSummary();
+            }
+        } catch (IOException ex) {
+            statusLabel.setText(ex.getMessage());
+        }
+    }
+
+    private void showNewDocumentWindow(User currentUser) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/NewDocumentDialog.fxml"));
+            Parent root = loader.load();
+
+            NewDocumentDialogController controller = loader.getController();
+            controller.setContext(currentUser);
+
+            Stage dialogStage = new Stage();
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(documentsTable.getScene().getWindow());
+            dialogStage.setTitle("New document");
+            dialogStage.setScene(new Scene(root));
+            dialogStage.showAndWait();
+
+            if (controller.isCreated()) {
+                statusLabel.setText("Created");
+                onLoadDocuments();
                 refreshSummary();
             }
         } catch (IOException ex) {
