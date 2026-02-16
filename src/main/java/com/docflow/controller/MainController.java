@@ -232,6 +232,14 @@ public class MainController {
     }
 
     @FXML
+    private void onClearSearch() {
+        searchTitleField.clear();
+        searchAuthorField.clear();
+        searchCategoryField.clear();
+        onLoadDocuments();
+    }
+
+    @FXML
     private void onCreateDocument() {
         AuthService authService = AppState.getInstance().getAuthService();
         Optional<User> currentUser = authService.getCurrentUser();

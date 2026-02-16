@@ -17,7 +17,7 @@
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.docflow.controller.MainController"
-            prefWidth="900" prefHeight="600">
+            prefWidth="1280" prefHeight="780">
 
     <left>
         <VBox spacing="12" BorderPane.alignment="CENTER">
@@ -55,16 +55,17 @@
                         </padding>
 
                         <HBox spacing="10">
-                            <TextField fx:id="searchTitleField" promptText="Title"/>
-                            <TextField fx:id="searchAuthorField" promptText="Author"/>
-                            <TextField fx:id="searchCategoryField" promptText="Category"/>
+                            <TextField fx:id="searchTitleField" promptText="Title" onAction="#onSearch"/>
+                            <TextField fx:id="searchAuthorField" promptText="Author" onAction="#onSearch"/>
+                            <TextField fx:id="searchCategoryField" promptText="Category" onAction="#onSearch"/>
                             <Button text="Search" onAction="#onSearch"/>
+                            <Button text="Clear" onAction="#onClearSearch"/>
                             <Region HBox.hgrow="ALWAYS"/>
                             <Label fx:id="statusLabel" text="Ready"/>
                             <Button fx:id="newDocumentButton" text="New document" onAction="#onCreateDocument"/>
                         </HBox>
 
-                        <TableView fx:id="documentsTable">
+                        <TableView fx:id="documentsTable" VBox.vgrow="ALWAYS">
                             <columns>
                                 <TableColumn fx:id="titleColumn" text="Title" prefWidth="200"/>
                                 <TableColumn fx:id="authorColumn" text="Author" prefWidth="150"/>
