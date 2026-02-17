@@ -88,6 +88,7 @@ public class MainController {
     }
 
     private void configureDocumentTable() {
+        documentsTable.setPlaceholder(new Label(""));
         titleColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getTitle()));
         authorColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getAuthor()));
         categoryColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getCategory()));
@@ -194,8 +195,7 @@ public class MainController {
                 : documentRepository.findAll();
 
         documentsTable.getItems().setAll(documents);
-
-        statusLabel.setText("Loaded " + documents.size());
+        updateResultsStatus(documents.size());
     }
 
     @FXML
@@ -239,7 +239,7 @@ public class MainController {
                 categoryFilter
         );
         documentsTable.getItems().setAll(results);
-        statusLabel.setText("Found " + results.size());
+        updateResultsStatus(results.size());
     }
 
     @FXML
@@ -255,7 +255,6 @@ public class MainController {
         AuthService authService = AppState.getInstance().getAuthService();
         Optional<User> currentUser = authService.getCurrentUser();
         if (currentUser.isEmpty() || !currentUser.get().canManageDocuments()) {
-            statusLabel.setText("Author/Admin only");
             return;
         }
 
@@ -272,7 +271,6 @@ public class MainController {
 
         Document selected = documentsTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            statusLabel.setText("Select a document");
             return;
         }
 
@@ -289,23 +287,20 @@ public class MainController {
         AuthService authService = AppState.getInstance().getAuthService();
         Optional<User> currentUser = authService.getCurrentUser();
         if (currentUser.isEmpty() || !currentUser.get().canManageDocuments()) {
-            statusLabel.setText("Author/Admin only");
             return;
         }
 
         Document selected = documentsTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            statusLabel.setText("Select a document");
             return;
         }
 
         DocumentService documentService = AppState.getInstance().getDocumentService();
         try {
-            boolean removed = documentService.delete(currentUser.get(), selected.getId());
-            statusLabel.setText(removed ? "Deleted" : "Delete failed");
+            documentService.delete(currentUser.get(), selected.getId());
             onLoadDocuments();
         } catch (RuntimeException ex) {
-            statusLabel.setText(ex.getMessage());
+            updateResultsStatus(documentsTable.getItems().size());
         }
     }
 
@@ -619,6 +614,10 @@ public class MainController {
         return result;
     }
 
+    private void updateResultsStatus(int count) {
+        statusLabel.setText("Results: " + count);
+    }
+
     private void populateSearchCategories() {
         if (searchCategoryCombo == null) {
             return;
@@ -670,13 +669,12 @@ public class MainController {
             dialogStage.showAndWait();
 
             if (controller.isSaved()) {
-                statusLabel.setText("Updated");
                 onLoadDocuments();
                 onLoadWatchlist();
                 refreshSummary();
             }
         } catch (IOException ex) {
-            statusLabel.setText(ex.getMessage());
+            updateResultsStatus(documentsTable.getItems().size());
         }
     }
 
@@ -697,12 +695,11 @@ public class MainController {
             dialogStage.showAndWait();
 
             if (controller.isCreated()) {
-                statusLabel.setText("Created");
                 onLoadDocuments();
                 refreshSummary();
             }
         } catch (IOException ex) {
-            statusLabel.setText(ex.getMessage());
+            updateResultsStatus(documentsTable.getItems().size());
         }
     }
 }
