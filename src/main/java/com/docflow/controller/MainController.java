@@ -20,6 +20,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -34,12 +35,15 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.LinkedHashSet;
 
 public class MainController {
+    private static final String ALL_CATEGORIES_OPTION = "All categories";
 
     @FXML private TableView<Document> documentsTable;
     @FXML private TableColumn<Document, String> titleColumn;
@@ -54,7 +58,7 @@ public class MainController {
     @FXML private Label watchedCountLabel;
     @FXML private TextField searchTitleField;
     @FXML private TextField searchAuthorField;
-    @FXML private TextField searchCategoryField;
+    @FXML private ComboBox<String> searchCategoryCombo;
     @FXML private Button newDocumentButton;
     @FXML private ListView<String> watchList;
     @FXML private ListView<String> usersList;
@@ -79,6 +83,7 @@ public class MainController {
         configureDocumentTable();
         refreshSummary();
         applyRoleVisibility();
+        populateSearchCategories();
         onLoadDocuments();
     }
 
@@ -182,6 +187,7 @@ public class MainController {
         DocumentService documentService = AppState.getInstance().getDocumentService();
         AuthService authService = AppState.getInstance().getAuthService();
         Optional<User> currentUser = authService.getCurrentUser();
+        populateSearchCategories();
 
         List<Document> documents = currentUser.isPresent()
                 ? documentService.listAccessible(currentUser.get())
@@ -220,12 +226,17 @@ public class MainController {
             return;
         }
 
+        String selectedCategory = searchCategoryCombo.getValue();
+        String categoryFilter = (selectedCategory == null || ALL_CATEGORIES_OPTION.equals(selectedCategory))
+                ? ""
+                : selectedCategory;
+
         DocumentService documentService = AppState.getInstance().getDocumentService();
         List<Document> results = documentService.search(
                 currentUser.get(),
                 searchTitleField.getText(),
                 searchAuthorField.getText(),
-                searchCategoryField.getText()
+                categoryFilter
         );
         documentsTable.getItems().setAll(results);
         statusLabel.setText("Found " + results.size());
@@ -235,7 +246,7 @@ public class MainController {
     private void onClearSearch() {
         searchTitleField.clear();
         searchAuthorField.clear();
-        searchCategoryField.clear();
+        searchCategoryCombo.setValue(ALL_CATEGORIES_OPTION);
         onLoadDocuments();
     }
 
@@ -606,6 +617,40 @@ public class MainController {
             }
         }
         return result;
+    }
+
+    private void populateSearchCategories() {
+        if (searchCategoryCombo == null) {
+            return;
+        }
+
+        AuthService authService = AppState.getInstance().getAuthService();
+        Optional<User> currentUser = authService.getCurrentUser();
+        if (currentUser.isEmpty()) {
+            searchCategoryCombo.getItems().setAll(ALL_CATEGORIES_OPTION);
+            searchCategoryCombo.setValue(ALL_CATEGORIES_OPTION);
+            return;
+        }
+
+        List<String> categories = new ArrayList<>();
+        for (String category : AppState.getInstance().getCategoryRepository().findAll()) {
+            if (currentUser.get().hasAccessToCategory(category)) {
+                categories.add(category);
+            }
+        }
+        categories.sort(Comparator.naturalOrder());
+
+        String previousSelection = searchCategoryCombo.getValue();
+        List<String> options = new ArrayList<>();
+        options.add(ALL_CATEGORIES_OPTION);
+        options.addAll(categories);
+        searchCategoryCombo.getItems().setAll(options);
+
+        if (previousSelection != null && options.contains(previousSelection)) {
+            searchCategoryCombo.setValue(previousSelection);
+        } else {
+            searchCategoryCombo.setValue(ALL_CATEGORIES_OPTION);
+        }
     }
 
     private void showDocumentWindow(Document document, User currentUser) {
