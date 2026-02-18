@@ -133,7 +133,12 @@
                             <Button text="New category" onAction="#onAddCategory"/>
                             <Label fx:id="categoriesStatusLabel" text=""/>
                         </HBox>
-                        <ListView fx:id="categoriesList" />
+                        <TableView fx:id="categoriesTable" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="categoryNameColumn" text="Category" prefWidth="400"/>
+                                <TableColumn fx:id="categoryDocumentsColumn" text="Documents" prefWidth="160"/>
+                            </columns>
+                        </TableView>
                     </VBox>
                 </Tab>
             </tabs>

@@ -38,7 +38,9 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class MainController {
@@ -66,7 +68,9 @@ public class MainController {
     @FXML private TableColumn<User, String> userUsernameColumn;
     @FXML private TableColumn<User, String> userRoleColumn;
     @FXML private TableColumn<User, String> userCategoriesColumn;
-    @FXML private ListView<String> categoriesList;
+    @FXML private TableView<CategoryRow> categoriesTable;
+    @FXML private TableColumn<CategoryRow, String> categoryNameColumn;
+    @FXML private TableColumn<CategoryRow, Number> categoryDocumentsColumn;
     @FXML private Label watchStatusLabel;
     @FXML private Label updatedWatchLabel;
     @FXML private Label usersStatusLabel;
@@ -80,7 +84,7 @@ public class MainController {
     private void initialize() {
         configureDocumentTable();
         configureUsersTable();
-        configureCategoriesContextMenu();
+        configureCategoriesTable();
         refreshSummary();
         applyRoleVisibility();
         configureTabAutoRefresh();
@@ -208,28 +212,46 @@ public class MainController {
         });
     }
 
-    private void configureCategoriesContextMenu() {
-        if (categoriesList == null) {
+    private void configureCategoriesTable() {
+        if (categoriesTable == null) {
             return;
         }
 
-        MenuItem renameItem = new MenuItem("Rename");
-        renameItem.setOnAction(event -> onRenameCategory());
+        categoriesTable.setPlaceholder(new Label(""));
+        categoryNameColumn.setCellValueFactory(cellData ->
+                new ReadOnlyStringWrapper(cellData.getValue().getName()));
+        categoryDocumentsColumn.setCellValueFactory(cellData ->
+                new ReadOnlyIntegerWrapper(cellData.getValue().getDocumentCount()));
 
-        MenuItem deleteItem = new MenuItem("Delete");
-        deleteItem.setOnAction(event -> onDeleteCategory());
+        categoriesTable.setRowFactory(table -> {
+            TableRow<CategoryRow> row = new TableRow<>();
 
-        ContextMenu contextMenu = new ContextMenu(renameItem, deleteItem);
-        contextMenu.setOnShowing(event -> {
-            AuthService authService = AppState.getInstance().getAuthService();
-            Optional<User> currentUser = authService.getCurrentUser();
-            boolean isAdmin = currentUser.isPresent() && currentUser.get().canManageCategories();
-            boolean hasSelection = categoriesList.getSelectionModel().getSelectedItem() != null;
-            renameItem.setDisable(!isAdmin || !hasSelection);
-            deleteItem.setDisable(!isAdmin || !hasSelection);
+            MenuItem renameItem = new MenuItem("Rename");
+            renameItem.setOnAction(event -> {
+                categoriesTable.getSelectionModel().select(row.getItem());
+                onRenameCategory();
+            });
+
+            MenuItem deleteItem = new MenuItem("Delete");
+            deleteItem.setOnAction(event -> {
+                categoriesTable.getSelectionModel().select(row.getItem());
+                onDeleteCategory();
+            });
+
+            ContextMenu contextMenu = new ContextMenu(renameItem, deleteItem);
+            contextMenu.setOnShowing(event -> {
+                AuthService authService = AppState.getInstance().getAuthService();
+                Optional<User> currentUser = authService.getCurrentUser();
+                boolean isAdmin = currentUser.isPresent() && currentUser.get().canManageCategories();
+                renameItem.setDisable(!isAdmin);
+                deleteItem.setDisable(!isAdmin);
+            });
+
+            row.contextMenuProperty().bind(javafx.beans.binding.Bindings.when(row.emptyProperty())
+                    .then((ContextMenu) null)
+                    .otherwise(contextMenu));
+            return row;
         });
-
-        categoriesList.setContextMenu(contextMenu);
     }
 
     private void configureUsersTable() {
@@ -542,7 +564,9 @@ public class MainController {
 
     @FXML
     private void onLoadCategories() {
-        categoriesList.getItems().clear();
+        if (categoriesTable != null) {
+            categoriesTable.getItems().clear();
+        }
         AuthService authService = AppState.getInstance().getAuthService();
         Optional<User> currentUser = authService.getCurrentUser();
         if (currentUser.isEmpty() || !currentUser.get().canManageCategories()) {
@@ -552,7 +576,19 @@ public class MainController {
 
         AdminService adminService = AppState.getInstance().getAdminService();
         List<String> categories = adminService.listCategories(currentUser.get());
-        categoriesList.getItems().addAll(categories);
+        DocumentRepository documentRepository = AppState.getInstance().getDocumentRepository();
+        Map<String, Integer> countByCategory = new HashMap<>();
+        for (Document document : documentRepository.findAll()) {
+            countByCategory.merge(document.getCategory(), 1, Integer::sum);
+        }
+
+        List<CategoryRow> rows = new ArrayList<>();
+        for (String category : categories) {
+            rows.add(new CategoryRow(category, countByCategory.getOrDefault(category, 0)));
+        }
+        if (categoriesTable != null) {
+            categoriesTable.getItems().setAll(rows);
+        }
         categoriesStatusLabel.setText("Loaded " + categories.size());
     }
 
@@ -605,7 +641,7 @@ public class MainController {
             return;
         }
 
-        String oldName = categoriesList.getSelectionModel().getSelectedItem();
+        String oldName = getSelectedCategoryName();
         if (oldName == null || oldName.isBlank()) {
             categoriesStatusLabel.setText("Select a category first");
             return;
@@ -649,7 +685,7 @@ public class MainController {
             return;
         }
 
-        String name = categoriesList.getSelectionModel().getSelectedItem();
+        String name = getSelectedCategoryName();
         if (name == null || name.isBlank()) {
             categoriesStatusLabel.setText("Select a category first");
             return;
@@ -840,6 +876,32 @@ public class MainController {
             }
         } catch (IOException ex) {
             usersStatusLabel.setText("Failed to open edit user dialog");
+        }
+    }
+
+    private String getSelectedCategoryName() {
+        if (categoriesTable == null) {
+            return null;
+        }
+        CategoryRow selected = categoriesTable.getSelectionModel().getSelectedItem();
+        return selected == null ? null : selected.getName();
+    }
+
+    private static final class CategoryRow {
+        private final String name;
+        private final int documentCount;
+
+        private CategoryRow(String name, int documentCount) {
+            this.name = name;
+            this.documentCount = documentCount;
+        }
+
+        private String getName() {
+            return name;
+        }
+
+        private int getDocumentCount() {
+            return documentCount;
         }
     }
 }
