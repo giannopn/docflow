@@ -63,7 +63,12 @@ public class MainController {
     @FXML private ComboBox<String> searchCategoryCombo;
     @FXML private Button newDocumentButton;
     @FXML private ListView<String> watchList;
-    @FXML private ListView<String> usersList;
+    @FXML private TableView<User> usersTable;
+    @FXML private TableColumn<User, String> userFirstNameColumn;
+    @FXML private TableColumn<User, String> userLastNameColumn;
+    @FXML private TableColumn<User, String> userUsernameColumn;
+    @FXML private TableColumn<User, String> userRoleColumn;
+    @FXML private TableColumn<User, String> userCategoriesColumn;
     @FXML private ListView<String> categoriesList;
     @FXML private Label watchStatusLabel;
     @FXML private Label updatedWatchLabel;
@@ -83,6 +88,7 @@ public class MainController {
     @FXML
     private void initialize() {
         configureDocumentTable();
+        configureUsersTable();
         configureCategoriesContextMenu();
         refreshSummary();
         applyRoleVisibility();
@@ -233,6 +239,23 @@ public class MainController {
         });
 
         categoriesList.setContextMenu(contextMenu);
+    }
+
+    private void configureUsersTable() {
+        if (usersTable == null) {
+            return;
+        }
+
+        usersTable.setPlaceholder(new Label(""));
+        userFirstNameColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getFirstName()));
+        userLastNameColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getLastName()));
+        userUsernameColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getUsername()));
+        userRoleColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getRole().name()));
+        userCategoriesColumn.setCellValueFactory(cellData -> {
+            List<String> categories = new ArrayList<>(cellData.getValue().getAllowedCategories());
+            categories.sort(Comparator.naturalOrder());
+            return new ReadOnlyStringWrapper(String.join(", ", categories));
+        });
     }
 
     private boolean isFollowedByCurrentUser(Document document) {
@@ -435,7 +458,9 @@ public class MainController {
 
     @FXML
     private void onLoadUsers() {
-        usersList.getItems().clear();
+        if (usersTable != null) {
+            usersTable.getItems().clear();
+        }
         AuthService authService = AppState.getInstance().getAuthService();
         Optional<User> currentUser = authService.getCurrentUser();
         if (currentUser.isEmpty() || !currentUser.get().canManageUsers()) {
@@ -445,8 +470,8 @@ public class MainController {
 
         AdminService adminService = AppState.getInstance().getAdminService();
         List<User> users = adminService.listUsers(currentUser.get());
-        for (User user : users) {
-            usersList.getItems().add(user.getUsername() + " (" + user.getRole() + ")");
+        if (usersTable != null) {
+            usersTable.getItems().setAll(users);
         }
         usersStatusLabel.setText("Loaded " + users.size());
     }
@@ -460,22 +485,7 @@ public class MainController {
             return;
         }
 
-        AdminService adminService = AppState.getInstance().getAdminService();
-        try {
-            adminService.addUser(
-                    currentUser.get(),
-                    userFirstNameField.getText(),
-                    userLastNameField.getText(),
-                    userUsernameField.getText(),
-                    userPasswordField.getText(),
-                    parseRole(userRoleField.getText()),
-                    parseCategories(userCategoriesField.getText())
-            );
-            usersStatusLabel.setText("Added");
-            onLoadUsers();
-        } catch (RuntimeException ex) {
-            usersStatusLabel.setText(ex.getMessage());
-        }
+        showAddUserWindow(currentUser.get());
     }
 
     @FXML
@@ -809,6 +819,31 @@ public class MainController {
             }
         } catch (IOException ex) {
             updateResultsStatus(documentsTable.getItems().size());
+        }
+    }
+
+    private void showAddUserWindow(User currentUser) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AddUserDialog.fxml"));
+            Parent root = loader.load();
+
+            AddUserDialogController controller = loader.getController();
+            controller.setContext(currentUser);
+
+            Stage dialogStage = new Stage();
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(usersTable.getScene().getWindow());
+            dialogStage.setTitle("Add user");
+            Scene scene = new Scene(root);
+            dialogStage.setScene(scene);
+            dialogStage.showAndWait();
+
+            if (controller.isCreated()) {
+                usersStatusLabel.setText("Added");
+                onLoadUsers();
+            }
+        } catch (IOException ex) {
+            usersStatusLabel.setText("Failed to open add user dialog");
         }
     }
 }

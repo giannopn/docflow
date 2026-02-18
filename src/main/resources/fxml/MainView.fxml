@@ -125,7 +125,15 @@
                             <TextField fx:id="userRoleField" promptText="Role (SIMPLE_USER/AUTHOR/ADMIN)"/>
                             <TextField fx:id="userCategoriesField" promptText="Categories (comma-separated)"/>
                         </HBox>
-                        <ListView fx:id="usersList" />
+                        <TableView fx:id="usersTable" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="userFirstNameColumn" text="First name" prefWidth="140"/>
+                                <TableColumn fx:id="userLastNameColumn" text="Last name" prefWidth="140"/>
+                                <TableColumn fx:id="userUsernameColumn" text="Username" prefWidth="160"/>
+                                <TableColumn fx:id="userRoleColumn" text="Role" prefWidth="130"/>
+                                <TableColumn fx:id="userCategoriesColumn" text="Allowed categories" prefWidth="420"/>
+                            </columns>
+                        </TableView>
                     </VBox>
                 </Tab>
                 <Tab fx:id="categoriesTab" text="Categories">
