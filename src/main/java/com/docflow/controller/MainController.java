@@ -19,6 +19,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
@@ -60,6 +61,7 @@ public class MainController {
     @FXML private TextField searchTitleField;
     @FXML private TextField searchAuthorField;
     @FXML private ComboBox<String> searchCategoryCombo;
+    @FXML private CheckBox followingOnlyCheck;
     @FXML private Button newDocumentButton;
     @FXML private ListView<String> watchList;
     @FXML private TableView<User> usersTable;
@@ -85,6 +87,9 @@ public class MainController {
         configureDocumentTable();
         configureUsersTable();
         configureCategoriesTable();
+        if (followingOnlyCheck != null) {
+            followingOnlyCheck.selectedProperty().addListener((obs, wasSelected, isSelected) -> onSearch());
+        }
         refreshSummary();
         applyRoleVisibility();
         configureTabAutoRefresh();
@@ -310,6 +315,7 @@ public class MainController {
         List<Document> documents = currentUser.isPresent()
                 ? documentService.listAccessible(currentUser.get())
                 : documentRepository.findAll();
+        documents = applyFollowingFilter(currentUser, documents);
 
         documentsTable.getItems().setAll(documents);
         updateResultsStatus(documents.size());
@@ -355,6 +361,7 @@ public class MainController {
                 searchAuthorField.getText(),
                 categoryFilter
         );
+        results = applyFollowingFilter(currentUser, results);
         documentsTable.getItems().setAll(results);
         updateResultsStatus(results.size());
     }
@@ -364,6 +371,9 @@ public class MainController {
         searchTitleField.clear();
         searchAuthorField.clear();
         searchCategoryCombo.setValue(ALL_CATEGORIES_OPTION);
+        if (followingOnlyCheck != null) {
+            followingOnlyCheck.setSelected(false);
+        }
         onLoadDocuments();
     }
 
@@ -776,6 +786,21 @@ public class MainController {
         } else {
             searchCategoryCombo.setValue(ALL_CATEGORIES_OPTION);
         }
+    }
+
+    private List<Document> applyFollowingFilter(Optional<User> currentUser, List<Document> source) {
+        if (followingOnlyCheck == null || !followingOnlyCheck.isSelected() || currentUser.isEmpty()) {
+            return source;
+        }
+
+        User user = currentUser.get();
+        List<Document> filtered = new ArrayList<>();
+        for (Document document : source) {
+            if (user.isFollowing(document.getId())) {
+                filtered.add(document);
+            }
+        }
+        return filtered;
     }
 
     private void showDocumentWindow(Document document, User currentUser) {

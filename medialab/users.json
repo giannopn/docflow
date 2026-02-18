@@ -6,8 +6,12 @@
     "password": "medialab_2025",
     "role": "ADMIN",
     "allowedCategories": [],
-    "followedDocuments": [],
-    "lastSeenVersions": {}
+    "followedDocuments": [
+      "b61276fe-ae03-4947-874a-a2886b39ea74"
+    ],
+    "lastSeenVersions": {
+      "b61276fe-ae03-4947-874a-a2886b39ea74": 0
+    }
   },
   {
     "firstName": "Test",
