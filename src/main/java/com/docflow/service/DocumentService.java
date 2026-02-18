@@ -40,6 +40,23 @@ public class DocumentService {
         return documentRepository.findAll();
     }
 
+    public int renameCategoryReferences(String oldName, String newName) {
+        if (oldName == null || oldName.isBlank() || newName == null || newName.isBlank()) {
+            return 0;
+        }
+
+        int updated = 0;
+        for (Document document : documentRepository.findAll()) {
+            if (!oldName.equals(document.getCategory())) {
+                continue;
+            }
+            document.setCategory(newName);
+            documentRepository.update(document);
+            updated++;
+        }
+        return updated;
+    }
+
     public Optional<Document> findById(User user, String documentId) {
         Objects.requireNonNull(user, "User cannot be null");
         if (documentId == null || documentId.isBlank()) {

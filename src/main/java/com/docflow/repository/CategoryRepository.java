@@ -98,6 +98,9 @@ public class CategoryRepository {
         if (!categories.contains(oldName)) {
             return false;
         }
+        if (!oldName.equals(newName) && categories.contains(newName)) {
+            return false;
+        }
         categories.remove(oldName);
         categories.add(newName);
         return true;

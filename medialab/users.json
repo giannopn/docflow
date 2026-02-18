@@ -17,7 +17,8 @@
     "role": "SIMPLE_USER",
     "allowedCategories": [
       "Multimedia",
-      "General"
+      "General",
+      "bigdawgthegio"
     ],
     "followedDocuments": [],
     "lastSeenVersions": {}

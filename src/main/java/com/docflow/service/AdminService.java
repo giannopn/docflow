@@ -90,7 +90,23 @@ public class AdminService {
 
     public boolean renameCategory(User admin, String oldName, String newName) {
         requireAdmin(admin);
-        return categoryRepository.rename(oldName, newName);
+        boolean renamed = categoryRepository.rename(oldName, newName);
+        if (!renamed) {
+            return false;
+        }
+
+        documentService.renameCategoryReferences(oldName, newName);
+
+        for (User user : userRepository.findAll()) {
+            Set<String> categories = user.getAllowedCategories();
+            if (categories.remove(oldName)) {
+                categories.add(newName);
+                user.setAllowedCategories(categories);
+                userRepository.update(user);
+            }
+        }
+
+        return true;
     }
 
     public boolean deleteCategory(User admin, String category) {

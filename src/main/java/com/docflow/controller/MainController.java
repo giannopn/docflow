@@ -23,6 +23,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableCell;
@@ -31,6 +32,7 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -67,8 +69,6 @@ public class MainController {
     @FXML private Label updatedWatchLabel;
     @FXML private Label usersStatusLabel;
     @FXML private Label categoriesStatusLabel;
-    @FXML private TextField categoryNameField;
-    @FXML private TextField categoryRenameField;
     @FXML private TextField userFirstNameField;
     @FXML private TextField userLastNameField;
     @FXML private TextField userUsernameField;
@@ -83,6 +83,7 @@ public class MainController {
     @FXML
     private void initialize() {
         configureDocumentTable();
+        configureCategoriesContextMenu();
         refreshSummary();
         applyRoleVisibility();
         configureTabAutoRefresh();
@@ -208,6 +209,30 @@ public class MainController {
 
             return row;
         });
+    }
+
+    private void configureCategoriesContextMenu() {
+        if (categoriesList == null) {
+            return;
+        }
+
+        MenuItem renameItem = new MenuItem("Rename");
+        renameItem.setOnAction(event -> onRenameCategory());
+
+        MenuItem deleteItem = new MenuItem("Delete");
+        deleteItem.setOnAction(event -> onDeleteCategory());
+
+        ContextMenu contextMenu = new ContextMenu(renameItem, deleteItem);
+        contextMenu.setOnShowing(event -> {
+            AuthService authService = AppState.getInstance().getAuthService();
+            Optional<User> currentUser = authService.getCurrentUser();
+            boolean isAdmin = currentUser.isPresent() && currentUser.get().canManageCategories();
+            boolean hasSelection = categoriesList.getSelectionModel().getSelectedItem() != null;
+            renameItem.setDisable(!isAdmin || !hasSelection);
+            deleteItem.setDisable(!isAdmin || !hasSelection);
+        });
+
+        categoriesList.setContextMenu(contextMenu);
     }
 
     private boolean isFollowedByCurrentUser(Document document) {
@@ -530,7 +555,16 @@ public class MainController {
             return;
         }
 
-        String name = categoryNameField.getText();
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("New category");
+        dialog.setHeaderText("Create a new category");
+        dialog.setContentText("Category name:");
+        Optional<String> nameInput = dialog.showAndWait();
+        if (nameInput.isEmpty()) {
+            categoriesStatusLabel.setText("Create canceled");
+            return;
+        }
+        String name = nameInput.get();
         if (name == null || name.isBlank()) {
             categoriesStatusLabel.setText("Category required");
             return;
@@ -540,7 +574,12 @@ public class MainController {
         try {
             boolean added = adminService.addCategory(currentUser.get(), name);
             onLoadCategories();
-            categoriesStatusLabel.setText(added ? "Added" : "Already exists");
+            if (added) {
+                categoriesStatusLabel.setText("Added");
+            } else {
+                categoriesStatusLabel.setText("Already exists");
+                showCategoryWarning("Category already exists", "A category with this name already exists.");
+            }
             refreshSummary();
         } catch (RuntimeException ex) {
             categoriesStatusLabel.setText(ex.getMessage());
@@ -556,17 +595,39 @@ public class MainController {
             return;
         }
 
-        String oldName = categoryNameField.getText();
-        String newName = categoryRenameField.getText();
-        if (oldName == null || oldName.isBlank() || newName == null || newName.isBlank()) {
-            categoriesStatusLabel.setText("Old and new names required");
+        String oldName = categoriesList.getSelectionModel().getSelectedItem();
+        if (oldName == null || oldName.isBlank()) {
+            categoriesStatusLabel.setText("Select a category first");
+            return;
+        }
+
+        TextInputDialog dialog = new TextInputDialog(oldName);
+        dialog.setTitle("Rename category");
+        dialog.setHeaderText("Rename selected category");
+        dialog.setContentText("New name:");
+        Optional<String> newNameInput = dialog.showAndWait();
+        if (newNameInput.isEmpty()) {
+            categoriesStatusLabel.setText("Rename canceled");
+            return;
+        }
+        String newName = newNameInput.get();
+        if (newName == null || newName.isBlank()) {
+            categoriesStatusLabel.setText("New name required");
             return;
         }
 
         AdminService adminService = AppState.getInstance().getAdminService();
+        List<String> existingCategories = adminService.listCategories(currentUser.get());
+        if (!oldName.equals(newName) && existingCategories.contains(newName)) {
+            categoriesStatusLabel.setText("Already exists");
+            showCategoryWarning("Category already exists", "A category with this name already exists.");
+            return;
+        }
+
         boolean renamed = adminService.renameCategory(currentUser.get(), oldName, newName);
         categoriesStatusLabel.setText(renamed ? "Renamed" : "Not found");
         onLoadCategories();
+        onLoadDocuments();
     }
 
     @FXML
@@ -578,9 +639,9 @@ public class MainController {
             return;
         }
 
-        String name = categoryNameField.getText();
+        String name = categoriesList.getSelectionModel().getSelectedItem();
         if (name == null || name.isBlank()) {
-            categoriesStatusLabel.setText("Category required");
+            categoriesStatusLabel.setText("Select a category first");
             return;
         }
 
@@ -656,6 +717,14 @@ public class MainController {
 
     private void updateResultsStatus(int count) {
         statusLabel.setText("Results: " + count);
+    }
+
+    private void showCategoryWarning(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Warning");
+        alert.setHeaderText(title);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     private void populateSearchCategories() {

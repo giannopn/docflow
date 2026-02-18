@@ -134,14 +134,8 @@
                             <Insets top="18" right="18" bottom="18" left="18"/>
                         </padding>
                         <HBox spacing="10">
-                            <Button text="Add" onAction="#onAddCategory"/>
-                            <Button text="Rename" onAction="#onRenameCategory"/>
-                            <Button text="Delete" onAction="#onDeleteCategory"/>
+                            <Button text="New category" onAction="#onAddCategory"/>
                             <Label fx:id="categoriesStatusLabel" text=""/>
-                        </HBox>
-                        <HBox spacing="10">
-                            <TextField fx:id="categoryNameField" promptText="Category name"/>
-                            <TextField fx:id="categoryRenameField" promptText="New name"/>
                         </HBox>
                         <ListView fx:id="categoriesList" />
                     </VBox>
