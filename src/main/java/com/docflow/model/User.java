@@ -107,6 +107,9 @@ public abstract class User {
        ======================= */
 
     public boolean hasAccessToCategory(String category) {
+        if (getRole() == UserRole.ADMIN) {
+            return true;
+        }
         return allowedCategories.contains(category);
     }
 

@@ -75,6 +75,8 @@ public class MainController {
     @FXML private TextField userPasswordField;
     @FXML private TextField userRoleField;
     @FXML private TextField userCategoriesField;
+    @FXML private Tab documentsTab;
+    @FXML private Tab watchlistTab;
     @FXML private Tab usersTab;
     @FXML private Tab categoriesTab;
 
@@ -83,8 +85,40 @@ public class MainController {
         configureDocumentTable();
         refreshSummary();
         applyRoleVisibility();
+        configureTabAutoRefresh();
         populateSearchCategories();
         onLoadDocuments();
+    }
+
+    private void configureTabAutoRefresh() {
+        if (documentsTab != null) {
+            documentsTab.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
+                if (Boolean.TRUE.equals(isSelected)) {
+                    onLoadDocuments();
+                }
+            });
+        }
+        if (watchlistTab != null) {
+            watchlistTab.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
+                if (Boolean.TRUE.equals(isSelected)) {
+                    onLoadWatchlist();
+                }
+            });
+        }
+        if (usersTab != null) {
+            usersTab.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
+                if (Boolean.TRUE.equals(isSelected)) {
+                    onLoadUsers();
+                }
+            });
+        }
+        if (categoriesTab != null) {
+            categoriesTab.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
+                if (Boolean.TRUE.equals(isSelected)) {
+                    onLoadCategories();
+                }
+            });
+        }
     }
 
     private void configureDocumentTable() {
@@ -299,6 +333,8 @@ public class MainController {
         try {
             documentService.delete(currentUser.get(), selected.getId());
             onLoadDocuments();
+            onLoadWatchlist();
+            refreshSummary();
         } catch (RuntimeException ex) {
             updateResultsStatus(documentsTable.getItems().size());
         }
@@ -502,9 +538,10 @@ public class MainController {
 
         AdminService adminService = AppState.getInstance().getAdminService();
         try {
-            adminService.addCategory(currentUser.get(), name);
-            categoriesStatusLabel.setText("Added");
+            boolean added = adminService.addCategory(currentUser.get(), name);
             onLoadCategories();
+            categoriesStatusLabel.setText(added ? "Added" : "Already exists");
+            refreshSummary();
         } catch (RuntimeException ex) {
             categoriesStatusLabel.setText(ex.getMessage());
         }
@@ -551,6 +588,9 @@ public class MainController {
         boolean removed = adminService.deleteCategory(currentUser.get(), name);
         categoriesStatusLabel.setText(removed ? "Deleted" : "Not found");
         onLoadCategories();
+        onLoadDocuments();
+        onLoadWatchlist();
+        refreshSummary();
     }
 
     private void refreshSummary() {

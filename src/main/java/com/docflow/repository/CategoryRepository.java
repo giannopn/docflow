@@ -76,12 +76,12 @@ public class CategoryRepository {
         return new ArrayList<>(categories);
     }
 
-    public void add(String category) {
+    public boolean add(String category) {
         Objects.requireNonNull(category, "Category cannot be null");
         if (category.isBlank()) {
             throw new IllegalArgumentException("Category cannot be empty");
         }
-        categories.add(category);
+        return categories.add(category);
     }
 
     public boolean remove(String category) {

@@ -4,6 +4,7 @@ import com.docflow.model.Document;
 import com.docflow.model.DocumentVersion;
 import com.docflow.model.User;
 import com.docflow.repository.DocumentRepository;
+import com.docflow.repository.UserRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -14,9 +15,11 @@ import java.util.Optional;
 public class DocumentService {
 
     private final DocumentRepository documentRepository;
+    private final UserRepository userRepository;
 
-    public DocumentService(DocumentRepository documentRepository) {
+    public DocumentService(DocumentRepository documentRepository, UserRepository userRepository) {
         this.documentRepository = documentRepository;
+        this.userRepository = userRepository;
     }
 
     public List<Document> listAccessible(User user) {
@@ -31,6 +34,10 @@ public class DocumentService {
             }
         }
         return result;
+    }
+
+    public List<Document> listAll() {
+        return documentRepository.findAll();
     }
 
     public Optional<Document> findById(User user, String documentId) {
@@ -127,7 +134,30 @@ public class DocumentService {
         if (!user.hasAccessToCategory(document.getCategory())) {
             throw new IllegalStateException("User has no access to this category");
         }
-        return documentRepository.remove(documentId);
+        return deleteAndCleanupWatchState(documentId);
+    }
+
+    /**
+     * Deletes the document and removes it from all users' follow state.
+     * Intended for shared internal use (e.g. category cascade deletion).
+     */
+    public boolean deleteAndCleanupWatchState(String documentId) {
+        if (documentId == null || documentId.isBlank()) {
+            return false;
+        }
+
+        boolean removed = documentRepository.remove(documentId);
+        if (!removed) {
+            return false;
+        }
+
+        for (User user : userRepository.findAll()) {
+            if (user.isFollowing(documentId)) {
+                user.unfollowDocument(documentId);
+                userRepository.update(user);
+            }
+        }
+        return true;
     }
 
     public List<DocumentVersion> getVisibleVersions(User user, Document document) {

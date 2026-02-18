@@ -18,9 +18,9 @@ public final class AppState {
     private final DocumentRepository documentRepository = new DocumentRepository();
     private final CategoryRepository categoryRepository = new CategoryRepository();
     private final AuthService authService = new AuthService(userRepository);
-    private final DocumentService documentService = new DocumentService(documentRepository);
+    private final DocumentService documentService = new DocumentService(documentRepository, userRepository);
     private final WatchService watchService = new WatchService(documentRepository);
-    private final AdminService adminService = new AdminService(userRepository, categoryRepository, documentRepository);
+    private final AdminService adminService = new AdminService(userRepository, categoryRepository, documentService);
 
     private AppState() {}
 

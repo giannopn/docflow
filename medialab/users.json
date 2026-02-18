@@ -5,12 +5,7 @@
     "username": "medialab",
     "password": "medialab_2025",
     "role": "ADMIN",
-    "allowedCategories": [
-      "Multimedia",
-      "Computer Science",
-      "Programming",
-      "General"
-    ],
+    "allowedCategories": [],
     "followedDocuments": [],
     "lastSeenVersions": {}
   },

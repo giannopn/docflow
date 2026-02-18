@@ -6,7 +6,6 @@ import com.docflow.model.SimpleUser;
 import com.docflow.model.User;
 import com.docflow.model.UserRole;
 import com.docflow.repository.CategoryRepository;
-import com.docflow.repository.DocumentRepository;
 import com.docflow.repository.UserRepository;
 
 import java.util.List;
@@ -18,14 +17,14 @@ public class AdminService {
 
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
-    private final DocumentRepository documentRepository;
+    private final DocumentService documentService;
 
     public AdminService(UserRepository userRepository,
                         CategoryRepository categoryRepository,
-                        DocumentRepository documentRepository) {
+                        DocumentService documentService) {
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
-        this.documentRepository = documentRepository;
+        this.documentService = documentService;
     }
 
     public List<User> listUsers(User admin) {
@@ -84,9 +83,9 @@ public class AdminService {
         return categoryRepository.findAll();
     }
 
-    public void addCategory(User admin, String category) {
+    public boolean addCategory(User admin, String category) {
         requireAdmin(admin);
-        categoryRepository.add(category);
+        return categoryRepository.add(category);
     }
 
     public boolean renameCategory(User admin, String oldName, String newName) {
@@ -106,9 +105,9 @@ public class AdminService {
         }
 
         // Remove documents in the deleted category.
-        documentRepository.findAll().stream()
+        documentService.listAll().stream()
                 .filter(doc -> category.equals(doc.getCategory()))
-                .forEach(doc -> documentRepository.remove(doc.getId()));
+                .forEach(doc -> documentService.deleteAndCleanupWatchState(doc.getId()));
 
         // Remove category from all users' allowed categories.
         for (User user : userRepository.findAll()) {
@@ -150,7 +149,7 @@ public class AdminService {
         if (role == null) {
             throw new IllegalArgumentException("Role is required");
         }
-        if (allowedCategories == null || allowedCategories.isEmpty()) {
+        if (role != UserRole.ADMIN && (allowedCategories == null || allowedCategories.isEmpty())) {
             throw new IllegalArgumentException("At least one category is required");
         }
     }
