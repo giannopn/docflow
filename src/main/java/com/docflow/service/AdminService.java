@@ -78,6 +78,36 @@ public class AdminService {
         userRepository.update(user);
     }
 
+    public void updateUserProfile(User admin,
+                                  String username,
+                                  String newFirstName,
+                                  String newLastName,
+                                  Set<String> newAllowedCategories) {
+        requireAdmin(admin);
+        Optional<User> existing = userRepository.findByUsername(username);
+        if (existing.isEmpty()) {
+            throw new IllegalArgumentException("User not found");
+        }
+
+        if (newFirstName == null || newFirstName.isBlank()) {
+            throw new IllegalArgumentException("First name cannot be empty");
+        }
+        if (newLastName == null || newLastName.isBlank()) {
+            throw new IllegalArgumentException("Last name cannot be empty");
+        }
+
+        User user = existing.get();
+        if (user.getRole() != UserRole.ADMIN
+                && (newAllowedCategories == null || newAllowedCategories.isEmpty())) {
+            throw new IllegalArgumentException("At least one category is required");
+        }
+
+        user.setFirstName(newFirstName.trim());
+        user.setLastName(newLastName.trim());
+        user.setAllowedCategories(newAllowedCategories == null ? Set.of() : newAllowedCategories);
+        userRepository.update(user);
+    }
+
     public List<String> listCategories(User admin) {
         requireAdmin(admin);
         return categoryRepository.findAll();

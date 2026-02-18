@@ -82,6 +82,14 @@ public abstract class User {
         this.password = password;
     }
 
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
     public void setAllowedCategories(Set<String> categories) {
         this.allowedCategories = new HashSet<>(categories);
     }

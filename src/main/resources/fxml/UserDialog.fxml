@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
@@ -13,7 +14,7 @@
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.docflow.controller.AddUserDialogController"
+      fx:controller="com.docflow.controller.UserDialogController"
       spacing="12"
       prefWidth="620"
       prefHeight="520">
@@ -41,6 +42,8 @@
         <VBox spacing="6" HBox.hgrow="ALWAYS">
             <Label text="Password"/>
             <PasswordField fx:id="passwordField" promptText="Password"/>
+            <TextField fx:id="passwordVisibleField" promptText="Password" visible="false" managed="false"/>
+            <CheckBox fx:id="showPasswordCheck" text="Show password"/>
         </VBox>
     </HBox>
 
@@ -53,7 +56,7 @@
 
     <VBox spacing="6" VBox.vgrow="ALWAYS">
         <Label text="Allowed categories"/>
-        <Label text="Optional for ADMIN, required for other roles." style="-fx-text-fill: #6b7280;"/>
+        <Label text="Required for SIMPLE_USER and AUTHOR, optional for ADMIN." style="-fx-text-fill: #6b7280;"/>
         <ListView fx:id="categoriesList" VBox.vgrow="ALWAYS"/>
     </VBox>
 
@@ -61,7 +64,6 @@
         <Label fx:id="statusLabel" text=""/>
         <Region HBox.hgrow="ALWAYS"/>
         <Button text="Cancel" onAction="#onCancel"/>
-        <Button fx:id="addButton" text="Add user" onAction="#onAdd"/>
+        <Button fx:id="actionButton" text="Save" onAction="#onSubmit"/>
     </HBox>
 </VBox>
-

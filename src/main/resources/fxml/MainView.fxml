@@ -110,20 +110,8 @@
                             <Insets top="18" right="18" bottom="18" left="18"/>
                         </padding>
                         <HBox spacing="10">
-                            <Button text="Add" onAction="#onAddUser"/>
-                            <Button text="Edit" onAction="#onEditUser"/>
-                            <Button text="Delete" onAction="#onDeleteUser"/>
+                            <Button text="Add user" onAction="#onAddUser"/>
                             <Label fx:id="usersStatusLabel" text=""/>
-                        </HBox>
-                        <HBox spacing="10">
-                            <TextField fx:id="userFirstNameField" promptText="First name"/>
-                            <TextField fx:id="userLastNameField" promptText="Last name"/>
-                            <TextField fx:id="userUsernameField" promptText="Username"/>
-                        </HBox>
-                        <HBox spacing="10">
-                            <TextField fx:id="userPasswordField" promptText="Password"/>
-                            <TextField fx:id="userRoleField" promptText="Role (SIMPLE_USER/AUTHOR/ADMIN)"/>
-                            <TextField fx:id="userCategoriesField" promptText="Categories (comma-separated)"/>
                         </HBox>
                         <TableView fx:id="usersTable" VBox.vgrow="ALWAYS">
                             <columns>

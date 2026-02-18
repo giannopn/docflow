@@ -22,5 +22,18 @@
     ],
     "followedDocuments": [],
     "lastSeenVersions": {}
+  },
+  {
+    "firstName": "fdsaf",
+    "lastName": "fasd",
+    "username": "Test",
+    "password": "fdas",
+    "role": "SIMPLE_USER",
+    "allowedCategories": [
+      "Computer Science",
+      "General"
+    ],
+    "followedDocuments": [],
+    "lastSeenVersions": {}
   }
 ]

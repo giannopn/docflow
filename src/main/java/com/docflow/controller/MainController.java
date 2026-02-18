@@ -6,7 +6,6 @@ package com.docflow.controller;
 import com.docflow.AppState;
 import com.docflow.model.Document;
 import com.docflow.model.User;
-import com.docflow.model.UserRole;
 import com.docflow.repository.DocumentRepository;
 import com.docflow.service.AdminService;
 import com.docflow.service.AuthService;
@@ -41,8 +40,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.LinkedHashSet;
 
 public class MainController {
     private static final String ALL_CATEGORIES_OPTION = "All categories";
@@ -74,12 +71,6 @@ public class MainController {
     @FXML private Label updatedWatchLabel;
     @FXML private Label usersStatusLabel;
     @FXML private Label categoriesStatusLabel;
-    @FXML private TextField userFirstNameField;
-    @FXML private TextField userLastNameField;
-    @FXML private TextField userUsernameField;
-    @FXML private TextField userPasswordField;
-    @FXML private TextField userRoleField;
-    @FXML private TextField userCategoriesField;
     @FXML private Tab documentsTab;
     @FXML private Tab watchlistTab;
     @FXML private Tab usersTab;
@@ -255,6 +246,28 @@ public class MainController {
             List<String> categories = new ArrayList<>(cellData.getValue().getAllowedCategories());
             categories.sort(Comparator.naturalOrder());
             return new ReadOnlyStringWrapper(String.join(", ", categories));
+        });
+
+        usersTable.setRowFactory(table -> {
+            TableRow<User> row = new TableRow<>();
+
+            MenuItem editItem = new MenuItem("Edit");
+            editItem.setOnAction(event -> {
+                usersTable.getSelectionModel().select(row.getItem());
+                onEditUser();
+            });
+
+            MenuItem deleteItem = new MenuItem("Delete");
+            deleteItem.setOnAction(event -> {
+                usersTable.getSelectionModel().select(row.getItem());
+                onDeleteUser();
+            });
+
+            ContextMenu contextMenu = new ContextMenu(editItem, deleteItem);
+            row.contextMenuProperty().bind(javafx.beans.binding.Bindings.when(row.emptyProperty())
+                    .then((ContextMenu) null)
+                    .otherwise(contextMenu));
+            return row;
         });
     }
 
@@ -497,26 +510,13 @@ public class MainController {
             return;
         }
 
-        String username = userUsernameField.getText();
-        if (username == null || username.isBlank()) {
-            usersStatusLabel.setText("Username required");
+        User selectedUser = usersTable.getSelectionModel().getSelectedItem();
+        if (selectedUser == null) {
+            usersStatusLabel.setText("Select a user first");
             return;
         }
 
-        AdminService adminService = AppState.getInstance().getAdminService();
-        try {
-            adminService.updateUser(
-                    currentUser.get(),
-                    username,
-                    userPasswordField.getText(),
-                    parseRoleNullable(userRoleField.getText()),
-                    parseCategories(userCategoriesField.getText())
-            );
-            usersStatusLabel.setText("Updated");
-            onLoadUsers();
-        } catch (RuntimeException ex) {
-            usersStatusLabel.setText(ex.getMessage());
-        }
+        showEditUserWindow(currentUser.get(), selectedUser);
     }
 
     @FXML
@@ -528,14 +528,14 @@ public class MainController {
             return;
         }
 
-        String username = userUsernameField.getText();
-        if (username == null || username.isBlank()) {
-            usersStatusLabel.setText("Username required");
+        User selectedUser = usersTable.getSelectionModel().getSelectedItem();
+        if (selectedUser == null) {
+            usersStatusLabel.setText("Select a user first");
             return;
         }
 
         AdminService adminService = AppState.getInstance().getAdminService();
-        boolean removed = adminService.deleteUser(currentUser.get(), username);
+        boolean removed = adminService.deleteUser(currentUser.get(), selectedUser.getUsername());
         usersStatusLabel.setText(removed ? "Deleted" : "Not found");
         onLoadUsers();
     }
@@ -696,35 +696,6 @@ public class MainController {
         }
     }
 
-    private UserRole parseRole(String value) {
-        if (value == null || value.isBlank()) {
-            throw new IllegalArgumentException("Role is required");
-        }
-        return UserRole.valueOf(value.trim().toUpperCase());
-    }
-
-    private UserRole parseRoleNullable(String value) {
-        if (value == null || value.isBlank()) {
-            return null;
-        }
-        return UserRole.valueOf(value.trim().toUpperCase());
-    }
-
-    private Set<String> parseCategories(String value) {
-        Set<String> result = new LinkedHashSet<>();
-        if (value == null || value.isBlank()) {
-            return result;
-        }
-        String[] parts = value.split(",");
-        for (String part : parts) {
-            String trimmed = part.trim();
-            if (!trimmed.isEmpty()) {
-                result.add(trimmed);
-            }
-        }
-        return result;
-    }
-
     private void updateResultsStatus(int count) {
         statusLabel.setText("Results: " + count);
     }
@@ -824,11 +795,11 @@ public class MainController {
 
     private void showAddUserWindow(User currentUser) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AddUserDialog.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/UserDialog.fxml"));
             Parent root = loader.load();
 
-            AddUserDialogController controller = loader.getController();
-            controller.setContext(currentUser);
+            UserDialogController controller = loader.getController();
+            controller.setAddContext(currentUser);
 
             Stage dialogStage = new Stage();
             dialogStage.initModality(Modality.WINDOW_MODAL);
@@ -838,12 +809,37 @@ public class MainController {
             dialogStage.setScene(scene);
             dialogStage.showAndWait();
 
-            if (controller.isCreated()) {
+            if (controller.isCompleted()) {
                 usersStatusLabel.setText("Added");
                 onLoadUsers();
             }
         } catch (IOException ex) {
             usersStatusLabel.setText("Failed to open add user dialog");
+        }
+    }
+
+    private void showEditUserWindow(User currentUser, User targetUser) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/UserDialog.fxml"));
+            Parent root = loader.load();
+
+            UserDialogController controller = loader.getController();
+            controller.setEditContext(currentUser, targetUser);
+
+            Stage dialogStage = new Stage();
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(usersTable.getScene().getWindow());
+            dialogStage.setTitle("Edit user");
+            Scene scene = new Scene(root);
+            dialogStage.setScene(scene);
+            dialogStage.showAndWait();
+
+            if (controller.isCompleted()) {
+                usersStatusLabel.setText("Updated");
+                onLoadUsers();
+            }
+        } catch (IOException ex) {
+            usersStatusLabel.setText("Failed to open edit user dialog");
         }
     }
 }
