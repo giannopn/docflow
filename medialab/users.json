@@ -7,10 +7,16 @@
     "role": "ADMIN",
     "allowedCategories": [],
     "followedDocuments": [
+      "1",
+      "2",
+      "f4891809-07c8-475e-a811-5f352d6b081e",
       "b61276fe-ae03-4947-874a-a2886b39ea74"
     ],
     "lastSeenVersions": {
-      "b61276fe-ae03-4947-874a-a2886b39ea74": 0
+      "1": 5,
+      "2": 2,
+      "b61276fe-ae03-4947-874a-a2886b39ea74": 2,
+      "f4891809-07c8-475e-a811-5f352d6b081e": 1
     }
   },
   {
@@ -36,6 +42,27 @@
     "allowedCategories": [
       "Computer Science",
       "General"
+    ],
+    "followedDocuments": [],
+    "lastSeenVersions": {}
+  },
+  {
+    "firstName": "author",
+    "lastName": "author",
+    "username": "author",
+    "password": "author",
+    "role": "AUTHOR",
+    "allowedCategories": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "f",
+      "Computer Science",
+      "General",
+      "bigdawgthegio",
+      "has",
+      "dfsgs"
     ],
     "followedDocuments": [],
     "lastSeenVersions": {}

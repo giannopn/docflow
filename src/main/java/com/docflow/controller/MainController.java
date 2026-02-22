@@ -31,6 +31,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.stage.Modality;
@@ -63,7 +64,7 @@ public class MainController {
     @FXML private ComboBox<String> searchCategoryCombo;
     @FXML private CheckBox followingOnlyCheck;
     @FXML private Button newDocumentButton;
-    @FXML private ListView<String> watchList;
+    @FXML private ListView<Document> watchList;
     @FXML private TableView<User> usersTable;
     @FXML private TableColumn<User, String> userFirstNameColumn;
     @FXML private TableColumn<User, String> userLastNameColumn;
@@ -77,10 +78,15 @@ public class MainController {
     @FXML private Label updatedWatchLabel;
     @FXML private Label usersStatusLabel;
     @FXML private Label categoriesStatusLabel;
+    @FXML private Button adminSettingsButton;
+    @FXML private TabPane workspaceTabPane;
+    @FXML private TabPane adminTabPane;
     @FXML private Tab documentsTab;
     @FXML private Tab watchlistTab;
     @FXML private Tab usersTab;
     @FXML private Tab categoriesTab;
+
+    private boolean adminSettingsVisible;
 
     @FXML
     private void initialize() {
@@ -90,6 +96,7 @@ public class MainController {
         if (followingOnlyCheck != null) {
             followingOnlyCheck.selectedProperty().addListener((obs, wasSelected, isSelected) -> onSearch());
         }
+        adminSettingsVisible = false;
         refreshSummary();
         applyRoleVisibility();
         configureTabAutoRefresh();
@@ -444,9 +451,7 @@ public class MainController {
 
         WatchService watchService = AppState.getInstance().getWatchService();
         List<Document> docs = watchService.listFollowed(currentUser.get());
-        for (Document doc : docs) {
-            watchList.getItems().add(doc.toString());
-        }
+        watchList.getItems().setAll(docs);
         watchStatusLabel.setText("Loaded " + docs.size());
 
         int updatedCount = watchService.listUpdatedSinceLastSeen(currentUser.get()).size();
@@ -482,19 +487,13 @@ public class MainController {
             return;
         }
 
-        String selected = watchList.getSelectionModel().getSelectedItem();
-        if (selected == null || selected.isBlank()) {
+        Document selected = watchList.getSelectionModel().getSelectedItem();
+        if (selected == null) {
             return;
         }
 
         WatchService watchService = AppState.getInstance().getWatchService();
-        DocumentRepository documentRepository = AppState.getInstance().getDocumentRepository();
-        for (Document doc : documentRepository.findAll()) {
-            if (selected.equals(doc.toString())) {
-                watchService.unfollow(currentUser.get(), doc.getId());
-                break;
-            }
-        }
+        watchService.unfollow(currentUser.get(), selected.getId());
 
         documentsTable.refresh();
         onLoadWatchlist();
@@ -730,16 +729,74 @@ public class MainController {
         boolean isAdmin = currentUser.isPresent() && currentUser.get().canManageUsers();
         boolean canCreateDocuments = currentUser.isPresent() && currentUser.get().canManageDocuments();
 
-        if (usersTab != null) {
-            usersTab.setDisable(!isAdmin);
-        }
-        if (categoriesTab != null) {
-            categoriesTab.setDisable(!isAdmin);
-        }
         if (newDocumentButton != null) {
             newDocumentButton.setVisible(canCreateDocuments);
             newDocumentButton.setManaged(canCreateDocuments);
         }
+        if (adminSettingsButton != null) {
+            adminSettingsButton.setVisible(isAdmin);
+            adminSettingsButton.setManaged(isAdmin);
+        }
+        if (!isAdmin) {
+            showWorkspacePanel();
+        }
+    }
+
+    @FXML
+    private void onToggleAdminSettings() {
+        AuthService authService = AppState.getInstance().getAuthService();
+        Optional<User> currentUser = authService.getCurrentUser();
+        if (currentUser.isEmpty() || !currentUser.get().canManageUsers()) {
+            return;
+        }
+
+        if (adminSettingsVisible) {
+            showWorkspacePanel();
+        } else {
+            showAdminSettingsPanel();
+        }
+    }
+
+    private void showWorkspacePanel() {
+        adminSettingsVisible = false;
+        if (workspaceTabPane != null) {
+            workspaceTabPane.setVisible(true);
+            workspaceTabPane.setManaged(true);
+        }
+        if (adminTabPane != null) {
+            adminTabPane.setVisible(false);
+            adminTabPane.setManaged(false);
+        }
+        if (adminSettingsButton != null) {
+            adminSettingsButton.setText("Admin settings");
+        }
+    }
+
+    private void showAdminSettingsPanel() {
+        adminSettingsVisible = true;
+        if (workspaceTabPane != null) {
+            workspaceTabPane.setVisible(false);
+            workspaceTabPane.setManaged(false);
+        }
+        if (adminTabPane != null) {
+            adminTabPane.setVisible(true);
+            adminTabPane.setManaged(true);
+        }
+        if (adminSettingsButton != null) {
+            adminSettingsButton.setText("Back to documents");
+        }
+        onLoadUsers();
+        onLoadCategories();
+        if (adminTabPane != null && usersTab != null) {
+            adminTabPane.getSelectionModel().select(usersTab);
+        }
+    }
+
+    @FXML
+    private void onSaveAndExit() {
+        AppState.getInstance().saveAll();
+        Stage stage = (Stage) statusLabel.getScene().getWindow();
+        stage.close();
     }
 
     private void updateResultsStatus(int count) {

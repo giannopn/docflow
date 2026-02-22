@@ -21,6 +21,7 @@ public class WatchService {
         Objects.requireNonNull(user, "User cannot be null");
         Document document = getAccessibleDocument(user, documentId);
         user.followDocument(document.getId());
+        user.markDocumentVersionSeen(document.getId(), document.getVersion());
     }
 
     public void unfollow(User user, String documentId) {
