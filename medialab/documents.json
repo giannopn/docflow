@@ -5,8 +5,6 @@
     "author": "Nikos Papadopoulos",
     "category": "Multimedia",
     "createdAt": "2024-10-01",
-    "version": 4,
-    "content": "This is the first document.\nOK\nOK\nOK",
     "versions": [
       {
         "versionNumber": 1,
@@ -36,8 +34,6 @@
     "author": "Maria Ioannou",
     "category": "Programming",
     "createdAt": "2024-10-05",
-    "version": 2,
-    "content": "Introduction to Java.",
     "versions": [
       {
         "versionNumber": 1,
@@ -55,8 +51,6 @@
     "author": "Media Lab",
     "category": "General",
     "createdAt": "2026-02-17",
-    "version": 2,
-    "content": "heye",
     "versions": [
       {
         "versionNumber": 1,
@@ -74,8 +68,6 @@
     "author": "Media Lab",
     "category": "eeff",
     "createdAt": "2026-02-18",
-    "version": 1,
-    "content": "test",
     "versions": [
       {
         "versionNumber": 1,
@@ -89,12 +81,23 @@
     "author": "Media Lab",
     "category": "bigdawgthegio",
     "createdAt": "2026-02-18",
-    "version": 1,
-    "content": "gio",
     "versions": [
       {
         "versionNumber": 1,
         "content": "gio"
+      }
+    ]
+  },
+  {
+    "id": "72d1ae81-095b-4080-b543-963609d69aae",
+    "title": "test version",
+    "author": "Media Lab",
+    "category": "Computer Science",
+    "createdAt": "2026-02-24",
+    "versions": [
+      {
+        "versionNumber": 1,
+        "content": "testing version 1"
       }
     ]
   }

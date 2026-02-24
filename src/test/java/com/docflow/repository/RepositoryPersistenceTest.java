@@ -2,6 +2,7 @@ package com.docflow.repository;
 
 import com.docflow.model.Author;
 import com.docflow.model.Document;
+import com.docflow.model.DocumentVersion;
 import com.docflow.model.User;
 import com.docflow.model.UserRole;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -57,8 +59,7 @@ class RepositoryPersistenceTest {
                 "Alice Writer",
                 "Programming",
                 "2026-02-23",
-                1,
-                "v1"
+                List.of(new DocumentVersion(1, "v1"))
         );
         document.updateContent("v2");
         documentRepository.add(document);

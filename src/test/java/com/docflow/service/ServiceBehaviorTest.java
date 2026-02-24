@@ -108,8 +108,7 @@ class ServiceBehaviorTest {
                 "Other Author",
                 "Multimedia",
                 "2026-02-23",
-                1,
-                "C"
+                List.of(new DocumentVersion(1, "C"))
         );
         documentRepository.add(multimediaDoc);
 

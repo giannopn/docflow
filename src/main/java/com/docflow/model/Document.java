@@ -3,6 +3,7 @@ package com.docflow.model;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class Document {
@@ -12,29 +13,26 @@ public class Document {
     private String author;
     private String category;
     private String createdAt;
-    // Legacy fields kept for JSON compatibility in this phase.
-    private int version;
-    private String content;
     private List<DocumentVersion> versions;
 
     public Document(String id, String title, String author,
                     String category, String createdAt,
-                    int version, String content) {
+                    List<DocumentVersion> versions) {
         this.id = id;
         this.title = title;
         this.author = author;
         this.category = category;
         this.createdAt = createdAt;
-        this.version = version;
-        this.content = content;
-        this.versions = new ArrayList<>();
-        this.versions.add(new DocumentVersion(version, content));
+        this.versions = new ArrayList<>(Objects.requireNonNull(versions, "Versions cannot be null"));
+        if (this.versions.isEmpty()) {
+            throw new IllegalArgumentException("Document must contain at least one version");
+        }
     }
 
     public Document(int id, String title, String author,
                     String category, String createdAt,
-                    int version, String content) {
-        this(String.valueOf(id), title, author, category, createdAt, version, content);
+                    List<DocumentVersion> versions) {
+        this(String.valueOf(id), title, author, category, createdAt, versions);
     }
 
     public Document(String title,
@@ -42,7 +40,14 @@ public class Document {
                     String category,
                     LocalDate createdAt,
                     String content) {
-        this(UUID.randomUUID().toString(), title, author, category, createdAt.toString(), 1, content);
+        this(
+                UUID.randomUUID().toString(),
+                title,
+                author,
+                category,
+                createdAt.toString(),
+                List.of(new DocumentVersion(1, content))
+        );
     }
 
     public String getId() {
@@ -70,37 +75,27 @@ public class Document {
     }
 
     public int getVersion() {
-        ensureVersionsInitialized();
-        return versions.get(versions.size() - 1).getVersionNumber();
+        return latestVersion().getVersionNumber();
     }
 
     public String getContent() {
-        ensureVersionsInitialized();
-        return versions.get(versions.size() - 1).getContent();
+        return latestVersion().getContent();
     }
 
     public List<DocumentVersion> getVersions() {
-        ensureVersionsInitialized();
         return new ArrayList<>(versions);
     }
 
     public void updateContent(String newContent) {
-        ensureVersionsInitialized();
-        int newVersionNumber = versions.get(versions.size() - 1).getVersionNumber() + 1;
+        int newVersionNumber = latestVersion().getVersionNumber() + 1;
         versions.add(new DocumentVersion(newVersionNumber, newContent));
-
-        // Keep legacy fields in sync until persistence is redesigned.
-        this.version = newVersionNumber;
-        this.content = newContent;
     }
 
-    private void ensureVersionsInitialized() {
-        if (versions == null) {
-            versions = new ArrayList<>();
+    private DocumentVersion latestVersion() {
+        if (versions == null || versions.isEmpty()) {
+            throw new IllegalStateException("Document must contain at least one version");
         }
-        if (versions.isEmpty()) {
-            versions.add(new DocumentVersion(version, content));
-        }
+        return versions.get(versions.size() - 1);
     }
 
     @Override
