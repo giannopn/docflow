@@ -329,26 +329,6 @@ public class MainController {
     }
 
     @FXML
-    private void onFollowSelectedDocument() {
-        AuthService authService = AppState.getInstance().getAuthService();
-        Optional<User> currentUser = authService.getCurrentUser();
-        if (currentUser.isEmpty()) {
-            return;
-        }
-
-        Document selected = documentsTable.getSelectionModel().getSelectedItem();
-        if (selected == null) {
-            return;
-        }
-
-        WatchService watchService = AppState.getInstance().getWatchService();
-        watchService.follow(currentUser.get(), selected.getId());
-        documentsTable.refresh();
-
-        refreshSummary();
-    }
-
-    @FXML
     private void onSearch() {
         AuthService authService = AppState.getInstance().getAuthService();
         Optional<User> currentUser = authService.getCurrentUser();
@@ -409,11 +389,6 @@ public class MainController {
         }
 
         showDocumentWindow(selected, currentUser.get());
-    }
-
-    @FXML
-    private void onEditDocument() {
-        onOpenDocument();
     }
 
     @FXML

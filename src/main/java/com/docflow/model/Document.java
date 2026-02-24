@@ -100,10 +100,6 @@ public class Document {
         this.content = newContent;
     }
 
-    public void markDeleted() {
-        this.deleted = true;
-    }
-
     private void ensureVersionsInitialized() {
         if (versions == null) {
             versions = new ArrayList<>();
