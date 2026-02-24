@@ -54,23 +54,6 @@ public class DocumentService {
         return updated;
     }
 
-    public Optional<Document> findById(User user, String documentId) {
-        Objects.requireNonNull(user, "User cannot be null");
-        if (documentId == null || documentId.isBlank()) {
-            return Optional.empty();
-        }
-
-        Optional<Document> doc = documentRepository.findById(documentId);
-        if (doc.isEmpty()) {
-            return Optional.empty();
-        }
-        Document document = doc.get();
-        if (!user.hasAccessToCategory(document.getCategory())) {
-            return Optional.empty();
-        }
-        return Optional.of(document);
-    }
-
     public List<Document> search(User user, String title, String author, String category) {
         Objects.requireNonNull(user, "User cannot be null");
         String titleQuery = normalize(title);

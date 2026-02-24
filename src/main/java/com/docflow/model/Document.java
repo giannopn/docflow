@@ -29,12 +29,6 @@ public class Document {
         }
     }
 
-    public Document(int id, String title, String author,
-                    String category, String createdAt,
-                    List<DocumentVersion> versions) {
-        this(String.valueOf(id), title, author, category, createdAt, versions);
-    }
-
     public Document(String title,
                     String author,
                     String category,

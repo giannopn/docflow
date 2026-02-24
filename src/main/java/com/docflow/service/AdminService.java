@@ -49,35 +49,6 @@ public class AdminService {
         return userRepository.remove(username);
     }
 
-    public void updateUser(User admin,
-                           String username,
-                           String newPassword,
-                           UserRole newRole,
-                           Set<String> newAllowedCategories) {
-        requireAdmin(admin);
-        Optional<User> existing = userRepository.findByUsername(username);
-        if (existing.isEmpty()) {
-            throw new IllegalArgumentException("User not found");
-        }
-
-        User user = existing.get();
-        if (newPassword != null && !newPassword.isBlank()) {
-            user.setPassword(newPassword);
-        }
-        if (newAllowedCategories != null && !newAllowedCategories.isEmpty()) {
-            user.setAllowedCategories(newAllowedCategories);
-        }
-        if (newRole != null && user.getRole() != newRole) {
-            User replacement = createUser(user.getFirstName(), user.getLastName(), user.getUsername(),
-                    user.getPassword(), newRole, user.getAllowedCategories());
-            replacement.setFollowedDocuments(user.getFollowedDocuments());
-            replacement.setLastSeenVersions(user.getLastSeenVersions());
-            user = replacement;
-        }
-
-        userRepository.update(user);
-    }
-
     public void updateUserProfile(User admin,
                                   String username,
                                   String newFirstName,
