@@ -16,7 +16,6 @@ public class Document {
     private int version;
     private String content;
     private List<DocumentVersion> versions;
-    private boolean deleted;
 
     public Document(String id, String title, String author,
                     String category, String createdAt,
@@ -30,7 +29,6 @@ public class Document {
         this.content = content;
         this.versions = new ArrayList<>();
         this.versions.add(new DocumentVersion(version, content));
-        this.deleted = false;
     }
 
     public Document(int id, String title, String author,
@@ -84,10 +82,6 @@ public class Document {
     public List<DocumentVersion> getVersions() {
         ensureVersionsInitialized();
         return new ArrayList<>(versions);
-    }
-
-    public boolean isDeleted() {
-        return deleted;
     }
 
     public void updateContent(String newContent) {

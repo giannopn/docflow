@@ -26,9 +26,6 @@ public class DocumentService {
         Objects.requireNonNull(user, "User cannot be null");
         List<Document> result = new ArrayList<>();
         for (Document document : documentRepository.findAll()) {
-            if (document.isDeleted()) {
-                continue;
-            }
             if (user.hasAccessToCategory(document.getCategory())) {
                 result.add(document);
             }
@@ -68,9 +65,6 @@ public class DocumentService {
             return Optional.empty();
         }
         Document document = doc.get();
-        if (document.isDeleted()) {
-            return Optional.empty();
-        }
         if (!user.hasAccessToCategory(document.getCategory())) {
             return Optional.empty();
         }
@@ -124,9 +118,6 @@ public class DocumentService {
 
         Document document = documentRepository.findById(documentId)
                 .orElseThrow(() -> new IllegalArgumentException("Document not found"));
-        if (document.isDeleted()) {
-            throw new IllegalStateException("Document is deleted");
-        }
         if (!user.hasAccessToCategory(document.getCategory())) {
             throw new IllegalStateException("User has no access to this category");
         }
@@ -145,9 +136,6 @@ public class DocumentService {
             return false;
         }
         Document document = doc.get();
-        if (document.isDeleted()) {
-            throw new IllegalStateException("Document is deleted");
-        }
         if (!user.hasAccessToCategory(document.getCategory())) {
             throw new IllegalStateException("User has no access to this category");
         }

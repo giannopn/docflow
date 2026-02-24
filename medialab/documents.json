@@ -28,8 +28,7 @@
         "versionNumber": 5,
         "content": "This is the first document.\nOK\nOK\nOK fuck"
       }
-    ],
-    "deleted": false
+    ]
   },
   {
     "id": "2",
@@ -48,8 +47,7 @@
         "versionNumber": 2,
         "content": "Introduction to Java."
       }
-    ],
-    "deleted": false
+    ]
   },
   {
     "id": "b61276fe-ae03-4947-874a-a2886b39ea74",
@@ -68,8 +66,7 @@
         "versionNumber": 2,
         "content": "heye"
       }
-    ],
-    "deleted": false
+    ]
   },
   {
     "id": "f4891809-07c8-475e-a811-5f352d6b081e",
@@ -84,8 +81,7 @@
         "versionNumber": 1,
         "content": "test"
       }
-    ],
-    "deleted": false
+    ]
   },
   {
     "id": "6703dfc0-b099-42e5-9703-9f5a2236057c",
@@ -100,23 +96,6 @@
         "versionNumber": 1,
         "content": "gio"
       }
-    ],
-    "deleted": false
-  },
-  {
-    "id": "cbc74726-f171-482b-8a67-60ca76bf9140",
-    "title": "onoma",
-    "author": "Media Lab",
-    "category": "Computer Science",
-    "createdAt": "2026-02-20",
-    "version": 1,
-    "content": "fjiaodfjosaifdf\ng\nsdfg\nfsdgsdgfsdgsfdg\nsdg\nfdsg\nfsdgsd",
-    "versions": [
-      {
-        "versionNumber": 1,
-        "content": "fjiaodfjosaifdf\ng\nsdfg\nfsdgsdgfsdgsfdg\nsdg\nfdsg\nfsdgsd"
-      }
-    ],
-    "deleted": false
+    ]
   }
 ]
