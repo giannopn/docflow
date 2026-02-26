@@ -24,7 +24,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -34,6 +33,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -64,7 +64,6 @@ public class MainController {
     @FXML private ComboBox<String> searchCategoryCombo;
     @FXML private CheckBox followingOnlyCheck;
     @FXML private Button newDocumentButton;
-    @FXML private ListView<Document> watchList;
     @FXML private TableView<User> usersTable;
     @FXML private TableColumn<User, String> userFirstNameColumn;
     @FXML private TableColumn<User, String> userLastNameColumn;
@@ -74,15 +73,11 @@ public class MainController {
     @FXML private TableView<CategoryRow> categoriesTable;
     @FXML private TableColumn<CategoryRow, String> categoryNameColumn;
     @FXML private TableColumn<CategoryRow, Number> categoryDocumentsColumn;
-    @FXML private Label watchStatusLabel;
-    @FXML private Label updatedWatchLabel;
     @FXML private Label usersStatusLabel;
     @FXML private Label categoriesStatusLabel;
     @FXML private Button adminSettingsButton;
-    @FXML private TabPane workspaceTabPane;
+    @FXML private VBox workspacePane;
     @FXML private TabPane adminTabPane;
-    @FXML private Tab documentsTab;
-    @FXML private Tab watchlistTab;
     @FXML private Tab usersTab;
     @FXML private Tab categoriesTab;
 
@@ -105,20 +100,6 @@ public class MainController {
     }
 
     private void configureTabAutoRefresh() {
-        if (documentsTab != null) {
-            documentsTab.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
-                if (Boolean.TRUE.equals(isSelected)) {
-                    onLoadDocuments();
-                }
-            });
-        }
-        if (watchlistTab != null) {
-            watchlistTab.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
-                if (Boolean.TRUE.equals(isSelected)) {
-                    onLoadWatchlist();
-                }
-            });
-        }
         if (usersTab != null) {
             usersTab.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
                 if (Boolean.TRUE.equals(isSelected)) {
@@ -197,7 +178,6 @@ public class MainController {
                     watchService.follow(currentUser.get(), doc.getId());
                 }
                 documentsTable.refresh();
-                onLoadWatchlist();
                 refreshSummary();
             });
 
@@ -408,71 +388,10 @@ public class MainController {
         try {
             documentService.delete(currentUser.get(), selected.getId());
             onLoadDocuments();
-            onLoadWatchlist();
             refreshSummary();
         } catch (RuntimeException ex) {
             updateResultsStatus(documentsTable.getItems().size());
         }
-    }
-
-    @FXML
-    private void onLoadWatchlist() {
-        watchList.getItems().clear();
-        AuthService authService = AppState.getInstance().getAuthService();
-        Optional<User> currentUser = authService.getCurrentUser();
-        if (currentUser.isEmpty()) {
-            return;
-        }
-
-        WatchService watchService = AppState.getInstance().getWatchService();
-        List<Document> docs = watchService.listFollowed(currentUser.get());
-        watchList.getItems().setAll(docs);
-        watchStatusLabel.setText("Loaded " + docs.size());
-
-        int updatedCount = watchService.listUpdatedSinceLastSeen(currentUser.get()).size();
-        updatedWatchLabel.setText("Updated: " + updatedCount);
-    }
-
-    @FXML
-    private void onFollowSelected() {
-        AuthService authService = AppState.getInstance().getAuthService();
-        Optional<User> currentUser = authService.getCurrentUser();
-        if (currentUser.isEmpty()) {
-            return;
-        }
-
-        Document selected = documentsTable.getSelectionModel().getSelectedItem();
-        if (selected == null) {
-            return;
-        }
-
-        WatchService watchService = AppState.getInstance().getWatchService();
-        watchService.follow(currentUser.get(), selected.getId());
-        documentsTable.refresh();
-
-        onLoadWatchlist();
-        refreshSummary();
-    }
-
-    @FXML
-    private void onUnfollowSelected() {
-        AuthService authService = AppState.getInstance().getAuthService();
-        Optional<User> currentUser = authService.getCurrentUser();
-        if (currentUser.isEmpty()) {
-            return;
-        }
-
-        Document selected = watchList.getSelectionModel().getSelectedItem();
-        if (selected == null) {
-            return;
-        }
-
-        WatchService watchService = AppState.getInstance().getWatchService();
-        watchService.unfollow(currentUser.get(), selected.getId());
-
-        documentsTable.refresh();
-        onLoadWatchlist();
-        refreshSummary();
     }
 
     @FXML
@@ -680,7 +599,6 @@ public class MainController {
         categoriesStatusLabel.setText(removed ? "Deleted" : "Not found");
         onLoadCategories();
         onLoadDocuments();
-        onLoadWatchlist();
         refreshSummary();
     }
 
@@ -734,9 +652,9 @@ public class MainController {
 
     private void showWorkspacePanel() {
         adminSettingsVisible = false;
-        if (workspaceTabPane != null) {
-            workspaceTabPane.setVisible(true);
-            workspaceTabPane.setManaged(true);
+        if (workspacePane != null) {
+            workspacePane.setVisible(true);
+            workspacePane.setManaged(true);
         }
         if (adminTabPane != null) {
             adminTabPane.setVisible(false);
@@ -745,13 +663,14 @@ public class MainController {
         if (adminSettingsButton != null) {
             adminSettingsButton.setText("Admin settings");
         }
+        onLoadDocuments();
     }
 
     private void showAdminSettingsPanel() {
         adminSettingsVisible = true;
-        if (workspaceTabPane != null) {
-            workspaceTabPane.setVisible(false);
-            workspaceTabPane.setManaged(false);
+        if (workspacePane != null) {
+            workspacePane.setVisible(false);
+            workspacePane.setManaged(false);
         }
         if (adminTabPane != null) {
             adminTabPane.setVisible(true);
@@ -853,7 +772,6 @@ public class MainController {
 
             if (controller.isSaved()) {
                 onLoadDocuments();
-                onLoadWatchlist();
                 refreshSummary();
             }
         } catch (IOException ex) {

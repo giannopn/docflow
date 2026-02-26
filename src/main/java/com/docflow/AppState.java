@@ -61,7 +61,6 @@ public final class AppState {
             userRepository.load();
             documentRepository.load();
             categoryRepository.load();
-            userRepository.ensureDefaultAdminExists();
         } catch (IOException e) {
             throw new IllegalStateException("Failed to load application data", e);
         }

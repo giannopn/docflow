@@ -5,7 +5,6 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.Tab?>
@@ -56,67 +55,47 @@
 
     <center>
         <StackPane>
-            <TabPane fx:id="workspaceTabPane" tabClosingPolicy="UNAVAILABLE">
-                <tabs>
-                    <Tab fx:id="documentsTab" text="Documents">
-                        <VBox spacing="12">
-                            <padding>
-                                <Insets top="18" right="18" bottom="4" left="18"/>
-                            </padding>
+            <VBox fx:id="workspacePane" spacing="12" visible="true" managed="true">
+                <padding>
+                    <Insets top="18" right="18" bottom="4" left="18"/>
+                </padding>
 
-                            <VBox spacing="8" style="-fx-background-color: #ffffff; -fx-border-color: #e6e9ee; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 10;">
-                                <HBox spacing="10" alignment="CENTER_LEFT">
-                                    <HBox spacing="8" alignment="CENTER_LEFT">
-                                        <TextField fx:id="searchTitleField" promptText="Title" onAction="#onSearch" prefWidth="220"/>
-                                        <TextField fx:id="searchAuthorField" promptText="Author" onAction="#onSearch" prefWidth="200"/>
-                                        <ComboBox fx:id="searchCategoryCombo" promptText="Category" prefWidth="180"/>
-                                    </HBox>
-                                    <HBox spacing="8" alignment="CENTER_LEFT">
-                                        <Button text="Search" onAction="#onSearch"/>
-                                        <Button text="Reset" onAction="#onClearSearch"/>
-                                        <CheckBox fx:id="followingOnlyCheck" text="Following only"/>
-                                    </HBox>
-                                    <Region HBox.hgrow="ALWAYS"/>
-                                    <Button fx:id="newDocumentButton" text="New document" onAction="#onCreateDocument"/>
-                                </HBox>
-                            </VBox>
+                <VBox spacing="8" style="-fx-background-color: #ffffff; -fx-border-color: #e6e9ee; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 10;">
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <HBox spacing="8" alignment="CENTER_LEFT">
+                            <TextField fx:id="searchTitleField" promptText="Title" onAction="#onSearch" prefWidth="220"/>
+                            <TextField fx:id="searchAuthorField" promptText="Author" onAction="#onSearch" prefWidth="200"/>
+                            <ComboBox fx:id="searchCategoryCombo" promptText="Category" prefWidth="180"/>
+                        </HBox>
+                        <HBox spacing="8" alignment="CENTER_LEFT">
+                            <Button text="Search" onAction="#onSearch"/>
+                            <Button text="Reset" onAction="#onClearSearch"/>
+                            <CheckBox fx:id="followingOnlyCheck" text="Following only"/>
+                        </HBox>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="newDocumentButton" text="New document" onAction="#onCreateDocument"/>
+                    </HBox>
+                </VBox>
 
-                            <VBox spacing="4" VBox.vgrow="ALWAYS">
-                                <VBox spacing="0" VBox.vgrow="ALWAYS"
-                                      style="-fx-background-color: #ffffff; -fx-border-color: #e6e9ee; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 6;">
-                                    <TableView fx:id="documentsTable" VBox.vgrow="ALWAYS">
-                                        <columns>
-                                            <TableColumn fx:id="titleColumn" text="Title" prefWidth="200"/>
-                                            <TableColumn fx:id="authorColumn" text="Author" prefWidth="150"/>
-                                            <TableColumn fx:id="categoryColumn" text="Category" prefWidth="140"/>
-                                            <TableColumn fx:id="createdAtColumn" text="Created" prefWidth="130"/>
-                                            <TableColumn fx:id="versionColumn" text="Version" prefWidth="90"/>
-                                            <TableColumn fx:id="followingColumn" text="Following" prefWidth="130"/>
-                                        </columns>
-                                    </TableView>
-                                </VBox>
-                                <HBox alignment="CENTER">
-                                    <Label fx:id="statusLabel" text="Results: 0" style="-fx-text-fill: #6b7280;"/>
-                                </HBox>
-                            </VBox>
-                        </VBox>
-                    </Tab>
-                    <Tab fx:id="watchlistTab" text="Watchlist">
-                        <VBox spacing="12">
-                            <padding>
-                                <Insets top="18" right="18" bottom="18" left="18"/>
-                            </padding>
-                            <HBox spacing="10">
-                                <Button text="Follow selected" onAction="#onFollowSelected"/>
-                                <Button text="Unfollow selected" onAction="#onUnfollowSelected"/>
-                                <Label fx:id="watchStatusLabel" text=""/>
-                                <Label fx:id="updatedWatchLabel" text="Updated: 0"/>
-                            </HBox>
-                            <ListView fx:id="watchList" />
-                        </VBox>
-                    </Tab>
-                </tabs>
-            </TabPane>
+                <VBox spacing="4" VBox.vgrow="ALWAYS">
+                    <VBox spacing="0" VBox.vgrow="ALWAYS"
+                          style="-fx-background-color: #ffffff; -fx-border-color: #e6e9ee; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 6;">
+                        <TableView fx:id="documentsTable" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="titleColumn" text="Title" prefWidth="200"/>
+                                <TableColumn fx:id="authorColumn" text="Author" prefWidth="150"/>
+                                <TableColumn fx:id="categoryColumn" text="Category" prefWidth="140"/>
+                                <TableColumn fx:id="createdAtColumn" text="Created" prefWidth="130"/>
+                                <TableColumn fx:id="versionColumn" text="Version" prefWidth="90"/>
+                                <TableColumn fx:id="followingColumn" text="Following" prefWidth="130"/>
+                            </columns>
+                        </TableView>
+                    </VBox>
+                    <HBox alignment="CENTER">
+                        <Label fx:id="statusLabel" text="Results: 0" style="-fx-text-fill: #6b7280;"/>
+                    </HBox>
+                </VBox>
+            </VBox>
 
             <TabPane fx:id="adminTabPane" tabClosingPolicy="UNAVAILABLE" visible="false" managed="false">
                 <tabs>
