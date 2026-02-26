@@ -305,7 +305,7 @@ public class MainController {
         documents = applyFollowingFilter(currentUser, documents);
 
         documentsTable.getItems().setAll(documents);
-        updateResultsStatus(documents.size());
+        updateDocumentsResultsStatus(documents.size());
     }
 
     @FXML
@@ -330,7 +330,7 @@ public class MainController {
         );
         results = applyFollowingFilter(currentUser, results);
         documentsTable.getItems().setAll(results);
-        updateResultsStatus(results.size());
+        updateDocumentsResultsStatus(results.size());
     }
 
     @FXML
@@ -390,7 +390,7 @@ public class MainController {
             onLoadDocuments();
             refreshSummary();
         } catch (RuntimeException ex) {
-            updateResultsStatus(documentsTable.getItems().size());
+            updateDocumentsResultsStatus(documentsTable.getItems().size());
         }
     }
 
@@ -402,7 +402,7 @@ public class MainController {
         AuthService authService = AppState.getInstance().getAuthService();
         Optional<User> currentUser = authService.getCurrentUser();
         if (currentUser.isEmpty() || !currentUser.get().canManageUsers()) {
-            usersStatusLabel.setText("Admin only");
+            updateUsersResultsStatus(0);
             return;
         }
 
@@ -411,7 +411,7 @@ public class MainController {
         if (usersTable != null) {
             usersTable.getItems().setAll(users);
         }
-        usersStatusLabel.setText("Loaded " + users.size());
+        updateUsersResultsStatus(users.size());
     }
 
     @FXML
@@ -419,7 +419,6 @@ public class MainController {
         AuthService authService = AppState.getInstance().getAuthService();
         Optional<User> currentUser = authService.getCurrentUser();
         if (currentUser.isEmpty() || !currentUser.get().canManageUsers()) {
-            usersStatusLabel.setText("Admin only");
             return;
         }
 
@@ -431,13 +430,11 @@ public class MainController {
         AuthService authService = AppState.getInstance().getAuthService();
         Optional<User> currentUser = authService.getCurrentUser();
         if (currentUser.isEmpty() || !currentUser.get().canManageUsers()) {
-            usersStatusLabel.setText("Admin only");
             return;
         }
 
         User selectedUser = usersTable.getSelectionModel().getSelectedItem();
         if (selectedUser == null) {
-            usersStatusLabel.setText("Select a user first");
             return;
         }
 
@@ -449,19 +446,16 @@ public class MainController {
         AuthService authService = AppState.getInstance().getAuthService();
         Optional<User> currentUser = authService.getCurrentUser();
         if (currentUser.isEmpty() || !currentUser.get().canManageUsers()) {
-            usersStatusLabel.setText("Admin only");
             return;
         }
 
         User selectedUser = usersTable.getSelectionModel().getSelectedItem();
         if (selectedUser == null) {
-            usersStatusLabel.setText("Select a user first");
             return;
         }
 
         AdminService adminService = AppState.getInstance().getAdminService();
-        boolean removed = adminService.deleteUser(currentUser.get(), selectedUser.getUsername());
-        usersStatusLabel.setText(removed ? "Deleted" : "Not found");
+        adminService.deleteUser(currentUser.get(), selectedUser.getUsername());
         onLoadUsers();
     }
 
@@ -473,7 +467,7 @@ public class MainController {
         AuthService authService = AppState.getInstance().getAuthService();
         Optional<User> currentUser = authService.getCurrentUser();
         if (currentUser.isEmpty() || !currentUser.get().canManageCategories()) {
-            categoriesStatusLabel.setText("Admin only");
+            updateCategoriesResultsStatus(0);
             return;
         }
 
@@ -492,7 +486,7 @@ public class MainController {
         if (categoriesTable != null) {
             categoriesTable.getItems().setAll(rows);
         }
-        categoriesStatusLabel.setText("Loaded " + categories.size());
+        updateCategoriesResultsStatus(rows.size());
     }
 
     @FXML
@@ -500,7 +494,6 @@ public class MainController {
         AuthService authService = AppState.getInstance().getAuthService();
         Optional<User> currentUser = authService.getCurrentUser();
         if (currentUser.isEmpty() || !currentUser.get().canManageCategories()) {
-            categoriesStatusLabel.setText("Admin only");
             return;
         }
 
@@ -510,12 +503,10 @@ public class MainController {
         dialog.setContentText("Category name:");
         Optional<String> nameInput = dialog.showAndWait();
         if (nameInput.isEmpty()) {
-            categoriesStatusLabel.setText("Create canceled");
             return;
         }
         String name = nameInput.get();
         if (name == null || name.isBlank()) {
-            categoriesStatusLabel.setText("Category required");
             return;
         }
 
@@ -523,15 +514,12 @@ public class MainController {
         try {
             boolean added = adminService.addCategory(currentUser.get(), name);
             onLoadCategories();
-            if (added) {
-                categoriesStatusLabel.setText("Added");
-            } else {
-                categoriesStatusLabel.setText("Already exists");
+            if (!added) {
                 showCategoryWarning("Category already exists", "A category with this name already exists.");
             }
             refreshSummary();
         } catch (RuntimeException ex) {
-            categoriesStatusLabel.setText(ex.getMessage());
+            updateCategoriesResultsStatus(categoriesTable == null ? 0 : categoriesTable.getItems().size());
         }
     }
 
@@ -540,13 +528,11 @@ public class MainController {
         AuthService authService = AppState.getInstance().getAuthService();
         Optional<User> currentUser = authService.getCurrentUser();
         if (currentUser.isEmpty() || !currentUser.get().canManageCategories()) {
-            categoriesStatusLabel.setText("Admin only");
             return;
         }
 
         String oldName = getSelectedCategoryName();
         if (oldName == null || oldName.isBlank()) {
-            categoriesStatusLabel.setText("Select a category first");
             return;
         }
 
@@ -556,25 +542,21 @@ public class MainController {
         dialog.setContentText("New name:");
         Optional<String> newNameInput = dialog.showAndWait();
         if (newNameInput.isEmpty()) {
-            categoriesStatusLabel.setText("Rename canceled");
             return;
         }
         String newName = newNameInput.get();
         if (newName == null || newName.isBlank()) {
-            categoriesStatusLabel.setText("New name required");
             return;
         }
 
         AdminService adminService = AppState.getInstance().getAdminService();
         List<String> existingCategories = adminService.listCategories(currentUser.get());
         if (!oldName.equals(newName) && existingCategories.contains(newName)) {
-            categoriesStatusLabel.setText("Already exists");
             showCategoryWarning("Category already exists", "A category with this name already exists.");
             return;
         }
 
-        boolean renamed = adminService.renameCategory(currentUser.get(), oldName, newName);
-        categoriesStatusLabel.setText(renamed ? "Renamed" : "Not found");
+        adminService.renameCategory(currentUser.get(), oldName, newName);
         onLoadCategories();
         onLoadDocuments();
     }
@@ -584,19 +566,16 @@ public class MainController {
         AuthService authService = AppState.getInstance().getAuthService();
         Optional<User> currentUser = authService.getCurrentUser();
         if (currentUser.isEmpty() || !currentUser.get().canManageCategories()) {
-            categoriesStatusLabel.setText("Admin only");
             return;
         }
 
         String name = getSelectedCategoryName();
         if (name == null || name.isBlank()) {
-            categoriesStatusLabel.setText("Select a category first");
             return;
         }
 
         AdminService adminService = AppState.getInstance().getAdminService();
-        boolean removed = adminService.deleteCategory(currentUser.get(), name);
-        categoriesStatusLabel.setText(removed ? "Deleted" : "Not found");
+        adminService.deleteCategory(currentUser.get(), name);
         onLoadCategories();
         onLoadDocuments();
         refreshSummary();
@@ -693,8 +672,20 @@ public class MainController {
         stage.close();
     }
 
-    private void updateResultsStatus(int count) {
-        statusLabel.setText("Results: " + count);
+    private void updateDocumentsResultsStatus(int count) {
+        statusLabel.setText(formatCountLabel(count, "Document", "Documents"));
+    }
+
+    private void updateUsersResultsStatus(int count) {
+        usersStatusLabel.setText(formatCountLabel(count, "User", "Users"));
+    }
+
+    private void updateCategoriesResultsStatus(int count) {
+        categoriesStatusLabel.setText(formatCountLabel(count, "Category", "Categories"));
+    }
+
+    private String formatCountLabel(int count, String singular, String plural) {
+        return count + " " + (count == 1 ? singular : plural);
     }
 
     private void showCategoryWarning(String title, String message) {
@@ -775,7 +766,7 @@ public class MainController {
                 refreshSummary();
             }
         } catch (IOException ex) {
-            updateResultsStatus(documentsTable.getItems().size());
+            updateDocumentsResultsStatus(documentsTable.getItems().size());
         }
     }
 
@@ -800,7 +791,7 @@ public class MainController {
                 refreshSummary();
             }
         } catch (IOException ex) {
-            updateResultsStatus(documentsTable.getItems().size());
+            updateDocumentsResultsStatus(documentsTable.getItems().size());
         }
     }
 
@@ -821,11 +812,10 @@ public class MainController {
             dialogStage.showAndWait();
 
             if (controller.isCompleted()) {
-                usersStatusLabel.setText("Added");
                 onLoadUsers();
             }
         } catch (IOException ex) {
-            usersStatusLabel.setText("Failed to open add user dialog");
+            updateUsersResultsStatus(usersTable == null ? 0 : usersTable.getItems().size());
         }
     }
 
@@ -846,11 +836,10 @@ public class MainController {
             dialogStage.showAndWait();
 
             if (controller.isCompleted()) {
-                usersStatusLabel.setText("Updated");
                 onLoadUsers();
             }
         } catch (IOException ex) {
-            usersStatusLabel.setText("Failed to open edit user dialog");
+            updateUsersResultsStatus(usersTable == null ? 0 : usersTable.getItems().size());
         }
     }
 

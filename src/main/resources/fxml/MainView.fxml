@@ -77,9 +77,9 @@
                     </HBox>
                 </VBox>
 
-                <VBox spacing="4" VBox.vgrow="ALWAYS">
-                    <VBox spacing="0" VBox.vgrow="ALWAYS"
-                          style="-fx-background-color: #ffffff; -fx-border-color: #e6e9ee; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 6;">
+                    <VBox spacing="4" VBox.vgrow="ALWAYS">
+                        <VBox spacing="0" VBox.vgrow="ALWAYS"
+                              style="-fx-background-color: #ffffff; -fx-border-color: #e6e9ee; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 6;">
                         <TableView fx:id="documentsTable" VBox.vgrow="ALWAYS">
                             <columns>
                                 <TableColumn fx:id="titleColumn" text="Title" prefWidth="200"/>
@@ -90,11 +90,11 @@
                                 <TableColumn fx:id="followingColumn" text="Following" prefWidth="130"/>
                             </columns>
                         </TableView>
+                        </VBox>
+                        <HBox alignment="CENTER">
+                            <Label fx:id="statusLabel" text="0 Documents" style="-fx-text-fill: #6b7280;"/>
+                        </HBox>
                     </VBox>
-                    <HBox alignment="CENTER">
-                        <Label fx:id="statusLabel" text="Results: 0" style="-fx-text-fill: #6b7280;"/>
-                    </HBox>
-                </VBox>
             </VBox>
 
             <TabPane fx:id="adminTabPane" tabClosingPolicy="UNAVAILABLE" visible="false" managed="false">
@@ -102,38 +102,46 @@
                     <Tab fx:id="usersTab" text="Users">
                         <VBox spacing="12">
                             <padding>
-                                <Insets top="18" right="18" bottom="18" left="18"/>
+                                <Insets top="18" right="18" bottom="4" left="18"/>
                             </padding>
                             <HBox spacing="10">
                                 <Button text="Add user" onAction="#onAddUser"/>
-                                <Label fx:id="usersStatusLabel" text=""/>
                             </HBox>
-                            <TableView fx:id="usersTable" VBox.vgrow="ALWAYS">
-                                <columns>
-                                    <TableColumn fx:id="userFirstNameColumn" text="First name" prefWidth="140"/>
-                                    <TableColumn fx:id="userLastNameColumn" text="Last name" prefWidth="140"/>
-                                    <TableColumn fx:id="userUsernameColumn" text="Username" prefWidth="160"/>
-                                    <TableColumn fx:id="userRoleColumn" text="Role" prefWidth="130"/>
-                                    <TableColumn fx:id="userCategoriesColumn" text="Allowed categories" prefWidth="420"/>
-                                </columns>
-                            </TableView>
+                            <VBox spacing="4" VBox.vgrow="ALWAYS">
+                                <TableView fx:id="usersTable" VBox.vgrow="ALWAYS">
+                                    <columns>
+                                        <TableColumn fx:id="userFirstNameColumn" text="First name" prefWidth="140"/>
+                                        <TableColumn fx:id="userLastNameColumn" text="Last name" prefWidth="140"/>
+                                        <TableColumn fx:id="userUsernameColumn" text="Username" prefWidth="160"/>
+                                        <TableColumn fx:id="userRoleColumn" text="Role" prefWidth="130"/>
+                                        <TableColumn fx:id="userCategoriesColumn" text="Allowed categories" prefWidth="420"/>
+                                    </columns>
+                                </TableView>
+                                <HBox alignment="CENTER">
+                                    <Label fx:id="usersStatusLabel" text="0 Users" style="-fx-text-fill: #6b7280;"/>
+                                </HBox>
+                            </VBox>
                         </VBox>
                     </Tab>
                     <Tab fx:id="categoriesTab" text="Categories">
                         <VBox spacing="12">
                             <padding>
-                                <Insets top="18" right="18" bottom="18" left="18"/>
+                                <Insets top="18" right="18" bottom="4" left="18"/>
                             </padding>
                             <HBox spacing="10">
                                 <Button text="New category" onAction="#onAddCategory"/>
-                                <Label fx:id="categoriesStatusLabel" text=""/>
                             </HBox>
-                            <TableView fx:id="categoriesTable" VBox.vgrow="ALWAYS">
-                                <columns>
-                                    <TableColumn fx:id="categoryNameColumn" text="Category" prefWidth="400"/>
-                                    <TableColumn fx:id="categoryDocumentsColumn" text="Documents" prefWidth="160"/>
-                                </columns>
-                            </TableView>
+                            <VBox spacing="4" VBox.vgrow="ALWAYS">
+                                <TableView fx:id="categoriesTable" VBox.vgrow="ALWAYS">
+                                    <columns>
+                                        <TableColumn fx:id="categoryNameColumn" text="Category" prefWidth="400"/>
+                                        <TableColumn fx:id="categoryDocumentsColumn" text="Documents" prefWidth="160"/>
+                                    </columns>
+                                </TableView>
+                                <HBox alignment="CENTER">
+                                    <Label fx:id="categoriesStatusLabel" text="0 Categories" style="-fx-text-fill: #6b7280;"/>
+                                </HBox>
+                            </VBox>
                         </VBox>
                     </Tab>
                 </tabs>
