@@ -52,6 +52,7 @@ import java.util.Optional;
 
 public class MainController {
     private static final String ALL_CATEGORIES_OPTION = "All categories";
+    private static final String DEFAULT_ADMIN_USERNAME = "medialab";
     private static final double BUTTON_ICON_SIZE = 16.0;
 
     @FXML private TableView<Document> documentsTable;
@@ -294,6 +295,9 @@ public class MainController {
         userUsernameColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getUsername()));
         userRoleColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getRole().name()));
         userCategoriesColumn.setCellValueFactory(cellData -> {
+            if (cellData.getValue().canManageUsers()) {
+                return new ReadOnlyStringWrapper(ALL_CATEGORIES_OPTION);
+            }
             List<String> categories = new ArrayList<>(cellData.getValue().getAllowedCategories());
             categories.sort(Comparator.naturalOrder());
             return new ReadOnlyStringWrapper(String.join(", ", categories));
@@ -315,6 +319,12 @@ public class MainController {
             });
 
             ContextMenu contextMenu = new ContextMenu(editItem, deleteItem);
+            contextMenu.setOnShowing(event -> {
+                User target = row.getItem();
+                boolean isDefaultAdmin = isDefaultAdminUser(target);
+                editItem.setDisable(isDefaultAdmin);
+                deleteItem.setDisable(isDefaultAdmin);
+            });
             row.contextMenuProperty().bind(javafx.beans.binding.Bindings.when(row.emptyProperty())
                     .then((ContextMenu) null)
                     .otherwise(contextMenu));
@@ -445,6 +455,9 @@ public class MainController {
 
         AdminService adminService = AppState.getInstance().getAdminService();
         List<User> users = adminService.listUsers(currentUser.get());
+        users.sort(Comparator
+                .comparing((User user) -> !isDefaultAdminUser(user))
+                .thenComparing(User::getUsername, String.CASE_INSENSITIVE_ORDER));
         if (usersTable != null) {
             usersTable.getItems().setAll(users);
         }
@@ -471,7 +484,7 @@ public class MainController {
         }
 
         User selectedUser = usersTable.getSelectionModel().getSelectedItem();
-        if (selectedUser == null) {
+        if (selectedUser == null || isDefaultAdminUser(selectedUser)) {
             return;
         }
 
@@ -487,13 +500,17 @@ public class MainController {
         }
 
         User selectedUser = usersTable.getSelectionModel().getSelectedItem();
-        if (selectedUser == null) {
+        if (selectedUser == null || isDefaultAdminUser(selectedUser)) {
             return;
         }
 
         AdminService adminService = AppState.getInstance().getAdminService();
         adminService.deleteUser(currentUser.get(), selectedUser.getUsername());
         onLoadUsers();
+    }
+
+    private boolean isDefaultAdminUser(User user) {
+        return user != null && DEFAULT_ADMIN_USERNAME.equalsIgnoreCase(user.getUsername());
     }
 
     @FXML

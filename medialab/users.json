@@ -65,5 +65,17 @@
     ],
     "followedDocuments": [],
     "lastSeenVersions": {}
+  },
+  {
+    "firstName": "Media",
+    "lastName": "Lab",
+    "username": "medialab2",
+    "password": "admin",
+    "role": "ADMIN",
+    "allowedCategories": [
+      "b"
+    ],
+    "followedDocuments": [],
+    "lastSeenVersions": {}
   }
 ]
