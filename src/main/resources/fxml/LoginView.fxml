@@ -2,10 +2,14 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox xmlns="http://javafx.com/javafx"
@@ -18,18 +22,34 @@
         <Insets top="18" right="18" bottom="18" left="18"/>
     </padding>
 
-    <Label text="MediaLab Documents"/>
-
-    <Label text="Sign in to continue."/>
+    <HBox alignment="CENTER">
+        <Label text="Docflow" style="-fx-font-size: 32px; -fx-font-weight: 800; -fx-text-fill: #111827;"/>
+    </HBox>
+    <Separator/>
 
     <VBox spacing="10">
-        <TextField fx:id="usernameField" promptText="Username"/>
-        <PasswordField fx:id="passwordField" promptText="Password"/>
+        <HBox spacing="6" alignment="CENTER_LEFT">
+            <Label text="Username:" prefWidth="80"/>
+            <TextField fx:id="usernameField" promptText="Username" HBox.hgrow="ALWAYS"/>
+        </HBox>
+        <HBox spacing="6" alignment="CENTER_LEFT">
+            <Label text="Password:" prefWidth="80"/>
+            <StackPane HBox.hgrow="ALWAYS">
+                <PasswordField fx:id="passwordField" promptText="Password" maxWidth="1.7976931348623157E308"/>
+                <TextField fx:id="passwordVisibleField" promptText="Password" visible="false" managed="false" maxWidth="1.7976931348623157E308"/>
+            </StackPane>
+        </HBox>
+        <HBox alignment="CENTER_LEFT">
+            <Region prefWidth="86"/>
+            <CheckBox fx:id="showPasswordCheck" text="Show password"/>
+        </HBox>
     </VBox>
 
-    <HBox spacing="10">
-        <Button text="Login" onAction="#onLogin"/>
-        <Label fx:id="statusLabel" text=""/>
+    <HBox spacing="0" alignment="CENTER_LEFT">
+        <Region prefWidth="86"/>
+        <Label fx:id="statusLabel" text="" style="-fx-text-fill: #dc2626;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="loginButton" text="Login" onAction="#onLogin"/>
     </HBox>
 
 </VBox>
