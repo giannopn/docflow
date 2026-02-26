@@ -16,11 +16,13 @@ import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.Alert;
@@ -33,10 +35,13 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.io.InputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -47,6 +52,7 @@ import java.util.Optional;
 
 public class MainController {
     private static final String ALL_CATEGORIES_OPTION = "All categories";
+    private static final double BUTTON_ICON_SIZE = 16.0;
 
     @FXML private TableView<Document> documentsTable;
     @FXML private TableColumn<Document, String> titleColumn;
@@ -85,6 +91,7 @@ public class MainController {
 
     @FXML
     private void initialize() {
+        configureNewDocumentButtonIcon();
         configureDocumentTable();
         configureUsersTable();
         configureCategoriesTable();
@@ -97,6 +104,36 @@ public class MainController {
         configureTabAutoRefresh();
         populateSearchCategories();
         onLoadDocuments();
+    }
+
+    private void configureNewDocumentButtonIcon() {
+        if (newDocumentButton == null) {
+            return;
+        }
+
+        Node icon = loadPngIcon("/icons/file-plus-corner.png", BUTTON_ICON_SIZE);
+        if (icon == null) {
+            return;
+        }
+
+        newDocumentButton.setGraphic(icon);
+        newDocumentButton.setGraphicTextGap(6);
+        newDocumentButton.setContentDisplay(ContentDisplay.LEFT);
+    }
+
+    private Node loadPngIcon(String resourcePath, double size) {
+        try (InputStream iconStream = getClass().getResourceAsStream(resourcePath)) {
+            if (iconStream == null) {
+                return null;
+            }
+
+            ImageView imageView = new ImageView(new Image(iconStream));
+            imageView.setPreserveRatio(true);
+            imageView.setFitHeight(size);
+            return imageView;
+        } catch (IOException | RuntimeException ignored) {
+            return null;
+        }
     }
 
     private void configureTabAutoRefresh() {
