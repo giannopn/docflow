@@ -66,7 +66,9 @@ public class MainController {
     @FXML private Label statusLabel;
     @FXML private Label categoriesCountLabel;
     @FXML private Label documentsCountLabel;
-    @FXML private Label watchedCountLabel;
+    @FXML private Label roleValueLabel;
+    @FXML private Label followingAccessibleLabel;
+    @FXML private Label updatesSummaryLabel;
     @FXML private TextField searchTitleField;
     @FXML private TextField searchAuthorField;
     @FXML private ComboBox<String> searchCategoryCombo;
@@ -388,6 +390,7 @@ public class MainController {
 
         documentsTable.getItems().setAll(documents);
         updateDocumentsResultsStatus(documents.size());
+        refreshSummary();
     }
 
     @FXML
@@ -456,6 +459,7 @@ public class MainController {
         WatchService watchService = AppState.getInstance().getWatchService();
         watchService.markSeen(currentUser.get(), selected.getId());
         documentsTable.refresh();
+        refreshSummary();
         showDocumentWindow(selected, currentUser.get());
     }
 
@@ -683,11 +687,41 @@ public class MainController {
 
         AuthService authService = AppState.getInstance().getAuthService();
         Optional<User> currentUser = authService.getCurrentUser();
-        int watchedCount = currentUser.map(user -> user.getFollowedDocuments().size()).orElse(0);
+        int followingCount = currentUser.map(user -> user.getFollowedDocuments().size()).orElse(0);
+        int accessibleCount = currentUser
+                .map(user -> AppState.getInstance().getDocumentService().listAccessible(user).size())
+                .orElse(0);
+        int updatesCount = currentUser
+                .map(user -> AppState.getInstance().getWatchService().listUpdatedSinceLastSeen(user).size())
+                .orElse(0);
 
         documentsCountLabel.setText(String.valueOf(documentsCount));
         categoriesCountLabel.setText(String.valueOf(categoriesCount));
-        watchedCountLabel.setText(String.valueOf(watchedCount));
+        roleValueLabel.setText(currentUser.map(user -> formatRoleLabel(user.getRole().name())).orElse("-"));
+        followingAccessibleLabel.setText(followingCount + " / " + accessibleCount);
+        updatesSummaryLabel.setText(String.valueOf(updatesCount));
+    }
+
+    private String formatRoleLabel(String roleName) {
+        if (roleName == null || roleName.isBlank()) {
+            return "-";
+        }
+
+        String[] parts = roleName.toLowerCase().split("_");
+        StringBuilder label = new StringBuilder();
+        for (String part : parts) {
+            if (part.isBlank()) {
+                continue;
+            }
+            if (!label.isEmpty()) {
+                label.append(' ');
+            }
+            label.append(Character.toUpperCase(part.charAt(0)));
+            if (part.length() > 1) {
+                label.append(part.substring(1));
+            }
+        }
+        return label.length() == 0 ? "-" : label.toString();
     }
 
     private void applyRoleVisibility() {

@@ -30,6 +30,7 @@
             </padding>
 
             <Label text="Docflow" styleClass="h1"/>
+            <Label text="System data" style="-fx-text-fill: #6b7280; -fx-font-size: 11px; -fx-font-weight: 700;"/>
             <VBox spacing="6" styleClass="card">
                 <Label text="Categories"/>
                 <Label fx:id="categoriesCountLabel" text="0" styleClass="h2"/>
@@ -40,9 +41,20 @@
                 <Label fx:id="documentsCountLabel" text="0" styleClass="h2"/>
             </VBox>
 
+            <Label text="User data" style="-fx-text-fill: #6b7280; -fx-font-size: 11px; -fx-font-weight: 700;"/>
             <VBox spacing="6" styleClass="card">
-                <Label text="Watched"/>
-                <Label fx:id="watchedCountLabel" text="0" styleClass="h2"/>
+                <Label text="Role"/>
+                <Label fx:id="roleValueLabel" text="-" styleClass="h2"/>
+            </VBox>
+
+            <VBox spacing="6" styleClass="card">
+                <Label text="Following / Accessible"/>
+                <Label fx:id="followingAccessibleLabel" text="0 / 0" styleClass="h2"/>
+            </VBox>
+
+            <VBox spacing="6" styleClass="card">
+                <Label text="Updates"/>
+                <Label fx:id="updatesSummaryLabel" text="0" styleClass="h2"/>
             </VBox>
 
             <Region VBox.vgrow="ALWAYS"/>
