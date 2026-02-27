@@ -9,7 +9,7 @@ import com.docflow.ui.SceneStyler;
 
 public class Main extends Application {
 
-    private static final boolean AUTO_LOGIN_AS_ADMIN = false;
+    private static final boolean AUTO_LOGIN_AS_ADMIN = true;
 
     @Override
     public void start(Stage stage) throws Exception {

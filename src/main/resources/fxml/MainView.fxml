@@ -134,7 +134,7 @@
                                     </ImageView>
                                 </graphic>
                             </Button>
-                            <Button text="Reset" onAction="#onClearSearch" styleClass="reset-filter-button"/>
+                            <Button text="Reset" onAction="#onClearSearch"/>
                             <CheckBox fx:id="followingOnlyCheck" text="Following only" styleClass="admin-toggle-check"/>
                         </HBox>
                         <Region HBox.hgrow="ALWAYS"/>
