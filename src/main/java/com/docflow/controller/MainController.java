@@ -66,6 +66,7 @@ public class MainController {
     @FXML private Label statusLabel;
     @FXML private Label categoriesCountLabel;
     @FXML private Label documentsCountLabel;
+    @FXML private Label usersCountLabel;
     @FXML private Label roleValueLabel;
     @FXML private Label followingAccessibleLabel;
     @FXML private Label updatesSummaryLabel;
@@ -105,11 +106,9 @@ public class MainController {
             });
         }
         adminSettingsVisible = false;
-        refreshSummary();
-        applyRoleVisibility();
         configureTabAutoRefresh();
-        populateSearchCategories();
-        onLoadDocuments();
+        applyRoleVisibility();
+        showWorkspacePanel();
     }
 
     private void configureTabAutoRefresh() {
@@ -467,7 +466,6 @@ public class MainController {
         try {
             documentService.delete(currentUser.get(), selected.getId());
             onLoadDocuments();
-            refreshSummary();
         } catch (RuntimeException ex) {
             updateDocumentsResultsStatus(documentsTable.getItems().size());
         }
@@ -546,6 +544,7 @@ public class MainController {
         AdminService adminService = AppState.getInstance().getAdminService();
         adminService.deleteUser(currentUser.get(), selectedUser.getUsername());
         onLoadUsers();
+        refreshSummary();
     }
 
     private boolean isDefaultAdminUser(User user) {
@@ -684,13 +683,13 @@ public class MainController {
         adminService.deleteCategory(currentUser.get(), name);
         onLoadCategories();
         onLoadDocuments();
-        refreshSummary();
     }
 
     private void refreshSummary() {
         DocumentRepository documentRepository = AppState.getInstance().getDocumentRepository();
         int documentsCount = documentRepository.findAll().size();
         int categoriesCount = AppState.getInstance().getCategoryRepository().findAll().size();
+        int usersCount = AppState.getInstance().getUserRepository().findAll().size();
 
         AuthService authService = AppState.getInstance().getAuthService();
         Optional<User> currentUser = authService.getCurrentUser();
@@ -704,6 +703,7 @@ public class MainController {
 
         documentsCountLabel.setText(String.valueOf(documentsCount));
         categoriesCountLabel.setText(String.valueOf(categoriesCount));
+        usersCountLabel.setText(String.valueOf(usersCount));
         roleValueLabel.setText(currentUser.map(user -> formatRoleLabel(user.getRole().name())).orElse("-"));
         followingAccessibleLabel.setText(followingCount + " / " + accessibleCount);
         updatesSummaryLabel.setText(String.valueOf(updatesCount));
@@ -744,9 +744,6 @@ public class MainController {
         if (adminSettingsButton != null) {
             adminSettingsButton.setVisible(isAdmin);
             adminSettingsButton.setManaged(isAdmin);
-        }
-        if (!isAdmin) {
-            showWorkspacePanel();
         }
     }
 
@@ -996,7 +993,6 @@ public class MainController {
 
             if (controller.isSaved()) {
                 onLoadDocuments();
-                refreshSummary();
             }
         } catch (IOException ex) {
             updateDocumentsResultsStatus(documentsTable.getItems().size());
@@ -1042,7 +1038,6 @@ public class MainController {
 
             if (controller.isCreated()) {
                 onLoadDocuments();
-                refreshSummary();
             }
         } catch (IOException ex) {
             updateDocumentsResultsStatus(documentsTable.getItems().size());
@@ -1067,6 +1062,7 @@ public class MainController {
 
             if (controller.isCompleted()) {
                 onLoadUsers();
+                refreshSummary();
             }
         } catch (IOException ex) {
             updateUsersResultsStatus(usersTable == null ? 0 : usersTable.getItems().size());

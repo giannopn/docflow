@@ -20,19 +20,6 @@
     }
   },
   {
-    "firstName": "fdsaf",
-    "lastName": "fasd",
-    "username": "Test",
-    "password": "fdas",
-    "role": "SIMPLE_USER",
-    "allowedCategories": [
-      "Computer Science",
-      "General"
-    ],
-    "followedDocuments": [],
-    "lastSeenVersions": {}
-  },
-  {
     "firstName": "author",
     "lastName": "author",
     "username": "author",
@@ -60,6 +47,31 @@
     "role": "ADMIN",
     "allowedCategories": [
       "b"
+    ],
+    "followedDocuments": [],
+    "lastSeenVersions": {}
+  },
+  {
+    "firstName": "gdg",
+    "lastName": "gfdgd",
+    "username": "gfdg",
+    "password": "gdf",
+    "role": "SIMPLE_USER",
+    "allowedCategories": [
+      "Computer Science",
+      "General"
+    ],
+    "followedDocuments": [],
+    "lastSeenVersions": {}
+  },
+  {
+    "firstName": "fsf",
+    "lastName": "fdsf",
+    "username": "gdsg",
+    "password": "dgdfg",
+    "role": "SIMPLE_USER",
+    "allowedCategories": [
+      "Computer Science"
     ],
     "followedDocuments": [],
     "lastSeenVersions": {}

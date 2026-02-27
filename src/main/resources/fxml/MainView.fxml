@@ -34,13 +34,18 @@
             <Label text="Docflow" style="-fx-font-size: 28px; -fx-font-weight: 800; -fx-text-fill: #111827;"/>
             <Label text="System data" style="-fx-text-fill: #6b7280; -fx-font-size: 11px; -fx-font-weight: 700;"/>
             <VBox spacing="6" styleClass="card">
+                <Label text="Documents"/>
+                <Label fx:id="documentsCountLabel" text="0" styleClass="h2"/>
+            </VBox>
+
+            <VBox spacing="6" styleClass="card">
                 <Label text="Categories"/>
                 <Label fx:id="categoriesCountLabel" text="0" styleClass="h2"/>
             </VBox>
 
             <VBox spacing="6" styleClass="card">
-                <Label text="Documents"/>
-                <Label fx:id="documentsCountLabel" text="0" styleClass="h2"/>
+                <Label text="Users"/>
+                <Label fx:id="usersCountLabel" text="0" styleClass="h2"/>
             </VBox>
 
             <Label text="User data" style="-fx-text-fill: #6b7280; -fx-font-size: 11px; -fx-font-weight: 700;"/>
