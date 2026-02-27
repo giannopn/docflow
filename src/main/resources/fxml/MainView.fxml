@@ -133,13 +133,13 @@
                               style="-fx-background-color: #ffffff; -fx-border-color: #e6e9ee; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 6;">
                         <TableView fx:id="documentsTable" VBox.vgrow="ALWAYS">
                             <columns>
-                                <TableColumn fx:id="titleColumn" text="Title" prefWidth="200"/>
+                                <TableColumn fx:id="titleColumn" text="Title" prefWidth="280"/>
                                 <TableColumn fx:id="authorColumn" text="Author" prefWidth="150"/>
                                 <TableColumn fx:id="categoryColumn" text="Category" prefWidth="140"/>
-                                <TableColumn fx:id="createdAtColumn" text="Created" prefWidth="130"/>
-                                <TableColumn fx:id="modifiedAtColumn" text="Modified" prefWidth="130"/>
-                                <TableColumn fx:id="versionColumn" text="Version" prefWidth="90"/>
-                                <TableColumn fx:id="updatesColumn" text="Updates" prefWidth="210"/>
+                                <TableColumn fx:id="createdAtColumn" text="Created" prefWidth="120"/>
+                                <TableColumn fx:id="modifiedAtColumn" text="Modified" prefWidth="120"/>
+                                <TableColumn fx:id="versionColumn" text="Version" prefWidth="70"/>
+                                <TableColumn fx:id="updatesColumn" text="Updates" prefWidth="170"/>
                             </columns>
                         </TableView>
                         </VBox>
