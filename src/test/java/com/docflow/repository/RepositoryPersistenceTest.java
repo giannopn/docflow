@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
@@ -59,6 +60,7 @@ class RepositoryPersistenceTest {
                 "Alice Writer",
                 "Programming",
                 "2026-02-23",
+                "2026-02-23",
                 List.of(new DocumentVersion(1, "v1"))
         );
         document.updateContent("v2");
@@ -89,6 +91,7 @@ class RepositoryPersistenceTest {
         assertEquals(2, loadedDoc.getVersion());
         assertEquals("v2", loadedDoc.getContent());
         assertEquals(2, loadedDoc.getVersions().size());
+        assertEquals(LocalDate.now().toString(), loadedDoc.getModifiedAt());
 
         assertTrue(loadedCategories.findAll().contains("Programming"));
         assertTrue(loadedCategories.findAll().contains("Multimedia"));

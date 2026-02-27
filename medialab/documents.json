@@ -5,6 +5,7 @@
     "author": "Nikos Papadopoulos",
     "category": "Multimedia",
     "createdAt": "2024-10-01",
+    "modifiedAt": "2026-02-27",
     "versions": [
       {
         "versionNumber": 1,
@@ -25,6 +26,10 @@
       {
         "versionNumber": 5,
         "content": "This is the first document.\nOK\nOK\nOK fuck"
+      },
+      {
+        "versionNumber": 6,
+        "content": "This is the first document.\nOK\nOK\nOK fuck\nyea"
       }
     ]
   },
@@ -34,6 +39,7 @@
     "author": "Maria Ioannou",
     "category": "Programming",
     "createdAt": "2024-10-05",
+    "modifiedAt": "2024-10-05",
     "versions": [
       {
         "versionNumber": 1,
@@ -51,6 +57,7 @@
     "author": "Media Lab",
     "category": "General",
     "createdAt": "2026-02-17",
+    "modifiedAt": "2026-02-27",
     "versions": [
       {
         "versionNumber": 1,
@@ -59,6 +66,10 @@
       {
         "versionNumber": 2,
         "content": "heye"
+      },
+      {
+        "versionNumber": 3,
+        "content": "heyeczvc"
       }
     ]
   },
@@ -68,6 +79,7 @@
     "author": "Media Lab",
     "category": "eeff",
     "createdAt": "2026-02-18",
+    "modifiedAt": "2026-02-18",
     "versions": [
       {
         "versionNumber": 1,
@@ -81,6 +93,7 @@
     "author": "Media Lab",
     "category": "bigdawgthegio",
     "createdAt": "2026-02-18",
+    "modifiedAt": "2026-02-18",
     "versions": [
       {
         "versionNumber": 1,
@@ -94,6 +107,7 @@
     "author": "Media Lab",
     "category": "Computer Science",
     "createdAt": "2026-02-24",
+    "modifiedAt": "2026-02-24",
     "versions": [
       {
         "versionNumber": 1,
@@ -107,6 +121,7 @@
     "author": "Media Lab",
     "category": "Computer Science",
     "createdAt": "2026-02-26",
+    "modifiedAt": "2026-02-26",
     "versions": [
       {
         "versionNumber": 1,
@@ -120,10 +135,25 @@
     "author": "Media Lab",
     "category": "Computer Science",
     "createdAt": "2026-02-27",
+    "modifiedAt": "2026-02-27",
     "versions": [
       {
         "versionNumber": 1,
         "content": "xezo"
+      }
+    ]
+  },
+  {
+    "id": "6c9c4b40-6833-408b-b6fe-30312ae6993d",
+    "title": "heyy",
+    "author": "Media Lab",
+    "category": "Computer Science",
+    "createdAt": "2026-02-27",
+    "modifiedAt": "2026-02-27",
+    "versions": [
+      {
+        "versionNumber": 1,
+        "content": "fdsa"
       }
     ]
   }

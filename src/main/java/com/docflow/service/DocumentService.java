@@ -107,6 +107,10 @@ public class DocumentService {
 
         document.updateContent(newContent);
         documentRepository.update(document);
+        user.markDocumentVersionSeen(documentId, document.getVersion());
+        if (user.isFollowing(documentId)) {
+            userRepository.update(user);
+        }
     }
 
     public boolean delete(User user, String documentId) {

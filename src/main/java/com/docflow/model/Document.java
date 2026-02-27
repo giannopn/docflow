@@ -13,16 +13,18 @@ public class Document {
     private String author;
     private String category;
     private String createdAt;
+    private String modifiedAt;
     private List<DocumentVersion> versions;
 
     public Document(String id, String title, String author,
-                    String category, String createdAt,
+                    String category, String createdAt, String modifiedAt,
                     List<DocumentVersion> versions) {
         this.id = id;
         this.title = title;
         this.author = author;
         this.category = category;
-        this.createdAt = createdAt;
+        this.createdAt = Objects.requireNonNull(createdAt, "createdAt cannot be null");
+        this.modifiedAt = Objects.requireNonNull(modifiedAt, "modifiedAt cannot be null");
         this.versions = new ArrayList<>(Objects.requireNonNull(versions, "Versions cannot be null"));
         if (this.versions.isEmpty()) {
             throw new IllegalArgumentException("Document must contain at least one version");
@@ -39,6 +41,7 @@ public class Document {
                 title,
                 author,
                 category,
+                createdAt.toString(),
                 createdAt.toString(),
                 List.of(new DocumentVersion(1, content))
         );
@@ -68,6 +71,10 @@ public class Document {
         return createdAt;
     }
 
+    public String getModifiedAt() {
+        return modifiedAt;
+    }
+
     public int getVersion() {
         return latestVersion().getVersionNumber();
     }
@@ -83,6 +90,7 @@ public class Document {
     public void updateContent(String newContent) {
         int newVersionNumber = latestVersion().getVersionNumber() + 1;
         versions.add(new DocumentVersion(newVersionNumber, newContent));
+        modifiedAt = LocalDate.now().toString();
     }
 
     private DocumentVersion latestVersion() {

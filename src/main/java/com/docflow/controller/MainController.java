@@ -60,6 +60,7 @@ public class MainController {
     @FXML private TableColumn<Document, String> authorColumn;
     @FXML private TableColumn<Document, String> categoryColumn;
     @FXML private TableColumn<Document, String> createdAtColumn;
+    @FXML private TableColumn<Document, String> modifiedAtColumn;
     @FXML private TableColumn<Document, Number> versionColumn;
     @FXML private TableColumn<Document, Document> updatesColumn;
     @FXML private Label statusLabel;
@@ -176,6 +177,7 @@ public class MainController {
         authorColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getAuthor()));
         categoryColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getCategory()));
         createdAtColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getCreatedAt()));
+        modifiedAtColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getModifiedAt()));
         versionColumn.setCellValueFactory(cellData -> new ReadOnlyIntegerWrapper(cellData.getValue().getVersion()));
         updatesColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue()));
         updatesColumn.setCellFactory(column -> new TableCell<>() {

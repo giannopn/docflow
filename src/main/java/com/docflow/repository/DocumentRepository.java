@@ -55,6 +55,16 @@ public class DocumentRepository {
                 if (doc == null || doc.getId() == null || doc.getId().isBlank()) {
                     continue;
                 }
+                if (doc.getCreatedAt() == null || doc.getCreatedAt().isBlank()) {
+                    throw new IllegalStateException(
+                            "Invalid documents.json format: missing createdAt for document id " + doc.getId()
+                    );
+                }
+                if (doc.getModifiedAt() == null || doc.getModifiedAt().isBlank()) {
+                    throw new IllegalStateException(
+                            "Invalid documents.json format: missing modifiedAt for document id " + doc.getId()
+                    );
+                }
                 documentsById.put(doc.getId(), doc);
             }
         }

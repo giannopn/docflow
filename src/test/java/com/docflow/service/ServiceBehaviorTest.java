@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.time.LocalDate;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
@@ -81,6 +82,7 @@ class ServiceBehaviorTest {
     @Test
     void shouldCreateNewVersionOnDocumentUpdate() {
         Document created = documentService.create(author, "Versioned Doc", "Programming", "v1");
+        assertEquals(created.getCreatedAt(), created.getModifiedAt());
         documentService.updateContent(author, created.getId(), "v2");
         documentService.updateContent(author, created.getId(), "v3");
 
@@ -89,6 +91,7 @@ class ServiceBehaviorTest {
         assertEquals("v3", reloaded.getContent());
         assertEquals(3, reloaded.getVersions().size());
         assertEquals("v1", reloaded.getVersions().get(0).getContent());
+        assertEquals(LocalDate.now().toString(), reloaded.getModifiedAt());
 
         List<DocumentVersion> visibleToSimple = documentService.getVisibleVersions(simpleUser, reloaded);
         List<DocumentVersion> visibleToAuthor = documentService.getVisibleVersions(author, reloaded);
@@ -107,6 +110,7 @@ class ServiceBehaviorTest {
                 "Multimedia Intro",
                 "Other Author",
                 "Multimedia",
+                "2026-02-23",
                 "2026-02-23",
                 List.of(new DocumentVersion(1, "C"))
         );
@@ -134,6 +138,18 @@ class ServiceBehaviorTest {
 
         watchService.unfollow(simpleUser, document.getId());
         assertFalse(simpleUser.isFollowing(document.getId()));
+    }
+
+    @Test
+    void shouldMarkNewVersionAsSeenForUpdaterWhenFollowing() {
+        Document document = documentService.create(author, "Own Doc", "Programming", "v1");
+        watchService.follow(author, document.getId());
+        assertEquals(1, author.getLastSeenVersion(document.getId()));
+
+        documentService.updateContent(author, document.getId(), "v2");
+
+        assertEquals(2, author.getLastSeenVersion(document.getId()));
+        assertEquals(0, watchService.listUpdatedSinceLastSeen(author).size());
     }
 
     @Test
