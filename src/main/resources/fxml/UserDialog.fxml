@@ -57,13 +57,13 @@
     <VBox spacing="6" VBox.vgrow="ALWAYS">
         <Label text="Allowed categories"/>
         <Label text="Required for SIMPLE_USER and AUTHOR, optional for ADMIN." style="-fx-text-fill: #6b7280;"/>
-        <ListView fx:id="categoriesList" VBox.vgrow="ALWAYS"/>
+        <ListView fx:id="categoriesList" styleClass="admin-select-list" VBox.vgrow="ALWAYS"/>
     </VBox>
 
     <HBox spacing="8" alignment="CENTER_RIGHT">
         <Label fx:id="statusLabel" text=""/>
         <Region HBox.hgrow="ALWAYS"/>
-        <Button text="Cancel" onAction="#onCancel"/>
-        <Button fx:id="actionButton" text="Save" onAction="#onSubmit"/>
+        <Button text="Cancel" onAction="#onCancel" styleClass="admin-add-button"/>
+        <Button fx:id="actionButton" text="Save" onAction="#onSubmit" styleClass="dialog-ok-button"/>
     </HBox>
 </VBox>

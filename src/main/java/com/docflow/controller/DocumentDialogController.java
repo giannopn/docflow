@@ -5,6 +5,7 @@ import com.docflow.model.Document;
 import com.docflow.model.DocumentVersion;
 import com.docflow.model.User;
 import com.docflow.service.DocumentService;
+import com.docflow.ui.DialogStyler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -142,6 +143,7 @@ public class DocumentDialogController {
         ButtonType discardChangesButton = new ButtonType("Discard changes", ButtonBar.ButtonData.OK_DONE);
         ButtonType keepEditingButton = new ButtonType("Keep editing", ButtonBar.ButtonData.CANCEL_CLOSE);
         alert.getButtonTypes().setAll(keepEditingButton, discardChangesButton);
+        DialogStyler.apply(alert);
         return alert.showAndWait().filter(discardChangesButton::equals).isPresent();
     }
 
@@ -319,6 +321,7 @@ public class DocumentDialogController {
         alert.setTitle("Unsaved changes");
         alert.setHeaderText("Replace unsaved changes?");
         alert.setContentText("Your unsaved edits will be replaced.");
+        DialogStyler.apply(alert);
         Optional<ButtonType> response = alert.showAndWait();
         return response.isPresent() && response.get() == ButtonType.OK;
     }

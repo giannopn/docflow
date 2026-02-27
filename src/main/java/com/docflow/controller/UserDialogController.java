@@ -4,6 +4,7 @@ import com.docflow.AppState;
 import com.docflow.model.User;
 import com.docflow.model.UserRole;
 import com.docflow.service.AdminService;
+import com.docflow.ui.DialogStyler;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -17,6 +18,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxListCell;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -62,7 +64,21 @@ public class UserDialogController {
         passwordField.managedProperty().bind(Bindings.not(showPasswordCheck.selectedProperty()));
 
         roleSelector.getItems().setAll(UserRole.values());
-        categoriesList.setCellFactory(CheckBoxListCell.forListView(item -> categoryChecks.get(item)));
+        categoriesList.setCellFactory(listView -> {
+            CheckBoxListCell<String> cell = new CheckBoxListCell<>(item -> categoryChecks.get(item));
+            cell.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+                if (cell.isEmpty()) {
+                    return;
+                }
+                BooleanProperty checked = categoryChecks.get(cell.getItem());
+                if (checked != null) {
+                    checked.set(!checked.get());
+                }
+                categoriesList.getSelectionModel().clearSelection();
+                event.consume();
+            });
+            return cell;
+        });
 
         firstNameField.textProperty().addListener((obs, oldValue, newValue) -> updateActionButtonState());
         lastNameField.textProperty().addListener((obs, oldValue, newValue) -> updateActionButtonState());
@@ -115,7 +131,7 @@ public class UserDialogController {
         showPasswordCheck.setDisable(false);
         roleSelector.getSelectionModel().select(targetUser.getRole());
         roleSelector.setDisable(true);
-        actionButton.setText("Save changes");
+        actionButton.setText("Save");
         statusLabel.setText("");
 
         updateActionButtonState();
@@ -227,6 +243,7 @@ public class UserDialogController {
         alert.setContentText(message);
         Stage owner = (Stage) actionButton.getScene().getWindow();
         alert.initOwner(owner);
+        DialogStyler.apply(alert);
         alert.showAndWait();
     }
 }

@@ -5,6 +5,7 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.Tab?>
@@ -26,65 +27,86 @@
     <left>
         <VBox spacing="12" BorderPane.alignment="CENTER"
               prefWidth="160" minWidth="160" maxWidth="160"
-              style="-fx-border-color: transparent #e6e9ee transparent transparent; -fx-border-width: 0 1 0 0;">
+              styleClass="sidebar">
             <padding>
                 <Insets top="18" right="18" bottom="18" left="18"/>
             </padding>
 
             <Label text="Docflow" style="-fx-font-size: 28px; -fx-font-weight: 800; -fx-text-fill: #111827;"/>
-            <Label text="System data" style="-fx-text-fill: #6b7280; -fx-font-size: 11px; -fx-font-weight: 700;"/>
-            <VBox spacing="6" styleClass="card">
-                <Label text="Documents"/>
-                <Label fx:id="documentsCountLabel" text="0" styleClass="h2"/>
+            <VBox spacing="2" styleClass="section-header">
+                <Label text="System data" styleClass="section-title"/>
+                <Separator styleClass="section-divider"/>
             </VBox>
+            <HBox spacing="8" alignment="CENTER_LEFT" styleClass="metric-item">
+                <Label text="Documents" styleClass="metric-label"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="documentsCountLabel" text="0" styleClass="metric-value"/>
+            </HBox>
 
-            <VBox spacing="6" styleClass="card">
-                <Label text="Categories"/>
-                <Label fx:id="categoriesCountLabel" text="0" styleClass="h2"/>
-            </VBox>
+            <HBox spacing="8" alignment="CENTER_LEFT" styleClass="metric-item">
+                <Label text="Categories" styleClass="metric-label"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="categoriesCountLabel" text="0" styleClass="metric-value"/>
+            </HBox>
 
-            <VBox spacing="6" styleClass="card">
-                <Label text="Users"/>
-                <Label fx:id="usersCountLabel" text="0" styleClass="h2"/>
-            </VBox>
+            <HBox spacing="8" alignment="CENTER_LEFT" styleClass="metric-item">
+                <Label text="Users" styleClass="metric-label"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="usersCountLabel" text="0" styleClass="metric-value"/>
+            </HBox>
 
-            <Label text="User data" style="-fx-text-fill: #6b7280; -fx-font-size: 11px; -fx-font-weight: 700;"/>
-            <VBox spacing="6" styleClass="card">
-                <Label text="Role"/>
-                <Label fx:id="roleValueLabel" text="-" styleClass="h2"/>
+            <Region styleClass="section-gap"/>
+            <VBox spacing="2" styleClass="section-header">
+                <Label text="User data" styleClass="section-title"/>
+                <Separator styleClass="section-divider"/>
             </VBox>
+            <HBox spacing="8" alignment="CENTER_LEFT" styleClass="metric-item">
+                <Label text="Role" styleClass="metric-label"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="roleValueLabel" text="-" styleClass="metric-value"/>
+            </HBox>
 
-            <VBox spacing="6" styleClass="card">
-                <Label text="Following / Accessible"/>
-                <Label fx:id="followingAccessibleLabel" text="0 / 0" styleClass="h2"/>
-            </VBox>
+            <HBox spacing="8" alignment="CENTER_LEFT" styleClass="metric-item">
+                <Label text="Accessible" styleClass="metric-label"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="accessibleCountLabel" text="0" styleClass="metric-value"/>
+            </HBox>
 
-            <VBox spacing="6" styleClass="card">
-                <Label text="Updates"/>
-                <Label fx:id="updatesSummaryLabel" text="0" styleClass="h2"/>
-            </VBox>
+            <HBox spacing="8" alignment="CENTER_LEFT" styleClass="metric-item">
+                <Label text="Following" styleClass="metric-label"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="followingCountLabel" text="0" styleClass="metric-value"/>
+            </HBox>
+
+            <HBox spacing="8" alignment="CENTER_LEFT" styleClass="metric-item">
+                <Label text="Updates" styleClass="metric-label"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="updatesSummaryLabel" text="0" styleClass="metric-value"/>
+            </HBox>
 
             <Region VBox.vgrow="ALWAYS"/>
-            <Button fx:id="adminSettingsButton" text="Admin settings" onAction="#onToggleAdminSettings"
-                    maxWidth="1.7976931348623157E308" style="-fx-alignment: center;" graphicTextGap="6">
-                <graphic>
-                    <ImageView fitHeight="16" preserveRatio="true">
-                        <image>
-                            <Image url="@/icons/user-cog.png"/>
-                        </image>
-                    </ImageView>
-                </graphic>
-            </Button>
-            <Button text="Save and exit" onAction="#onSaveAndExit"
-                    maxWidth="1.7976931348623157E308" style="-fx-alignment: center;" graphicTextGap="6">
-                <graphic>
-                    <ImageView fitHeight="16" preserveRatio="true">
-                        <image>
-                            <Image url="@/icons/log-out.png"/>
-                        </image>
-                    </ImageView>
-                </graphic>
-            </Button>
+            <VBox spacing="4">
+                <Button fx:id="adminSettingsButton" text="Admin settings" onAction="#onToggleAdminSettings"
+                        maxWidth="1.7976931348623157E308" style="-fx-alignment: CENTER_LEFT;" graphicTextGap="6">
+                    <graphic>
+                        <ImageView fitHeight="16" preserveRatio="true">
+                            <image>
+                                <Image url="@/icons/user-cog.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button text="Save and exit" onAction="#onSaveAndExit"
+                        maxWidth="1.7976931348623157E308" style="-fx-alignment: CENTER_LEFT;" graphicTextGap="6">
+                    <graphic>
+                        <ImageView fitHeight="16" preserveRatio="true">
+                            <image>
+                                <Image url="@/icons/log-out.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </VBox>
         </VBox>
     </left>
 
@@ -95,32 +117,32 @@
                     <Insets top="18" right="18" bottom="4" left="18"/>
                 </padding>
 
-                <VBox spacing="8" style="-fx-background-color: #ffffff; -fx-border-color: #e6e9ee; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 10;">
+                <VBox spacing="8">
                     <HBox spacing="10" alignment="CENTER_LEFT">
                         <HBox spacing="8" alignment="CENTER_LEFT">
-                            <TextField fx:id="searchTitleField" promptText="Title" onAction="#onSearch" prefWidth="220"/>
-                            <TextField fx:id="searchAuthorField" promptText="Author" onAction="#onSearch" prefWidth="200"/>
-                            <ComboBox fx:id="searchCategoryCombo" promptText="Category" prefWidth="180"/>
+                            <TextField fx:id="searchTitleField" promptText="Title" onAction="#onSearch" prefWidth="220" styleClass="admin-add-input"/>
+                            <TextField fx:id="searchAuthorField" promptText="Author" onAction="#onSearch" prefWidth="200" styleClass="admin-add-input"/>
+                            <ComboBox fx:id="searchCategoryCombo" promptText="Category" prefWidth="180" styleClass="admin-add-combo"/>
                         </HBox>
                         <HBox spacing="8" alignment="CENTER_LEFT">
-                            <Button text="Search" onAction="#onSearch" graphicTextGap="6">
+                            <Button text="Search" onAction="#onSearch" styleClass="dialog-ok-button" graphicTextGap="6">
                                 <graphic>
                                     <ImageView fitHeight="16" preserveRatio="true">
                                         <image>
-                                            <Image url="@/icons/search.png"/>
+                                            <Image url="@/icons/search-white.png"/>
                                         </image>
                                     </ImageView>
                                 </graphic>
                             </Button>
-                            <Button text="Reset" onAction="#onClearSearch"/>
-                            <CheckBox fx:id="followingOnlyCheck" text="Following only"/>
+                            <Button text="Reset" onAction="#onClearSearch" styleClass="reset-filter-button"/>
+                            <CheckBox fx:id="followingOnlyCheck" text="Following only" styleClass="admin-toggle-check"/>
                         </HBox>
                         <Region HBox.hgrow="ALWAYS"/>
-                        <Button fx:id="newDocumentButton" text="New document" onAction="#onCreateDocument" graphicTextGap="6">
+                        <Button fx:id="newDocumentButton" text="New document" onAction="#onCreateDocument" styleClass="dialog-ok-button" graphicTextGap="6">
                             <graphic>
                                 <ImageView fitHeight="16" preserveRatio="true">
                                     <image>
-                                        <Image url="@/icons/file-plus-corner.png"/>
+                                        <Image url="@/icons/file-plus-corner-white.png"/>
                                     </image>
                                 </ImageView>
                             </graphic>
@@ -129,8 +151,7 @@
                 </VBox>
 
                     <VBox spacing="4" VBox.vgrow="ALWAYS">
-                        <VBox spacing="0" VBox.vgrow="ALWAYS"
-                              style="-fx-background-color: #ffffff; -fx-border-color: #e6e9ee; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 6;">
+                        <VBox spacing="0" VBox.vgrow="ALWAYS">
                         <TableView fx:id="documentsTable" VBox.vgrow="ALWAYS">
                             <columns>
                                 <TableColumn fx:id="titleColumn" text="Title" prefWidth="280"/>
@@ -157,11 +178,12 @@
                                 <Insets top="18" right="18" bottom="4" left="18"/>
                             </padding>
                             <HBox spacing="10">
-                                <Button text="Add user" onAction="#onAddUser" graphicTextGap="6">
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Button text="Add user" onAction="#onAddUser" styleClass="dialog-ok-button" graphicTextGap="6">
                                     <graphic>
                                         <ImageView fitHeight="16" preserveRatio="true">
                                             <image>
-                                                <Image url="@/icons/plus.png"/>
+                                                <Image url="@/icons/plus-white.png"/>
                                             </image>
                                         </ImageView>
                                     </graphic>
@@ -189,11 +211,12 @@
                                 <Insets top="18" right="18" bottom="4" left="18"/>
                             </padding>
                             <HBox spacing="10">
-                                <Button text="Add category" onAction="#onAddCategory" graphicTextGap="6">
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Button text="Add category" onAction="#onAddCategory" styleClass="dialog-ok-button" graphicTextGap="6">
                                     <graphic>
                                         <ImageView fitHeight="16" preserveRatio="true">
                                             <image>
-                                                <Image url="@/icons/plus.png"/>
+                                                <Image url="@/icons/plus-white.png"/>
                                             </image>
                                         </ImageView>
                                     </graphic>

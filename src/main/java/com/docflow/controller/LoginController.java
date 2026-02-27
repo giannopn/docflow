@@ -5,6 +5,8 @@ import com.docflow.model.Document;
 import com.docflow.model.User;
 import com.docflow.service.AuthService;
 import com.docflow.service.WatchService;
+import com.docflow.ui.DialogStyler;
+import com.docflow.ui.SceneStyler;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -95,6 +97,7 @@ public class LoginController {
         alert.setHeaderText("New versions are available for the following documents:");
         alert.setContentText(message.toString());
         alert.getDialogPane().setPrefSize(540, 360);
+        DialogStyler.apply(alert);
         alert.showAndWait();
     }
 
@@ -102,6 +105,7 @@ public class LoginController {
         Stage stage = (Stage) usernameField.getScene().getWindow();
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/MainView.fxml"));
         Scene scene = new Scene(root);
+        SceneStyler.apply(scene);
         stage.setScene(scene);
         stage.sizeToScene();
         stage.centerOnScreen();

@@ -49,7 +49,7 @@
         <Region prefWidth="86"/>
         <Label fx:id="statusLabel" text="" style="-fx-text-fill: #dc2626;"/>
         <Region HBox.hgrow="ALWAYS"/>
-        <Button fx:id="loginButton" text="Login" onAction="#onLogin"/>
+        <Button fx:id="loginButton" text="Login" onAction="#onLogin" styleClass="dialog-ok-button"/>
     </HBox>
 
 </VBox>

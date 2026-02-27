@@ -11,6 +11,8 @@ import com.docflow.service.AdminService;
 import com.docflow.service.AuthService;
 import com.docflow.service.DocumentService;
 import com.docflow.service.WatchService;
+import com.docflow.ui.DialogStyler;
+import com.docflow.ui.SceneStyler;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -68,7 +70,8 @@ public class MainController {
     @FXML private Label documentsCountLabel;
     @FXML private Label usersCountLabel;
     @FXML private Label roleValueLabel;
-    @FXML private Label followingAccessibleLabel;
+    @FXML private Label accessibleCountLabel;
+    @FXML private Label followingCountLabel;
     @FXML private Label updatesSummaryLabel;
     @FXML private TextField searchTitleField;
     @FXML private TextField searchAuthorField;
@@ -603,6 +606,7 @@ public class MainController {
         dialog.setTitle("New category");
         dialog.setHeaderText("Create a new category");
         dialog.setContentText("Category name:");
+        DialogStyler.apply(dialog);
         Optional<String> nameInput = dialog.showAndWait();
         if (nameInput.isEmpty()) {
             return;
@@ -642,6 +646,7 @@ public class MainController {
         dialog.setTitle("Rename category");
         dialog.setHeaderText("Rename selected category");
         dialog.setContentText("New name:");
+        DialogStyler.apply(dialog);
         Optional<String> newNameInput = dialog.showAndWait();
         if (newNameInput.isEmpty()) {
             return;
@@ -705,7 +710,8 @@ public class MainController {
         categoriesCountLabel.setText(String.valueOf(categoriesCount));
         usersCountLabel.setText(String.valueOf(usersCount));
         roleValueLabel.setText(currentUser.map(user -> formatRoleLabel(user.getRole().name())).orElse("-"));
-        followingAccessibleLabel.setText(followingCount + " / " + accessibleCount);
+        accessibleCountLabel.setText(String.valueOf(accessibleCount));
+        followingCountLabel.setText(String.valueOf(followingCount));
         updatesSummaryLabel.setText(String.valueOf(updatesCount));
     }
 
@@ -857,6 +863,7 @@ public class MainController {
         alert.setTitle("Warning");
         alert.setHeaderText(title);
         alert.setContentText(message);
+        DialogStyler.apply(alert);
         alert.showAndWait();
     }
 
@@ -865,6 +872,7 @@ public class MainController {
         alert.setTitle("Confirm delete");
         alert.setHeaderText("Delete selected document?");
         alert.setContentText("This action cannot be undone.");
+        DialogStyler.apply(alert);
         return alert.showAndWait().filter(ButtonType.OK::equals).isPresent();
     }
 
@@ -873,6 +881,7 @@ public class MainController {
         alert.setTitle("Confirm delete");
         alert.setHeaderText("Delete selected category?");
         alert.setContentText("All documents in this category will also be deleted.");
+        DialogStyler.apply(alert);
         return alert.showAndWait().filter(ButtonType.OK::equals).isPresent();
     }
 
@@ -881,6 +890,7 @@ public class MainController {
         alert.setTitle("Confirm delete");
         alert.setHeaderText("Delete selected user?");
         alert.setContentText("Documents created by this user will stay in the system.");
+        DialogStyler.apply(alert);
         return alert.showAndWait().filter(ButtonType.OK::equals).isPresent();
     }
 
@@ -983,6 +993,7 @@ public class MainController {
             dialogStage.initOwner(documentsTable.getScene().getWindow());
             dialogStage.setTitle(document.getTitle());
             Scene scene = new Scene(root);
+            SceneStyler.apply(scene);
             dialogStage.setScene(scene);
             dialogStage.setOnCloseRequest(event -> {
                 if (!controller.canCloseDialog()) {
@@ -1012,6 +1023,7 @@ public class MainController {
             dialogStage.initOwner(documentsTable.getScene().getWindow());
             dialogStage.setTitle(document.getTitle() + " - Info");
             Scene scene = new Scene(root);
+            SceneStyler.apply(scene);
             dialogStage.setScene(scene);
             dialogStage.setResizable(false);
             dialogStage.showAndWait();
@@ -1033,6 +1045,7 @@ public class MainController {
             dialogStage.initOwner(documentsTable.getScene().getWindow());
             dialogStage.setTitle("New document");
             Scene scene = new Scene(root);
+            SceneStyler.apply(scene);
             dialogStage.setScene(scene);
             dialogStage.showAndWait();
 
@@ -1057,6 +1070,7 @@ public class MainController {
             dialogStage.initOwner(usersTable.getScene().getWindow());
             dialogStage.setTitle("Add user");
             Scene scene = new Scene(root);
+            SceneStyler.apply(scene);
             dialogStage.setScene(scene);
             dialogStage.showAndWait();
 
@@ -1082,6 +1096,7 @@ public class MainController {
             dialogStage.initOwner(usersTable.getScene().getWindow());
             dialogStage.setTitle("Edit user");
             Scene scene = new Scene(root);
+            SceneStyler.apply(scene);
             dialogStage.setScene(scene);
             dialogStage.showAndWait();
 

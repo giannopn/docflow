@@ -5,10 +5,11 @@ import javafx.fxml.FXMLLoader;
 import com.docflow.service.AuthService;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import com.docflow.ui.SceneStyler;
 
 public class Main extends Application {
 
-    private static final boolean AUTO_LOGIN_AS_ADMIN = true;
+    private static final boolean AUTO_LOGIN_AS_ADMIN = false;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -24,6 +25,7 @@ public class Main extends Application {
         }
         FXMLLoader loader = new FXMLLoader(getClass().getResource(view));
         Scene scene = new Scene(loader.load());
+        SceneStyler.apply(scene);
 
         stage.setTitle("MediaLab Documents");
         stage.setScene(scene);

@@ -78,6 +78,6 @@
     <Region VBox.vgrow="ALWAYS"/>
 
     <HBox alignment="CENTER_RIGHT">
-        <Button text="Close" onAction="#onClose"/>
+        <Button text="Close" onAction="#onClose" styleClass="dialog-ok-button"/>
     </HBox>
 </VBox>

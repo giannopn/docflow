@@ -42,7 +42,7 @@
             <Label text="View version:" alignment="CENTER_RIGHT"/>
             <ComboBox fx:id="versionSelector" styleClass="clean-combo"/>
             <HBox spacing="8" alignment="CENTER_RIGHT">
-                <Button fx:id="restoreButton" text="Restore this version" onAction="#onRestore" graphicTextGap="6">
+                <Button fx:id="restoreButton" text="Restore this version" onAction="#onRestore" styleClass="admin-add-button" graphicTextGap="6">
                     <graphic>
                         <ImageView fitHeight="16" preserveRatio="true">
                             <image>
@@ -51,7 +51,7 @@
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="backToLatestButton" text="Back to latest" onAction="#onBackToLatest"/>
+                <Button fx:id="backToLatestButton" text="Back to latest" onAction="#onBackToLatest" styleClass="admin-add-button"/>
             </HBox>
         </VBox>
     </HBox>
@@ -76,7 +76,7 @@
         <Label fx:id="wordCountLabel" text="Words: 0"/>
         <Label fx:id="statusLabel" text=""/>
         <Region HBox.hgrow="ALWAYS"/>
-        <Button text="Close" onAction="#onClose"/>
-        <Button fx:id="saveButton" text="Save" onAction="#onSave"/>
+        <Button text="Close" onAction="#onClose" styleClass="admin-add-button"/>
+        <Button fx:id="saveButton" text="Save" onAction="#onSave" styleClass="dialog-ok-button"/>
     </HBox>
 </VBox>
