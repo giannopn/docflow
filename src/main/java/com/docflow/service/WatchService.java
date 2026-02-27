@@ -104,6 +104,21 @@ public class WatchService {
         }
     }
 
+    /**
+     * Marks a single document as seen at its current latest version, if it exists.
+     *
+     * @param user the user whose last-seen version is updated
+     * @param documentId the target document id
+     */
+    public void markSeen(User user, String documentId) {
+        Objects.requireNonNull(user, "User cannot be null");
+        if (documentId == null || documentId.isBlank()) {
+            return;
+        }
+        documentRepository.findById(documentId)
+                .ifPresent(doc -> user.markDocumentVersionSeen(documentId, doc.getVersion()));
+    }
+
     private Document getAccessibleDocument(User user, String documentId) {
         if (documentId == null || documentId.isBlank()) {
             throw new IllegalArgumentException("Document id cannot be empty");

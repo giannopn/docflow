@@ -96,8 +96,6 @@ public class LoginController {
         alert.setContentText(message.toString());
         alert.getDialogPane().setPrefSize(540, 360);
         alert.showAndWait();
-
-        watchService.markAllSeen(user);
     }
 
     private void openMainView() throws IOException {

@@ -11,8 +11,8 @@ import com.docflow.service.AdminService;
 import com.docflow.service.AuthService;
 import com.docflow.service.DocumentService;
 import com.docflow.service.WatchService;
-import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -61,7 +61,7 @@ public class MainController {
     @FXML private TableColumn<Document, String> categoryColumn;
     @FXML private TableColumn<Document, String> createdAtColumn;
     @FXML private TableColumn<Document, Number> versionColumn;
-    @FXML private TableColumn<Document, Boolean> followingColumn;
+    @FXML private TableColumn<Document, Document> updatesColumn;
     @FXML private Label statusLabel;
     @FXML private Label categoriesCountLabel;
     @FXML private Label documentsCountLabel;
@@ -97,7 +97,10 @@ public class MainController {
         configureUsersTable();
         configureCategoriesTable();
         if (followingOnlyCheck != null) {
-            followingOnlyCheck.selectedProperty().addListener((obs, wasSelected, isSelected) -> onSearch());
+            followingOnlyCheck.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
+                onSearch();
+                applyFollowingOnlySort(isSelected);
+            });
         }
         adminSettingsVisible = false;
         refreshSummary();
@@ -157,32 +160,49 @@ public class MainController {
     private void configureDocumentTable() {
         documentsTable.setPlaceholder(new Label(""));
         titleColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getTitle()));
+        titleColumn.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(String title, boolean empty) {
+                super.updateItem(title, empty);
+                if (empty || title == null) {
+                    setText(null);
+                    setStyle("");
+                    return;
+                }
+                setText(title);
+                setStyle("-fx-font-weight: 700;");
+            }
+        });
         authorColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getAuthor()));
         categoryColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getCategory()));
         createdAtColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getCreatedAt()));
         versionColumn.setCellValueFactory(cellData -> new ReadOnlyIntegerWrapper(cellData.getValue().getVersion()));
-        followingColumn.setCellValueFactory(cellData ->
-                new ReadOnlyBooleanWrapper(isFollowedByCurrentUser(cellData.getValue())));
-        followingColumn.setCellFactory(column -> new TableCell<>() {
+        updatesColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue()));
+        updatesColumn.setCellFactory(column -> new TableCell<>() {
             @Override
-            protected void updateItem(Boolean followed, boolean empty) {
-                super.updateItem(followed, empty);
-                if (empty || followed == null) {
+            protected void updateItem(Document document, boolean empty) {
+                super.updateItem(document, empty);
+                if (empty || document == null) {
                     setText(null);
-                    setGraphic(null);
+                    setStyle("");
                     return;
                 }
 
-                Label badge = new Label("\uD83D\uDC41");
-                badge.setStyle(
-                        followed
-                                ? "-fx-font-size: 14px; -fx-text-fill: #2563eb;"
-                                : "-fx-font-size: 14px; -fx-text-fill: #9ca3af; -fx-opacity: 0.45;"
-                );
-                setText(null);
-                setGraphic(badge);
+                String value = formatUpdatesCellValue(document);
+                setText(value);
+                if (value.startsWith("Update:")) {
+                    setStyle("-fx-text-fill: #b45309; -fx-font-weight: 700;");
+                } else if (value.startsWith("Following")) {
+                    setStyle("-fx-text-fill: #059669; -fx-font-weight: 700;");
+                } else {
+                    setStyle("-fx-text-fill: #6b7280; -fx-font-weight: 700;");
+                }
             }
         });
+        updatesColumn.setComparator(Comparator
+                .comparingInt((Document document) -> getUpdatesPriority(document))
+                .thenComparingInt(Document::getVersion)
+                .thenComparing(Document::getTitle, String.CASE_INSENSITIVE_ORDER));
 
         documentsTable.setRowFactory(table -> {
             TableRow<Document> row = new TableRow<>();
@@ -240,6 +260,19 @@ public class MainController {
 
             return row;
         });
+    }
+
+    private void applyFollowingOnlySort(boolean enabled) {
+        if (documentsTable == null || updatesColumn == null) {
+            return;
+        }
+        if (!enabled) {
+            documentsTable.getSortOrder().clear();
+            return;
+        }
+        updatesColumn.setSortType(TableColumn.SortType.ASCENDING);
+        documentsTable.getSortOrder().setAll(updatesColumn);
+        documentsTable.sort();
     }
 
     private void configureCategoriesTable() {
@@ -377,6 +410,9 @@ public class MainController {
         );
         results = applyFollowingFilter(currentUser, results);
         documentsTable.getItems().setAll(results);
+        if (followingOnlyCheck != null && followingOnlyCheck.isSelected()) {
+            applyFollowingOnlySort(true);
+        }
         updateDocumentsResultsStatus(results.size());
     }
 
@@ -415,6 +451,9 @@ public class MainController {
             return;
         }
 
+        WatchService watchService = AppState.getInstance().getWatchService();
+        watchService.markSeen(currentUser.get(), selected.getId());
+        documentsTable.refresh();
         showDocumentWindow(selected, currentUser.get());
     }
 
@@ -797,6 +836,43 @@ public class MainController {
             }
         }
         return filtered;
+    }
+
+    private String formatUpdatesCellValue(Document document) {
+        AuthService authService = AppState.getInstance().getAuthService();
+        Optional<User> currentUser = authService.getCurrentUser();
+        if (currentUser.isEmpty()) {
+            return "Not followed";
+        }
+
+        User user = currentUser.get();
+        if (!user.isFollowing(document.getId())) {
+            return "Not followed";
+        }
+
+        int oldVersion = user.getLastSeenVersion(document.getId());
+        int newVersion = document.getVersion();
+        if (newVersion > oldVersion) {
+            return "Update: v" + oldVersion + " -> v" + newVersion;
+        }
+        return "Following: No updates";
+    }
+
+    private int getUpdatesPriority(Document document) {
+        AuthService authService = AppState.getInstance().getAuthService();
+        Optional<User> currentUser = authService.getCurrentUser();
+        if (currentUser.isEmpty()) {
+            return 2;
+        }
+
+        User user = currentUser.get();
+        if (!user.isFollowing(document.getId())) {
+            return 2;
+        }
+
+        int oldVersion = user.getLastSeenVersion(document.getId());
+        int newVersion = document.getVersion();
+        return newVersion > oldVersion ? 0 : 1;
     }
 
     private void showDocumentWindow(Document document, User currentUser) {

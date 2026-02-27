@@ -113,5 +113,18 @@
         "content": "keimeno"
       }
     ]
+  },
+  {
+    "id": "86495681-e272-4185-9356-db4419f9f442",
+    "title": "cece",
+    "author": "Media Lab",
+    "category": "Computer Science",
+    "createdAt": "2026-02-27",
+    "versions": [
+      {
+        "versionNumber": 1,
+        "content": "xezo"
+      }
+    ]
   }
 ]

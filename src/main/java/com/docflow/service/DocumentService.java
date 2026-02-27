@@ -68,7 +68,7 @@ public class DocumentService {
             if (!authorQuery.isEmpty() && !document.getAuthor().toLowerCase().contains(authorQuery)) {
                 continue;
             }
-            if (!categoryQuery.isEmpty() && !document.getCategory().toLowerCase().contains(categoryQuery)) {
+            if (!categoryQuery.isEmpty() && !normalize(document.getCategory()).equals(categoryQuery)) {
                 continue;
             }
             result.add(document);
