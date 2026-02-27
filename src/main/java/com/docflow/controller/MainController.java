@@ -16,13 +16,11 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.Alert;
@@ -41,7 +39,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.io.InputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -54,6 +51,8 @@ public class MainController {
     private static final String ALL_CATEGORIES_OPTION = "All categories";
     private static final String DEFAULT_ADMIN_USERNAME = "medialab";
     private static final double BUTTON_ICON_SIZE = 16.0;
+    private static final String ADMIN_SETTINGS_ICON = "/icons/user-cog.png";
+    private static final String BACK_TO_DOCUMENTS_ICON = "/icons/table-properties.png";
 
     @FXML private TableView<Document> documentsTable;
     @FXML private TableColumn<Document, String> titleColumn;
@@ -95,7 +94,6 @@ public class MainController {
 
     @FXML
     private void initialize() {
-        configureNewDocumentButtonIcon();
         configureDocumentTable();
         configureUsersTable();
         configureCategoriesTable();
@@ -111,36 +109,6 @@ public class MainController {
         configureTabAutoRefresh();
         populateSearchCategories();
         onLoadDocuments();
-    }
-
-    private void configureNewDocumentButtonIcon() {
-        if (newDocumentButton == null) {
-            return;
-        }
-
-        Node icon = loadPngIcon("/icons/file-plus-corner.png", BUTTON_ICON_SIZE);
-        if (icon == null) {
-            return;
-        }
-
-        newDocumentButton.setGraphic(icon);
-        newDocumentButton.setGraphicTextGap(6);
-        newDocumentButton.setContentDisplay(ContentDisplay.LEFT);
-    }
-
-    private Node loadPngIcon(String resourcePath, double size) {
-        try (InputStream iconStream = getClass().getResourceAsStream(resourcePath)) {
-            if (iconStream == null) {
-                return null;
-            }
-
-            ImageView imageView = new ImageView(new Image(iconStream));
-            imageView.setPreserveRatio(true);
-            imageView.setFitHeight(size);
-            return imageView;
-        } catch (IOException | RuntimeException ignored) {
-            return null;
-        }
     }
 
     private void configureTabAutoRefresh() {
@@ -768,9 +736,7 @@ public class MainController {
             adminTabPane.setVisible(false);
             adminTabPane.setManaged(false);
         }
-        if (adminSettingsButton != null) {
-            adminSettingsButton.setText("Admin settings");
-        }
+        updateAdminSettingsButtonAppearance(false);
         onLoadDocuments();
     }
 
@@ -784,9 +750,7 @@ public class MainController {
             adminTabPane.setVisible(true);
             adminTabPane.setManaged(true);
         }
-        if (adminSettingsButton != null) {
-            adminSettingsButton.setText("Back to documents");
-        }
+        updateAdminSettingsButtonAppearance(true);
         onLoadUsers();
         onLoadCategories();
         if (adminTabPane != null && usersTab != null) {
@@ -825,6 +789,31 @@ public class MainController {
 
     private String formatCountLabel(int count, String singular, String plural) {
         return count + " " + (count == 1 ? singular : plural);
+    }
+
+    private void updateAdminSettingsButtonAppearance(boolean adminSettingsMode) {
+        if (adminSettingsButton == null) {
+            return;
+        }
+        adminSettingsButton.setText(adminSettingsMode ? "Documents" : "Admin settings");
+        adminSettingsButton.setGraphic(createButtonIcon(
+                adminSettingsMode ? BACK_TO_DOCUMENTS_ICON : ADMIN_SETTINGS_ICON
+        ));
+        adminSettingsButton.setGraphicTextGap(6);
+    }
+
+    private ImageView createButtonIcon(String resourcePath) {
+        if (resourcePath == null || resourcePath.isBlank()) {
+            return null;
+        }
+        java.net.URL iconUrl = getClass().getResource(resourcePath);
+        if (iconUrl == null) {
+            return null;
+        }
+        ImageView icon = new ImageView(new Image(iconUrl.toExternalForm()));
+        icon.setFitHeight(BUTTON_ICON_SIZE);
+        icon.setPreserveRatio(true);
+        return icon;
     }
 
     private void showCategoryWarning(String title, String message) {

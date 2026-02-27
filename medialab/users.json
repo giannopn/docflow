@@ -9,7 +9,6 @@
     "followedDocuments": [
       "1",
       "2",
-      "f4891809-07c8-475e-a811-5f352d6b081e",
       "6c9c4b40-6833-408b-b6fe-30312ae6993d",
       "b61276fe-ae03-4947-874a-a2886b39ea74",
       "86495681-e272-4185-9356-db4419f9f442"
@@ -18,24 +17,9 @@
       "1": 6,
       "2": 1,
       "b61276fe-ae03-4947-874a-a2886b39ea74": 3,
-      "f4891809-07c8-475e-a811-5f352d6b081e": 1,
       "86495681-e272-4185-9356-db4419f9f442": 1,
       "6c9c4b40-6833-408b-b6fe-30312ae6993d": 1
     }
-  },
-  {
-    "firstName": "Test",
-    "lastName": "User",
-    "username": "testuser",
-    "password": "test12345",
-    "role": "SIMPLE_USER",
-    "allowedCategories": [
-      "Multimedia",
-      "General",
-      "bigdawgthegio"
-    ],
-    "followedDocuments": [],
-    "lastSeenVersions": {}
   },
   {
     "firstName": "fdsaf",
@@ -62,8 +46,8 @@
       "c",
       "d",
       "Computer Science",
-      "General",
       "bigdawgthegio",
+      "General",
       "has",
       "dfsgs"
     ],

@@ -10,6 +10,8 @@
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
@@ -59,9 +61,25 @@
 
             <Region VBox.vgrow="ALWAYS"/>
             <Button fx:id="adminSettingsButton" text="Admin settings" onAction="#onToggleAdminSettings"
-                    maxWidth="1.7976931348623157E308" style="-fx-alignment: center;"/>
+                    maxWidth="1.7976931348623157E308" style="-fx-alignment: center;" graphicTextGap="6">
+                <graphic>
+                    <ImageView fitHeight="16" preserveRatio="true">
+                        <image>
+                            <Image url="@/icons/user-cog.png"/>
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
             <Button text="Save and exit" onAction="#onSaveAndExit"
-                    maxWidth="1.7976931348623157E308" style="-fx-alignment: center;"/>
+                    maxWidth="1.7976931348623157E308" style="-fx-alignment: center;" graphicTextGap="6">
+                <graphic>
+                    <ImageView fitHeight="16" preserveRatio="true">
+                        <image>
+                            <Image url="@/icons/log-out.png"/>
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
         </VBox>
     </left>
 
@@ -80,12 +98,28 @@
                             <ComboBox fx:id="searchCategoryCombo" promptText="Category" prefWidth="180"/>
                         </HBox>
                         <HBox spacing="8" alignment="CENTER_LEFT">
-                            <Button text="Search" onAction="#onSearch"/>
+                            <Button text="Search" onAction="#onSearch" graphicTextGap="6">
+                                <graphic>
+                                    <ImageView fitHeight="16" preserveRatio="true">
+                                        <image>
+                                            <Image url="@/icons/search.png"/>
+                                        </image>
+                                    </ImageView>
+                                </graphic>
+                            </Button>
                             <Button text="Reset" onAction="#onClearSearch"/>
                             <CheckBox fx:id="followingOnlyCheck" text="Following only"/>
                         </HBox>
                         <Region HBox.hgrow="ALWAYS"/>
-                        <Button fx:id="newDocumentButton" text="New document" onAction="#onCreateDocument"/>
+                        <Button fx:id="newDocumentButton" text="New document" onAction="#onCreateDocument" graphicTextGap="6">
+                            <graphic>
+                                <ImageView fitHeight="16" preserveRatio="true">
+                                    <image>
+                                        <Image url="@/icons/file-plus-corner.png"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
                     </HBox>
                 </VBox>
 
@@ -118,7 +152,15 @@
                                 <Insets top="18" right="18" bottom="4" left="18"/>
                             </padding>
                             <HBox spacing="10">
-                                <Button text="Add user" onAction="#onAddUser"/>
+                                <Button text="Add user" onAction="#onAddUser" graphicTextGap="6">
+                                    <graphic>
+                                        <ImageView fitHeight="16" preserveRatio="true">
+                                            <image>
+                                                <Image url="@/icons/plus.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
                             </HBox>
                             <VBox spacing="4" VBox.vgrow="ALWAYS">
                                 <TableView fx:id="usersTable" VBox.vgrow="ALWAYS">
@@ -142,7 +184,15 @@
                                 <Insets top="18" right="18" bottom="4" left="18"/>
                             </padding>
                             <HBox spacing="10">
-                                <Button text="New category" onAction="#onAddCategory"/>
+                                <Button text="Add category" onAction="#onAddCategory" graphicTextGap="6">
+                                    <graphic>
+                                        <ImageView fitHeight="16" preserveRatio="true">
+                                            <image>
+                                                <Image url="@/icons/plus.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
                             </HBox>
                             <VBox spacing="4" VBox.vgrow="ALWAYS">
                                 <TableView fx:id="categoriesTable" VBox.vgrow="ALWAYS">
