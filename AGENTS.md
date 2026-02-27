@@ -14,8 +14,7 @@ This is a Java 17 Maven project for a document manager app.
 - `mvn clean compile`: compile all main sources.
 - `mvn test`: run test suite (JUnit 5).
 - `mvn -DskipTests package`: build JAR quickly without tests.
-- `mvn javafx:run`: launch JavaFX app (`com.docflow.ui.Main`).
-- IDE backend smoke run: execute `com.docflow.Main` to verify JSON loading in terminal.
+- `mvn javafx:run`: launch JavaFX app (`com.docflow.Main`).
 
 ## Coding Style & Naming Conventions
 - Use 4-space indentation and UTF-8 text files.
