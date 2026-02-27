@@ -802,6 +802,16 @@ public class MainController {
     }
 
     private void updateDocumentsResultsStatus(int count) {
+        AuthService authService = AppState.getInstance().getAuthService();
+        Optional<User> currentUser = authService.getCurrentUser();
+        int accessibleCount = currentUser.isPresent()
+                ? AppState.getInstance().getDocumentService().listAccessible(currentUser.get()).size()
+                : AppState.getInstance().getDocumentRepository().findAll().size();
+
+        if (count < accessibleCount) {
+            statusLabel.setText(count + " of " + accessibleCount + " Documents");
+            return;
+        }
         statusLabel.setText(formatCountLabel(count, "Document", "Documents"));
     }
 

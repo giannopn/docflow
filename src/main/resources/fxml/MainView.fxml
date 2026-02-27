@@ -29,7 +29,7 @@
                 <Insets top="18" right="18" bottom="18" left="18"/>
             </padding>
 
-            <Label text="Docflow" styleClass="h1"/>
+            <Label text="Docflow" style="-fx-font-size: 28px; -fx-font-weight: 800; -fx-text-fill: #111827;"/>
             <Label text="System data" style="-fx-text-fill: #6b7280; -fx-font-size: 11px; -fx-font-weight: 700;"/>
             <VBox spacing="6" styleClass="card">
                 <Label text="Categories"/>
