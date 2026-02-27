@@ -13,6 +13,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
@@ -24,15 +26,20 @@ import java.util.Optional;
 
 public class DocumentDialogController {
 
+    private static final String COPY_BUTTON_TEXT = "Copy";
+    private static final String COPIED_BUTTON_TEXT = "Copied";
+
     @FXML private Label titleLabel;
     @FXML private Label authorValueLabel;
     @FXML private Label categoryValueLabel;
     @FXML private Label createdValueLabel;
     @FXML private ComboBox<DocumentVersion> versionSelector;
     @FXML private TextArea contentArea;
+    @FXML private Button copyButton;
     @FXML private Label statusLabel;
     @FXML private Label editedLabel;
     @FXML private Button restoreButton;
+    @FXML private Button backToLatestButton;
     @FXML private Button saveButton;
 
     private Document document;
@@ -55,6 +62,8 @@ public class DocumentDialogController {
                     && selectedVersion.getVersionNumber() == latestVersion) {
                 latestDraftContent = newValue;
             }
+            resetCopyButtonLabel();
+            updateCopyButtonState();
             updateSaveButtonState();
             updateEditedLabelState();
         });
@@ -111,6 +120,8 @@ public class DocumentDialogController {
         editedLabel.setManaged(canEdit);
         saveButton.setVisible(canEdit);
         saveButton.setManaged(canEdit);
+        resetCopyButtonLabel();
+        updateCopyButtonState();
 
         updateViewState();
     }
@@ -149,10 +160,7 @@ public class DocumentDialogController {
         }
 
         latestDraftContent = selectedVersion.getContent();
-        versionSelector.getItems().stream()
-                .filter(version -> version.getVersionNumber() == latestVersion)
-                .findFirst()
-                .ifPresent(version -> versionSelector.getSelectionModel().select(version));
+        selectLatestVersion();
         updateSaveButtonState();
     }
 
@@ -161,12 +169,34 @@ public class DocumentDialogController {
         closeWindow();
     }
 
+    @FXML
+    private void onBackToLatest() {
+        if (!canEdit) {
+            return;
+        }
+        selectLatestVersion();
+    }
+
+    @FXML
+    private void onCopyContent() {
+        if (contentArea == null) {
+            return;
+        }
+        ClipboardContent clipboardContent = new ClipboardContent();
+        clipboardContent.putString(contentArea.getText() == null ? "" : contentArea.getText());
+        Clipboard.getSystemClipboard().setContent(clipboardContent);
+        if (copyButton != null) {
+            copyButton.setText(COPIED_BUTTON_TEXT);
+        }
+    }
+
     private void updateViewState() {
         DocumentVersion selectedVersion = versionSelector.getSelectionModel().getSelectedItem();
         if (selectedVersion == null) {
             contentArea.clear();
             contentArea.setEditable(false);
-            updateRestoreButtonState();
+            updateVersionActionButtonsState();
+            updateCopyButtonState();
             saveButton.setDisable(true);
             updateEditedLabelState();
             return;
@@ -176,7 +206,8 @@ public class DocumentDialogController {
         contentArea.setText(latestSelected ? latestDraftContent : selectedVersion.getContent());
         boolean editable = canEdit && latestSelected;
         contentArea.setEditable(editable);
-        updateRestoreButtonState();
+        updateVersionActionButtonsState();
+        updateCopyButtonState();
         updateSaveButtonState();
         updateEditedLabelState();
     }
@@ -193,25 +224,54 @@ public class DocumentDialogController {
         saveButton.setDisable(!latestSelected || unchanged);
     }
 
-    private void updateRestoreButtonState() {
-        if (restoreButton == null) {
+    private void updateVersionActionButtonsState() {
+        if (restoreButton == null || backToLatestButton == null) {
             return;
         }
         if (!canEdit) {
             restoreButton.setVisible(false);
             restoreButton.setManaged(false);
+            backToLatestButton.setVisible(false);
+            backToLatestButton.setManaged(false);
             return;
         }
 
         DocumentVersion selectedVersion = versionSelector.getSelectionModel().getSelectedItem();
-        boolean canRestore = selectedVersion != null
+        boolean canUseVersionActions = selectedVersion != null
                 && selectedVersion.getVersionNumber() != latestVersion;
         restoreButton.setManaged(true);
-        restoreButton.setVisible(canRestore);
+        restoreButton.setVisible(canUseVersionActions);
+        backToLatestButton.setManaged(true);
+        backToLatestButton.setVisible(canUseVersionActions);
     }
 
     private boolean hasUnsavedLatestEdits() {
         return !Objects.equals(latestDraftContent, latestContent);
+    }
+
+    private void updateCopyButtonState() {
+        if (copyButton == null) {
+            return;
+        }
+        String content = contentArea == null ? null : contentArea.getText();
+        copyButton.setDisable(content == null || content.isEmpty());
+    }
+
+    private void resetCopyButtonLabel() {
+        if (copyButton == null) {
+            return;
+        }
+        copyButton.setText(COPY_BUTTON_TEXT);
+    }
+
+    private void selectLatestVersion() {
+        if (versionSelector == null) {
+            return;
+        }
+        versionSelector.getItems().stream()
+                .filter(version -> version.getVersionNumber() == latestVersion)
+                .findFirst()
+                .ifPresent(version -> versionSelector.getSelectionModel().select(version));
     }
 
     private void updateEditedLabelState() {

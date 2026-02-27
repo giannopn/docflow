@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox xmlns="http://javafx.com/javafx"
@@ -40,19 +41,36 @@
         <VBox spacing="4" alignment="TOP_RIGHT">
             <Label text="View version:" alignment="CENTER_RIGHT"/>
             <ComboBox fx:id="versionSelector" styleClass="clean-combo"/>
-            <Button fx:id="restoreButton" text="Restore this version" onAction="#onRestore" graphicTextGap="6">
-                <graphic>
-                    <ImageView fitHeight="16" preserveRatio="true">
-                        <image>
-                            <Image url="@/icons/undo-2.png"/>
-                        </image>
-                    </ImageView>
-                </graphic>
-            </Button>
+            <HBox spacing="8" alignment="CENTER_RIGHT">
+                <Button fx:id="restoreButton" text="Restore this version" onAction="#onRestore" graphicTextGap="6">
+                    <graphic>
+                        <ImageView fitHeight="16" preserveRatio="true">
+                            <image>
+                                <Image url="@/icons/undo-2.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button fx:id="backToLatestButton" text="Back to latest" onAction="#onBackToLatest"/>
+            </HBox>
         </VBox>
     </HBox>
 
-    <TextArea fx:id="contentArea" wrapText="true" prefRowCount="18" VBox.vgrow="ALWAYS"/>
+    <StackPane VBox.vgrow="ALWAYS">
+        <TextArea fx:id="contentArea" wrapText="true" prefRowCount="18"/>
+        <Button fx:id="copyButton" text="Copy" onAction="#onCopyContent" graphicTextGap="6" StackPane.alignment="BOTTOM_RIGHT">
+            <graphic>
+                <ImageView fitHeight="16" preserveRatio="true">
+                    <image>
+                        <Image url="@/icons/copy.png"/>
+                    </image>
+                </ImageView>
+            </graphic>
+            <StackPane.margin>
+                <Insets right="10" bottom="10"/>
+            </StackPane.margin>
+        </Button>
+    </StackPane>
 
     <HBox spacing="8" alignment="CENTER_RIGHT">
         <Label fx:id="editedLabel" text="Edited" style="-fx-text-fill: #b45309; -fx-font-weight: 600;"/>
