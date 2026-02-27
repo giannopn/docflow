@@ -6,8 +6,11 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox xmlns="http://javafx.com/javafx"
@@ -33,10 +36,25 @@
 
     <VBox spacing="8" VBox.vgrow="ALWAYS">
         <Label text="Content"/>
-        <TextArea fx:id="contentArea" wrapText="true" prefRowCount="14" VBox.vgrow="ALWAYS"/>
+        <StackPane VBox.vgrow="ALWAYS">
+            <TextArea fx:id="contentArea" wrapText="true" prefRowCount="14" VBox.vgrow="ALWAYS"/>
+            <Button fx:id="pasteClipboardButton" text="Paste clipboard" onAction="#onPasteClipboard" graphicTextGap="6" StackPane.alignment="BOTTOM_RIGHT">
+                <graphic>
+                    <ImageView fitHeight="16" preserveRatio="true">
+                        <image>
+                            <Image url="@/icons/clipboard-paste.png"/>
+                        </image>
+                    </ImageView>
+                </graphic>
+                <StackPane.margin>
+                    <Insets right="10" bottom="10"/>
+                </StackPane.margin>
+            </Button>
+        </StackPane>
     </VBox>
 
     <HBox spacing="8" alignment="CENTER_RIGHT">
+        <Label fx:id="wordCountLabel" text="Words: 0"/>
         <Label fx:id="statusLabel" text=""/>
         <Region HBox.hgrow="ALWAYS"/>
         <Button text="Cancel" onAction="#onCancel"/>

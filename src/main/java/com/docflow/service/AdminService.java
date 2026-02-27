@@ -46,6 +46,9 @@ public class AdminService {
 
     public boolean deleteUser(User admin, String username) {
         requireAdmin(admin);
+        if (isSameUsername(admin.getUsername(), username)) {
+            return false;
+        }
         return userRepository.remove(username);
     }
 
@@ -55,6 +58,9 @@ public class AdminService {
                                   String newLastName,
                                   Set<String> newAllowedCategories) {
         requireAdmin(admin);
+        if (isSameUsername(admin.getUsername(), username)) {
+            throw new IllegalStateException("User cannot edit own profile");
+        }
         Optional<User> existing = userRepository.findByUsername(username);
         if (existing.isEmpty()) {
             throw new IllegalArgumentException("User not found");
@@ -143,6 +149,13 @@ public class AdminService {
         if (!user.canManageUsers()) {
             throw new IllegalStateException("User is not admin");
         }
+    }
+
+    private boolean isSameUsername(String left, String right) {
+        if (left == null || right == null) {
+            return false;
+        }
+        return left.equalsIgnoreCase(right);
     }
 
     private void validateUserInput(String firstName,

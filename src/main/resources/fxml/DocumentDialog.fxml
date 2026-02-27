@@ -73,7 +73,7 @@
     </StackPane>
 
     <HBox spacing="8" alignment="CENTER_RIGHT">
-        <Label fx:id="editedLabel" text="Edited" style="-fx-text-fill: #b45309; -fx-font-weight: 600;"/>
+        <Label fx:id="wordCountLabel" text="Words: 0"/>
         <Label fx:id="statusLabel" text=""/>
         <Region HBox.hgrow="ALWAYS"/>
         <Button text="Close" onAction="#onClose"/>

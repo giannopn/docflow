@@ -8,6 +8,7 @@ import com.docflow.service.DocumentService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -36,8 +37,8 @@ public class DocumentDialogController {
     @FXML private ComboBox<DocumentVersion> versionSelector;
     @FXML private TextArea contentArea;
     @FXML private Button copyButton;
+    @FXML private Label wordCountLabel;
     @FXML private Label statusLabel;
-    @FXML private Label editedLabel;
     @FXML private Button restoreButton;
     @FXML private Button backToLatestButton;
     @FXML private Button saveButton;
@@ -64,8 +65,9 @@ public class DocumentDialogController {
             }
             resetCopyButtonLabel();
             updateCopyButtonState();
+            updateWordCount();
             updateSaveButtonState();
-            updateEditedLabelState();
+            updateWindowTitle();
         });
     }
 
@@ -116,18 +118,31 @@ public class DocumentDialogController {
         }
 
         versionSelector.setDisable(!canEdit);
-        editedLabel.setVisible(false);
-        editedLabel.setManaged(canEdit);
         saveButton.setVisible(canEdit);
         saveButton.setManaged(canEdit);
         resetCopyButtonLabel();
         updateCopyButtonState();
+        updateWordCount();
 
         updateViewState();
     }
 
     public boolean isSaved() {
         return saved;
+    }
+
+    public boolean canCloseDialog() {
+        if (saved || !hasUnsavedLatestEdits()) {
+            return true;
+        }
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Unsaved changes");
+        alert.setHeaderText("Close without saving?");
+        alert.setContentText("You have unsaved changes. They will be lost.");
+        ButtonType discardChangesButton = new ButtonType("Discard changes", ButtonBar.ButtonData.OK_DONE);
+        ButtonType keepEditingButton = new ButtonType("Keep editing", ButtonBar.ButtonData.CANCEL_CLOSE);
+        alert.getButtonTypes().setAll(keepEditingButton, discardChangesButton);
+        return alert.showAndWait().filter(discardChangesButton::equals).isPresent();
     }
 
     @FXML
@@ -166,6 +181,9 @@ public class DocumentDialogController {
 
     @FXML
     private void onClose() {
+        if (!canCloseDialog()) {
+            return;
+        }
         closeWindow();
     }
 
@@ -197,8 +215,9 @@ public class DocumentDialogController {
             contentArea.setEditable(false);
             updateVersionActionButtonsState();
             updateCopyButtonState();
+            updateWordCount();
             saveButton.setDisable(true);
-            updateEditedLabelState();
+            updateWindowTitle();
             return;
         }
 
@@ -208,8 +227,9 @@ public class DocumentDialogController {
         contentArea.setEditable(editable);
         updateVersionActionButtonsState();
         updateCopyButtonState();
+        updateWordCount();
         updateSaveButtonState();
-        updateEditedLabelState();
+        updateWindowTitle();
     }
 
     private void updateSaveButtonState() {
@@ -264,6 +284,17 @@ public class DocumentDialogController {
         copyButton.setText(COPY_BUTTON_TEXT);
     }
 
+    private void updateWordCount() {
+        if (wordCountLabel == null) {
+            return;
+        }
+        String content = contentArea == null || contentArea.getText() == null
+                ? ""
+                : contentArea.getText().trim();
+        int count = content.isEmpty() ? 0 : content.split("\\s+").length;
+        wordCountLabel.setText("Words: " + count);
+    }
+
     private void selectLatestVersion() {
         if (versionSelector == null) {
             return;
@@ -274,11 +305,13 @@ public class DocumentDialogController {
                 .ifPresent(version -> versionSelector.getSelectionModel().select(version));
     }
 
-    private void updateEditedLabelState() {
-        if (editedLabel == null || !canEdit) {
+    private void updateWindowTitle() {
+        if (titleLabel == null || titleLabel.getScene() == null || titleLabel.getScene().getWindow() == null) {
             return;
         }
-        editedLabel.setVisible(hasUnsavedLatestEdits());
+        Stage stage = (Stage) titleLabel.getScene().getWindow();
+        String baseTitle = document == null ? "" : document.getTitle();
+        stage.setTitle(hasUnsavedLatestEdits() ? baseTitle + " *" : baseTitle);
     }
 
     private boolean confirmRestoreReplacement() {

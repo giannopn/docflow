@@ -9,6 +9,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.Clipboard;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class NewDocumentDialogController {
     @FXML private TextField titleField;
     @FXML private ComboBox<String> categorySelector;
     @FXML private TextArea contentArea;
+    @FXML private Label wordCountLabel;
     @FXML private Label statusLabel;
     @FXML private Button createButton;
 
@@ -30,7 +32,10 @@ public class NewDocumentDialogController {
     @FXML
     private void initialize() {
         titleField.textProperty().addListener((obs, oldValue, newValue) -> updateCreateButtonState());
-        contentArea.textProperty().addListener((obs, oldValue, newValue) -> updateCreateButtonState());
+        contentArea.textProperty().addListener((obs, oldValue, newValue) -> {
+            updateCreateButtonState();
+            updateWordCount();
+        });
         categorySelector.valueProperty().addListener((obs, oldValue, newValue) -> updateCreateButtonState());
     }
 
@@ -53,6 +58,7 @@ public class NewDocumentDialogController {
         }
 
         updateCreateButtonState();
+        updateWordCount();
     }
 
     public boolean isCreated() {
@@ -83,6 +89,18 @@ public class NewDocumentDialogController {
         closeWindow();
     }
 
+    @FXML
+    private void onPasteClipboard() {
+        if (contentArea == null) {
+            return;
+        }
+        Clipboard clipboard = Clipboard.getSystemClipboard();
+        if (!clipboard.hasString()) {
+            return;
+        }
+        contentArea.paste();
+    }
+
     private void updateCreateButtonState() {
         String title = titleField.getText() == null ? "" : titleField.getText().trim();
         String content = contentArea.getText() == null ? "" : contentArea.getText().trim();
@@ -90,6 +108,17 @@ public class NewDocumentDialogController {
                 && categorySelector.getValue() != null
                 && !content.isBlank();
         createButton.setDisable(!valid);
+    }
+
+    private void updateWordCount() {
+        if (wordCountLabel == null) {
+            return;
+        }
+        String content = contentArea == null || contentArea.getText() == null
+                ? ""
+                : contentArea.getText().trim();
+        int count = content.isEmpty() ? 0 : content.split("\\s+").length;
+        wordCountLabel.setText("Words: " + count);
     }
 
     private void closeWindow() {

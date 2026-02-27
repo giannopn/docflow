@@ -165,4 +165,20 @@ class ServiceBehaviorTest {
         assertFalse(simpleUser.getAllowedCategories().contains("Programming"));
         assertFalse(simpleUser.isFollowing(document.getId()));
     }
+
+    @Test
+    void shouldNotAllowAdminToEditOrDeleteOwnAccount() {
+        assertFalse(adminService.deleteUser(admin, admin.getUsername()));
+
+        assertThrows(
+                IllegalStateException.class,
+                () -> adminService.updateUserProfile(
+                        admin,
+                        admin.getUsername(),
+                        "Updated",
+                        "Admin",
+                        Set.of()
+                )
+        );
+    }
 }

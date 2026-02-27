@@ -24,6 +24,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -326,9 +327,9 @@ public class MainController {
             ContextMenu contextMenu = new ContextMenu(editItem, deleteItem);
             contextMenu.setOnShowing(event -> {
                 User target = row.getItem();
-                boolean isDefaultAdmin = isDefaultAdminUser(target);
-                editItem.setDisable(isDefaultAdmin);
-                deleteItem.setDisable(isDefaultAdmin);
+                boolean actionBlocked = isDefaultAdminUser(target) || isCurrentAuthenticatedUser(target);
+                editItem.setDisable(actionBlocked);
+                deleteItem.setDisable(actionBlocked);
             });
             row.contextMenuProperty().bind(javafx.beans.binding.Bindings.when(row.emptyProperty())
                     .then((ContextMenu) null)
@@ -443,6 +444,9 @@ public class MainController {
         if (selected == null) {
             return;
         }
+        if (!confirmDocumentDeletion()) {
+            return;
+        }
 
         DocumentService documentService = AppState.getInstance().getDocumentService();
         try {
@@ -497,7 +501,9 @@ public class MainController {
         }
 
         User selectedUser = usersTable.getSelectionModel().getSelectedItem();
-        if (selectedUser == null || isDefaultAdminUser(selectedUser)) {
+        if (selectedUser == null
+                || isDefaultAdminUser(selectedUser)
+                || isCurrentAuthenticatedUser(selectedUser)) {
             return;
         }
 
@@ -513,7 +519,12 @@ public class MainController {
         }
 
         User selectedUser = usersTable.getSelectionModel().getSelectedItem();
-        if (selectedUser == null || isDefaultAdminUser(selectedUser)) {
+        if (selectedUser == null
+                || isDefaultAdminUser(selectedUser)
+                || isCurrentAuthenticatedUser(selectedUser)) {
+            return;
+        }
+        if (!confirmUserDeletion()) {
             return;
         }
 
@@ -524,6 +535,16 @@ public class MainController {
 
     private boolean isDefaultAdminUser(User user) {
         return user != null && DEFAULT_ADMIN_USERNAME.equalsIgnoreCase(user.getUsername());
+    }
+
+    private boolean isCurrentAuthenticatedUser(User user) {
+        if (user == null) {
+            return false;
+        }
+        AuthService authService = AppState.getInstance().getAuthService();
+        Optional<User> currentUser = authService.getCurrentUser();
+        return currentUser.isPresent()
+                && currentUser.get().getUsername().equalsIgnoreCase(user.getUsername());
     }
 
     @FXML
@@ -638,6 +659,9 @@ public class MainController {
 
         String name = getSelectedCategoryName();
         if (name == null || name.isBlank()) {
+            return;
+        }
+        if (!confirmCategoryDeletion()) {
             return;
         }
 
@@ -824,6 +848,30 @@ public class MainController {
         alert.showAndWait();
     }
 
+    private boolean confirmDocumentDeletion() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirm delete");
+        alert.setHeaderText("Delete selected document?");
+        alert.setContentText("This action cannot be undone.");
+        return alert.showAndWait().filter(ButtonType.OK::equals).isPresent();
+    }
+
+    private boolean confirmCategoryDeletion() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirm delete");
+        alert.setHeaderText("Delete selected category?");
+        alert.setContentText("All documents in this category will also be deleted.");
+        return alert.showAndWait().filter(ButtonType.OK::equals).isPresent();
+    }
+
+    private boolean confirmUserDeletion() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirm delete");
+        alert.setHeaderText("Delete selected user?");
+        alert.setContentText("Documents created by this user will stay in the system.");
+        return alert.showAndWait().filter(ButtonType.OK::equals).isPresent();
+    }
+
     private void populateSearchCategories() {
         if (searchCategoryCombo == null) {
             return;
@@ -924,6 +972,11 @@ public class MainController {
             dialogStage.setTitle(document.getTitle());
             Scene scene = new Scene(root);
             dialogStage.setScene(scene);
+            dialogStage.setOnCloseRequest(event -> {
+                if (!controller.canCloseDialog()) {
+                    event.consume();
+                }
+            });
             dialogStage.showAndWait();
 
             if (controller.isSaved()) {
