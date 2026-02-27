@@ -30,6 +30,10 @@
       {
         "versionNumber": 6,
         "content": "This is the first document.\nOK\nOK\nOK fuck\nyea"
+      },
+      {
+        "versionNumber": 7,
+        "content": "This is the first document.\nOK\nOK\nOK fuck"
       }
     ]
   },

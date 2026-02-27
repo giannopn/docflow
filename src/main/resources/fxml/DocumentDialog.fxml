@@ -5,6 +5,8 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
@@ -38,12 +40,22 @@
         <VBox spacing="4" alignment="TOP_RIGHT">
             <Label text="View version:" alignment="CENTER_RIGHT"/>
             <ComboBox fx:id="versionSelector" styleClass="clean-combo"/>
+            <Button fx:id="restoreButton" text="Restore this version" onAction="#onRestore" graphicTextGap="6">
+                <graphic>
+                    <ImageView fitHeight="16" preserveRatio="true">
+                        <image>
+                            <Image url="@/icons/undo-2.png"/>
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
         </VBox>
     </HBox>
 
     <TextArea fx:id="contentArea" wrapText="true" prefRowCount="18" VBox.vgrow="ALWAYS"/>
 
     <HBox spacing="8" alignment="CENTER_RIGHT">
+        <Label fx:id="editedLabel" text="Edited" style="-fx-text-fill: #b45309; -fx-font-weight: 600;"/>
         <Label fx:id="statusLabel" text=""/>
         <Region HBox.hgrow="ALWAYS"/>
         <Button text="Close" onAction="#onClose"/>
