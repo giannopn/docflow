@@ -191,6 +191,12 @@ public class MainController {
                 onOpenDocument();
             });
 
+            MenuItem infoItem = new MenuItem("Info");
+            infoItem.setOnAction(event -> {
+                documentsTable.getSelectionModel().select(row.getItem());
+                onShowDocumentInfo();
+            });
+
             MenuItem followItem = new MenuItem("Follow");
             followItem.setOnAction(event -> {
                 Document doc = row.getItem();
@@ -218,7 +224,7 @@ public class MainController {
                 onDeleteDocument();
             });
 
-            ContextMenu contextMenu = new ContextMenu(openItem, followItem, deleteItem);
+            ContextMenu contextMenu = new ContextMenu(openItem, followItem, infoItem, deleteItem);
             contextMenu.setOnShowing(event -> {
                 Document doc = row.getItem();
                 if (doc == null) {
@@ -430,6 +436,15 @@ public class MainController {
         documentsTable.refresh();
         refreshSummary();
         showDocumentWindow(selected, currentUser.get());
+    }
+
+    @FXML
+    private void onShowDocumentInfo() {
+        Document selected = documentsTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            return;
+        }
+        showDocumentInfoWindow(selected);
     }
 
     @FXML
@@ -983,6 +998,27 @@ public class MainController {
                 onLoadDocuments();
                 refreshSummary();
             }
+        } catch (IOException ex) {
+            updateDocumentsResultsStatus(documentsTable.getItems().size());
+        }
+    }
+
+    private void showDocumentInfoWindow(Document document) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/DocumentInfoDialog.fxml"));
+            Parent root = loader.load();
+
+            DocumentInfoDialogController controller = loader.getController();
+            controller.setDocument(document);
+
+            Stage dialogStage = new Stage();
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(documentsTable.getScene().getWindow());
+            dialogStage.setTitle(document.getTitle() + " - Info");
+            Scene scene = new Scene(root);
+            dialogStage.setScene(scene);
+            dialogStage.setResizable(false);
+            dialogStage.showAndWait();
         } catch (IOException ex) {
             updateDocumentsResultsStatus(documentsTable.getItems().size());
         }
