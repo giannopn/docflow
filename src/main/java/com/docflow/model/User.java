@@ -6,9 +6,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-/**
- * Base abstract class for all users of the system.
- */
 public abstract class User {
 
     protected String firstName;
@@ -16,19 +13,10 @@ public abstract class User {
     protected String username;
     protected String password;
 
-    /**
-     * Categories that the user has access to.
-     */
     protected Set<String> allowedCategories;
 
-    /**
-     * Document IDs that the user is following.
-     */
     protected Set<String> followedDocuments;
 
-    /**
-     * Last seen version number per followed document.
-     */
     protected Map<String, Integer> lastSeenVersions;
 
     protected User(String firstName,
@@ -45,10 +33,6 @@ public abstract class User {
         this.followedDocuments = new HashSet<>();
         this.lastSeenVersions = new HashMap<>();
     }
-
-    /* =======================
-       Basic getters
-       ======================= */
 
     public String getFirstName() {
         return firstName;
@@ -102,17 +86,9 @@ public abstract class User {
         this.lastSeenVersions = new HashMap<>(lastSeenVersions);
     }
 
-    /* =======================
-       Authentication
-       ======================= */
-
     public boolean checkPassword(String inputPassword) {
         return password.equals(inputPassword);
     }
-
-    /* =======================
-       Categories
-       ======================= */
 
     public boolean hasAccessToCategory(String category) {
         if (getRole() == UserRole.ADMIN) {
@@ -120,10 +96,6 @@ public abstract class User {
         }
         return allowedCategories.contains(category);
     }
-
-    /* =======================
-       Document following
-       ======================= */
 
     public void followDocument(String documentId) {
         followedDocuments.add(documentId);
@@ -149,10 +121,6 @@ public abstract class User {
         }
         lastSeenVersions.put(documentId, versionNumber);
     }
-
-    /* =======================
-       Utility
-       ======================= */
 
     public String getFullName() {
         return firstName + " " + lastName;

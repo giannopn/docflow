@@ -2,9 +2,6 @@ package com.docflow.model;
 
 import java.util.Set;
 
-/**
- * Author user role marker.
- */
 public class Author extends SimpleUser {
 
     public Author(String firstName,

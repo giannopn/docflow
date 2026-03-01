@@ -44,13 +44,6 @@ public class AuthService {
     }
 
     /**
-     * Clears the current authenticated session.
-     */
-    public void logout() {
-        currentUser = null;
-    }
-
-    /**
      * Returns the current authenticated user, if any.
      *
      * @return an {@link Optional} containing the current user when logged in;

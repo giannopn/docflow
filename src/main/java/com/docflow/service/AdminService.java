@@ -132,7 +132,7 @@ public class AdminService {
                 .filter(doc -> category.equals(doc.getCategory()))
                 .forEach(doc -> documentService.deleteAndCleanupWatchState(doc.getId()));
 
-        // Remove category from all users' allowed categories.
+        // Remove category from all users.
         for (User user : userRepository.findAll()) {
             Set<String> categories = user.getAllowedCategories();
             if (categories.remove(category)) {

@@ -8,15 +8,19 @@
     "allowedCategories": [],
     "followedDocuments": [
       "1",
+      "ab4d10dd-e712-42df-8899-7f46f439b2e9",
       "2",
+      "317277ff-68f1-470e-8100-4d7380464427",
       "b61276fe-ae03-4947-874a-a2886b39ea74",
       "86495681-e272-4185-9356-db4419f9f442"
     ],
     "lastSeenVersions": {
       "1": 7,
+      "ab4d10dd-e712-42df-8899-7f46f439b2e9": 5,
       "2": 2,
       "b61276fe-ae03-4947-874a-a2886b39ea74": 3,
-      "86495681-e272-4185-9356-db4419f9f442": 1
+      "86495681-e272-4185-9356-db4419f9f442": 1,
+      "317277ff-68f1-470e-8100-4d7380464427": 1
     }
   },
   {
@@ -75,5 +79,41 @@
     ],
     "followedDocuments": [],
     "lastSeenVersions": {}
+  },
+  {
+    "firstName": "simple",
+    "lastName": "simple",
+    "username": "s",
+    "password": "s",
+    "role": "SIMPLE_USER",
+    "allowedCategories": [
+      "ntua",
+      "ece"
+    ],
+    "followedDocuments": [
+      "317277ff-68f1-470e-8100-4d7380464427"
+    ],
+    "lastSeenVersions": {
+      "317277ff-68f1-470e-8100-4d7380464427": 1
+    }
+  },
+  {
+    "firstName": "author",
+    "lastName": "author",
+    "username": "a",
+    "password": "a",
+    "role": "AUTHOR",
+    "allowedCategories": [
+      "ntua",
+      "ece"
+    ],
+    "followedDocuments": [
+      "ab4d10dd-e712-42df-8899-7f46f439b2e9",
+      "317277ff-68f1-470e-8100-4d7380464427"
+    ],
+    "lastSeenVersions": {
+      "ab4d10dd-e712-42df-8899-7f46f439b2e9": 6,
+      "317277ff-68f1-470e-8100-4d7380464427": 2
+    }
   }
 ]

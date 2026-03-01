@@ -1,6 +1,3 @@
-/* Ο controller ειναι ενδιαμεσα απο το backend και το frontend.
-Βλεπει τι κουμπια πατησε ο χρηστης και καλει το backend */
-
 package com.docflow.controller;
 
 import com.docflow.AppState;

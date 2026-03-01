@@ -29,9 +29,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-/**
- * Repository responsible for loading and saving users to JSON files.
- */
 public class UserRepository {
 
     private static final String DATA_FOLDER = "medialab";

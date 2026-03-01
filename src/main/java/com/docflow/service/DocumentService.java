@@ -129,10 +129,6 @@ public class DocumentService {
         return deleteAndCleanupWatchState(documentId);
     }
 
-    /**
-     * Deletes the document and removes it from all users' follow state.
-     * Intended for shared internal use (e.g. category cascade deletion).
-     */
     public boolean deleteAndCleanupWatchState(String documentId) {
         if (documentId == null || documentId.isBlank()) {
             return false;
