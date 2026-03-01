@@ -1,257 +1,401 @@
 [
   {
-    "id": "1",
-    "title": "Introduction to Multimedia Technology",
-    "author": "Nikos Papadopoulos",
-    "category": "Multimedia",
-    "createdAt": "2024-10-01",
-    "modifiedAt": "2026-02-27",
+    "id": "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10001",
+    "title": "Clean Architecture Notes",
+    "author": "Elena Papadopoulou",
+    "category": "Software Engineering",
+    "createdAt": "2026-02-10",
+    "modifiedAt": "2026-02-10",
     "versions": [
       {
         "versionNumber": 1,
-        "content": "This is the first document."
+        "content": "A clear layer separation keeps business logic independent from the UI."
+      }
+    ]
+  },
+  {
+    "id": "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10002",
+    "title": "Intro to Java Streams",
+    "author": "Elena Papadopoulou",
+    "category": "Programming",
+    "createdAt": "2026-02-11",
+    "modifiedAt": "2026-03-01",
+    "versions": [
+      {
+        "versionNumber": 1,
+        "content": "Java streams simplify data processing with expressive pipelines."
       },
       {
         "versionNumber": 2,
-        "content": "This is the first document.\nOK"
+        "content": "Java streams simplify data processing and improve readability in collection logic."
       },
       {
         "versionNumber": 3,
-        "content": "This is the first document.\nOK\nOK"
+        "content": "Stream pipelines can combine filtering, mapping, and aggregation effectively."
       },
       {
         "versionNumber": 4,
-        "content": "This is the first document.\nOK\nOK\nOK"
-      },
-      {
-        "versionNumber": 5,
-        "content": "This is the first document.\nOK\nOK\nOK fuck"
-      },
-      {
-        "versionNumber": 6,
-        "content": "This is the first document.\nOK\nOK\nOK fuck\nyea"
-      },
-      {
-        "versionNumber": 7,
-        "content": "This is the first document.\nOK\nOK\nOK fuck"
+        "content": "Prefer named helper methods when stream chains become complex."
       }
     ]
   },
   {
-    "id": "2",
-    "title": "Java Basics",
-    "author": "Maria Ioannou",
-    "category": "Programming",
-    "createdAt": "2024-10-05",
-    "modifiedAt": "2024-10-05",
+    "id": "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10003",
+    "title": "Cloud Deployment Checklist",
+    "author": "Elena Papadopoulou",
+    "category": "Cloud Computing",
+    "createdAt": "2026-02-12",
+    "modifiedAt": "2026-02-12",
     "versions": [
       {
         "versionNumber": 1,
-        "content": "Introduction to Java."
-      },
-      {
-        "versionNumber": 2,
-        "content": "Introduction to Java."
+        "content": "Verify environment variables and database connectivity before each deployment."
       }
     ]
   },
   {
-    "id": "b61276fe-ae03-4947-874a-a2886b39ea74",
-    "title": "EGO",
-    "author": "Media Lab",
-    "category": "General",
-    "createdAt": "2026-02-17",
-    "modifiedAt": "2026-02-27",
+    "id": "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10004",
+    "title": "TCP Basics Summary",
+    "author": "Kostas Nikolaou",
+    "category": "Computer Networks",
+    "createdAt": "2026-02-13",
+    "modifiedAt": "2026-02-13",
     "versions": [
       {
         "versionNumber": 1,
-        "content": "hey"
+        "content": "TCP provides reliable ordered delivery through acknowledgments and retransmissions."
+      }
+    ]
+  },
+  {
+    "id": "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10005",
+    "title": "Secure Password Guidelines",
+    "author": "Kostas Nikolaou",
+    "category": "Cybersecurity",
+    "createdAt": "2026-02-14",
+    "modifiedAt": "2026-03-01",
+    "versions": [
+      {
+        "versionNumber": 1,
+        "content": "Use long unique passwords and avoid reusing credentials across services."
       },
       {
         "versionNumber": 2,
-        "content": "heye"
+        "content": "Use long unique passwords, prefer password managers, and enable multi-factor authentication."
       },
       {
         "versionNumber": 3,
-        "content": "heyeczvc"
+        "content": "Rotate credentials periodically and revoke compromised tokens quickly."
       }
     ]
   },
   {
-    "id": "6703dfc0-b099-42e5-9703-9f5a2236057c",
-    "title": "giokay",
-    "author": "Media Lab",
-    "category": "bigdawgthegio",
-    "createdAt": "2026-02-18",
-    "modifiedAt": "2026-02-18",
+    "id": "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10006",
+    "title": "Container Networking Quick Notes",
+    "author": "Kostas Nikolaou",
+    "category": "Cloud Computing",
+    "createdAt": "2026-02-15",
+    "modifiedAt": "2026-02-15",
     "versions": [
       {
         "versionNumber": 1,
-        "content": "gio"
+        "content": "Container networks isolate services while enabling controlled communication between them."
       }
     ]
   },
   {
-    "id": "72d1ae81-095b-4080-b543-963609d69aae",
-    "title": "test version",
-    "author": "Media Lab",
-    "category": "Computer Science",
+    "id": "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10007",
+    "title": "UX Research Interview Tips",
+    "author": "Maria Klefti",
+    "category": "Human-Computer Interaction",
+    "createdAt": "2026-02-16",
+    "modifiedAt": "2026-02-16",
+    "versions": [
+      {
+        "versionNumber": 1,
+        "content": "Ask open questions and let users describe tasks in their own words."
+      }
+    ]
+  },
+  {
+    "id": "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10008",
+    "title": "Color Contrast Rules",
+    "author": "Maria Klefti",
+    "category": "Computer Graphics",
+    "createdAt": "2026-02-17",
+    "modifiedAt": "2026-02-17",
+    "versions": [
+      {
+        "versionNumber": 1,
+        "content": "High contrast combinations improve readability and accessibility in interfaces."
+      }
+    ]
+  },
+  {
+    "id": "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10009",
+    "title": "Audio Editing Workflow",
+    "author": "Maria Klefti",
+    "category": "Multimedia",
+    "createdAt": "2026-02-18",
+    "modifiedAt": "2026-03-01",
+    "versions": [
+      {
+        "versionNumber": 1,
+        "content": "Trim noise first, then normalize levels for a consistent listening experience."
+      },
+      {
+        "versionNumber": 2,
+        "content": "Trim noise first, normalize levels, and apply light compression for clearer voice output."
+      },
+      {
+        "versionNumber": 3,
+        "content": "Apply equalization to balance frequencies before final export."
+      },
+      {
+        "versionNumber": 4,
+        "content": "Remove clipping peaks and smooth transitions between segments."
+      },
+      {
+        "versionNumber": 5,
+        "content": "Use a dedicated export preset for podcast delivery targets."
+      },
+      {
+        "versionNumber": 6,
+        "content": "Finalize mastering with consistent loudness across all tracks."
+      }
+    ]
+  },
+  {
+    "id": "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10010",
+    "title": "Data Cleaning Steps",
+    "author": "Dimitris Ioannou",
+    "category": "Data Science",
+    "createdAt": "2026-02-19",
+    "modifiedAt": "2026-02-19",
+    "versions": [
+      {
+        "versionNumber": 1,
+        "content": "Remove duplicates, fix missing values, and standardize formats before analysis."
+      }
+    ]
+  },
+  {
+    "id": "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10011",
+    "title": "Neural Network Intuition",
+    "author": "Dimitris Ioannou",
+    "category": "Artificial Intelligence",
+    "createdAt": "2026-02-20",
+    "modifiedAt": "2026-03-01",
+    "versions": [
+      {
+        "versionNumber": 1,
+        "content": "A neural network learns by adjusting weights to reduce prediction error."
+      },
+      {
+        "versionNumber": 2,
+        "content": "A neural network learns by adjusting weights with gradient-based optimization."
+      },
+      {
+        "versionNumber": 3,
+        "content": "Backpropagation propagates error through hidden layers during training."
+      },
+      {
+        "versionNumber": 4,
+        "content": "Learning rate tuning balances convergence speed and stability."
+      },
+      {
+        "versionNumber": 5,
+        "content": "Regularization helps reduce overfitting on limited datasets."
+      },
+      {
+        "versionNumber": 6,
+        "content": "Validation metrics should guide model selection decisions."
+      },
+      {
+        "versionNumber": 7,
+        "content": "The final model should be evaluated on unseen test samples."
+      }
+    ]
+  },
+  {
+    "id": "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10012",
+    "title": "Relational Schema Basics",
+    "author": "Dimitris Ioannou",
+    "category": "Databases",
+    "createdAt": "2026-02-21",
+    "modifiedAt": "2026-02-21",
+    "versions": [
+      {
+        "versionNumber": 1,
+        "content": "Use primary and foreign keys to model consistent relations across tables."
+      }
+    ]
+  },
+  {
+    "id": "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10013",
+    "title": "API Error Handling",
+    "author": "Elena Papadopoulou",
+    "category": "Programming",
+    "createdAt": "2026-02-22",
+    "modifiedAt": "2026-03-01",
+    "versions": [
+      {
+        "versionNumber": 1,
+        "content": "Return clear error messages so clients can recover from failures."
+      },
+      {
+        "versionNumber": 2,
+        "content": "Return clear error codes and messages so clients can recover consistently."
+      },
+      {
+        "versionNumber": 3,
+        "content": "Include correlation IDs to trace failures across distributed services."
+      }
+    ]
+  },
+  {
+    "id": "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10014",
+    "title": "CI Pipeline Checklist",
+    "author": "Elena Papadopoulou",
+    "category": "Software Engineering",
+    "createdAt": "2026-02-23",
+    "modifiedAt": "2026-03-01",
+    "versions": [
+      {
+        "versionNumber": 1,
+        "content": "Run tests and lint checks automatically before each merge to main."
+      },
+      {
+        "versionNumber": 2,
+        "content": "Run tests, lint, and packaging checks automatically before each merge to main."
+      }
+    ]
+  },
+  {
+    "id": "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10015",
+    "title": "Packet Loss Troubleshooting",
+    "author": "Kostas Nikolaou",
+    "category": "Computer Networks",
+    "createdAt": "2026-02-23",
+    "modifiedAt": "2026-03-01",
+    "versions": [
+      {
+        "versionNumber": 1,
+        "content": "Check interface errors and latency spikes before changing routing rules."
+      },
+      {
+        "versionNumber": 2,
+        "content": "Check interface errors, latency spikes, and DNS timeouts before rerouting traffic."
+      },
+      {
+        "versionNumber": 3,
+        "content": "Capture packets at ingress and egress points for comparison."
+      },
+      {
+        "versionNumber": 4,
+        "content": "Document recurring faults and automate threshold-based alerts."
+      }
+    ]
+  },
+  {
+    "id": "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10016",
+    "title": "Firewall Rule Hygiene",
+    "author": "Kostas Nikolaou",
+    "category": "Cybersecurity",
     "createdAt": "2026-02-24",
     "modifiedAt": "2026-02-24",
     "versions": [
       {
         "versionNumber": 1,
-        "content": "testing version 1"
+        "content": "Keep firewall rules minimal, reviewed, and grouped by service purpose."
       }
     ]
   },
   {
-    "id": "bf6a3490-04f9-4403-8714-3530d3202cf0",
-    "title": "titlos",
-    "author": "Media Lab",
-    "category": "Computer Science",
+    "id": "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10017",
+    "title": "Cloud Cost Monitoring",
+    "author": "Kostas Nikolaou",
+    "category": "Cloud Computing",
+    "createdAt": "2026-02-24",
+    "modifiedAt": "2026-02-24",
+    "versions": [
+      {
+        "versionNumber": 1,
+        "content": "Set monthly budget alerts and track spend per service to avoid surprises."
+      }
+    ]
+  },
+  {
+    "id": "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10018",
+    "title": "Design System Tokens",
+    "author": "Maria Klefti",
+    "category": "Human-Computer Interaction",
+    "createdAt": "2026-02-25",
+    "modifiedAt": "2026-02-25",
+    "versions": [
+      {
+        "versionNumber": 1,
+        "content": "Use shared color and spacing tokens for visual consistency across screens."
+      }
+    ]
+  },
+  {
+    "id": "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10019",
+    "title": "Image Compression Tradeoffs",
+    "author": "Maria Klefti",
+    "category": "Multimedia",
+    "createdAt": "2026-02-25",
+    "modifiedAt": "2026-02-26",
+    "versions": [
+      {
+        "versionNumber": 1,
+        "content": "Higher compression reduces file size but can introduce visible artifacts."
+      },
+      {
+        "versionNumber": 2,
+        "content": "Choose compression levels based on acceptable quality loss and delivery speed."
+      }
+    ]
+  },
+  {
+    "id": "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10020",
+    "title": "Feature Engineering Notes",
+    "author": "Dimitris Ioannou",
+    "category": "Data Science",
     "createdAt": "2026-02-26",
     "modifiedAt": "2026-02-26",
     "versions": [
       {
         "versionNumber": 1,
-        "content": "keimeno"
+        "content": "Useful features often come from domain knowledge and careful normalization."
       }
     ]
   },
   {
-    "id": "86495681-e272-4185-9356-db4419f9f442",
-    "title": "cece",
+    "id": "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10021",
+    "title": "Semester Presentation Plan",
     "author": "Media Lab",
-    "category": "Computer Science",
+    "category": "Digital Signal Processing",
     "createdAt": "2026-02-27",
     "modifiedAt": "2026-02-27",
     "versions": [
       {
         "versionNumber": 1,
-        "content": "xezo"
+        "content": "Prepare a short walkthrough covering architecture, roles, and versioning flow."
       }
     ]
   },
   {
-    "id": "6c9c4b40-6833-408b-b6fe-30312ae6993d",
-    "title": "heyy",
+    "id": "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10022",
+    "title": "Lab Policy Update",
     "author": "Media Lab",
-    "category": "Computer Science",
+    "category": "Programming",
     "createdAt": "2026-02-27",
     "modifiedAt": "2026-02-27",
     "versions": [
       {
         "versionNumber": 1,
-        "content": "fdsa"
-      }
-    ]
-  },
-  {
-    "id": "cae6749d-1748-4285-ab80-3e491c92ec93",
-    "title": "dfsgfffdgfdfg dthe ok button do it Discard changesthe ok button do it Discard changesthe ok button do it Discard changesthe ok button do it Discard changesthe ok button do it Discard changesthe ok button do it Discard changes",
-    "author": "Media Lab",
-    "category": "Computer Science",
-    "createdAt": "2026-02-27",
-    "modifiedAt": "2026-02-27",
-    "versions": [
-      {
-        "versionNumber": 1,
-        "content": "fdsaf"
-      }
-    ]
-  },
-  {
-    "id": "508c5920-d1dc-446f-b854-e48fb8237d2d",
-    "title": "fgsdf",
-    "author": "Media Lab",
-    "category": "Computer Science",
-    "createdAt": "2026-02-27",
-    "modifiedAt": "2026-02-27",
-    "versions": [
-      {
-        "versionNumber": 1,
-        "content": "gdsgfd"
-      }
-    ]
-  },
-  {
-    "id": "1849deed-9a82-4866-a362-584e108bfc2a",
-    "title": "Java Basics",
-    "author": "Media Lab",
-    "category": "Computer Science",
-    "createdAt": "2026-02-27",
-    "modifiedAt": "2026-02-27",
-    "versions": [
-      {
-        "versionNumber": 1,
-        "content": "dfsa"
-      }
-    ]
-  },
-  {
-    "id": "592f4be3-577f-40f7-b7ab-c10e372d03e5",
-    "title": "doc1",
-    "author": "author author",
-    "category": "ece",
-    "createdAt": "2026-02-28",
-    "modifiedAt": "2026-02-28",
-    "versions": [
-      {
-        "versionNumber": 1,
-        "content": "doc1 gfdg"
-      }
-    ]
-  },
-  {
-    "id": "ab4d10dd-e712-42df-8899-7f46f439b2e9",
-    "title": "doc2",
-    "author": "author author",
-    "category": "ntua",
-    "createdAt": "2026-02-28",
-    "modifiedAt": "2026-02-28",
-    "versions": [
-      {
-        "versionNumber": 1,
-        "content": "doc"
-      },
-      {
-        "versionNumber": 2,
-        "content": "doc\nvxczv\nvcxz"
-      },
-      {
-        "versionNumber": 3,
-        "content": "doc\nvxczv\nvcxzvxcv"
-      },
-      {
-        "versionNumber": 4,
-        "content": "doc\nvxczvvcxzv\nvcxzvxcv"
-      },
-      {
-        "versionNumber": 5,
-        "content": "doc\nvxczvvcxzv\nvcxzvxcvfdsaf"
-      },
-      {
-        "versionNumber": 6,
-        "content": "doc\nvxczvvcxzv\nvcxzvxcvfdsaffdas"
-      }
-    ]
-  },
-  {
-    "id": "317277ff-68f1-470e-8100-4d7380464427",
-    "title": "doc3",
-    "author": "author author",
-    "category": "ece",
-    "createdAt": "2026-02-28",
-    "modifiedAt": "2026-02-28",
-    "versions": [
-      {
-        "versionNumber": 1,
-        "content": "gfdg\ngfdg"
-      },
-      {
-        "versionNumber": 2,
-        "content": "gfdg\ngfdgfds"
+        "content": "All submissions should include tests and a brief implementation report."
       }
     ]
   }

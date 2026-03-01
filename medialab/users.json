@@ -7,113 +7,140 @@
     "role": "ADMIN",
     "allowedCategories": [],
     "followedDocuments": [
-      "1",
-      "ab4d10dd-e712-42df-8899-7f46f439b2e9",
-      "2",
-      "317277ff-68f1-470e-8100-4d7380464427",
-      "b61276fe-ae03-4947-874a-a2886b39ea74",
-      "86495681-e272-4185-9356-db4419f9f442"
+      "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10003",
+      "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10013",
+      "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10002",
+      "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10016",
+      "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10004",
+      "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10017",
+      "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10009",
+      "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10019",
+      "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10010",
+      "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10011"
     ],
     "lastSeenVersions": {
-      "1": 7,
-      "ab4d10dd-e712-42df-8899-7f46f439b2e9": 5,
-      "2": 2,
-      "b61276fe-ae03-4947-874a-a2886b39ea74": 3,
-      "86495681-e272-4185-9356-db4419f9f442": 1,
-      "317277ff-68f1-470e-8100-4d7380464427": 1
+      "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10003": 1,
+      "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10013": 3,
+      "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10002": 3,
+      "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10016": 1,
+      "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10004": 1,
+      "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10017": 1,
+      "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10009": 5,
+      "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10019": 1,
+      "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10010": 1,
+      "0f3c2a10-4b61-4e0e-9d01-a1d5b6e10011": 5
     }
   },
   {
-    "firstName": "author",
-    "lastName": "author",
-    "username": "author",
-    "password": "author",
+    "firstName": "Elena",
+    "lastName": "Papadopoulou",
+    "username": "elenapapa",
+    "password": "demo123",
     "role": "AUTHOR",
     "allowedCategories": [
-      "a",
-      "b",
-      "c",
-      "d",
-      "Computer Science",
-      "bigdawgthegio",
-      "General",
-      "has",
-      "dfsgs"
+      "Cloud Computing",
+      "Software Engineering",
+      "Programming"
     ],
     "followedDocuments": [],
     "lastSeenVersions": {}
   },
   {
-    "firstName": "Media",
-    "lastName": "Lab",
-    "username": "medialab2",
-    "password": "admin",
-    "role": "ADMIN",
-    "allowedCategories": [
-      "b"
-    ],
-    "followedDocuments": [],
-    "lastSeenVersions": {}
-  },
-  {
-    "firstName": "gdg",
-    "lastName": "gfdgd",
-    "username": "gfdg",
-    "password": "gdf",
-    "role": "SIMPLE_USER",
-    "allowedCategories": [
-      "Computer Science",
-      "General"
-    ],
-    "followedDocuments": [],
-    "lastSeenVersions": {}
-  },
-  {
-    "firstName": "fsf",
-    "lastName": "fdsf",
-    "username": "gdsg",
-    "password": "dgdfg",
-    "role": "SIMPLE_USER",
-    "allowedCategories": [
-      "Computer Science"
-    ],
-    "followedDocuments": [],
-    "lastSeenVersions": {}
-  },
-  {
-    "firstName": "simple",
-    "lastName": "simple",
-    "username": "s",
-    "password": "s",
-    "role": "SIMPLE_USER",
-    "allowedCategories": [
-      "ntua",
-      "ece"
-    ],
-    "followedDocuments": [
-      "317277ff-68f1-470e-8100-4d7380464427"
-    ],
-    "lastSeenVersions": {
-      "317277ff-68f1-470e-8100-4d7380464427": 1
-    }
-  },
-  {
-    "firstName": "author",
-    "lastName": "author",
-    "username": "a",
-    "password": "a",
+    "firstName": "Kostas",
+    "lastName": "Nikolaou",
+    "username": "kostasnik",
+    "password": "demo123",
     "role": "AUTHOR",
     "allowedCategories": [
-      "ntua",
-      "ece"
+      "Computer Networks",
+      "Cloud Computing",
+      "Cybersecurity"
     ],
-    "followedDocuments": [
-      "ab4d10dd-e712-42df-8899-7f46f439b2e9",
-      "317277ff-68f1-470e-8100-4d7380464427"
+    "followedDocuments": [],
+    "lastSeenVersions": {}
+  },
+  {
+    "firstName": "Maria",
+    "lastName": "Klefti",
+    "username": "mariaklefti",
+    "password": "demo123",
+    "role": "AUTHOR",
+    "allowedCategories": [
+      "Multimedia",
+      "Computer Graphics",
+      "Human-Computer Interaction"
     ],
-    "lastSeenVersions": {
-      "ab4d10dd-e712-42df-8899-7f46f439b2e9": 6,
-      "317277ff-68f1-470e-8100-4d7380464427": 2
-    }
+    "followedDocuments": [],
+    "lastSeenVersions": {}
+  },
+  {
+    "firstName": "Dimitris",
+    "lastName": "Ioannou",
+    "username": "dimitrisio",
+    "password": "demo123",
+    "role": "AUTHOR",
+    "allowedCategories": [
+      "Data Science",
+      "Databases",
+      "Artificial Intelligence"
+    ],
+    "followedDocuments": [],
+    "lastSeenVersions": {}
+  },
+  {
+    "firstName": "Anna",
+    "lastName": "Georgiou",
+    "username": "annageo",
+    "password": "demo123",
+    "role": "SIMPLE_USER",
+    "allowedCategories": [
+      "Cloud Computing",
+      "Software Engineering",
+      "Programming"
+    ],
+    "followedDocuments": [],
+    "lastSeenVersions": {}
+  },
+  {
+    "firstName": "Petros",
+    "lastName": "Laskaridis",
+    "username": "petroslask",
+    "password": "demo123",
+    "role": "SIMPLE_USER",
+    "allowedCategories": [
+      "Computer Networks",
+      "Cloud Computing",
+      "Cybersecurity"
+    ],
+    "followedDocuments": [],
+    "lastSeenVersions": {}
+  },
+  {
+    "firstName": "Sofia",
+    "lastName": "Manou",
+    "username": "sofiamanou",
+    "password": "demo123",
+    "role": "SIMPLE_USER",
+    "allowedCategories": [
+      "Multimedia",
+      "Computer Graphics",
+      "Human-Computer Interaction"
+    ],
+    "followedDocuments": [],
+    "lastSeenVersions": {}
+  },
+  {
+    "firstName": "Giannis",
+    "lastName": "Roussos",
+    "username": "giannisrou",
+    "password": "demo123",
+    "role": "SIMPLE_USER",
+    "allowedCategories": [
+      "Data Science",
+      "Databases",
+      "Artificial Intelligence"
+    ],
+    "followedDocuments": [],
+    "lastSeenVersions": {}
   }
 ]
