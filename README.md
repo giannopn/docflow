@@ -33,6 +33,11 @@ mvn javafx:run
 mvn test
 ```
 
+## Default Admin Login
+
+- Username: `medialab`
+- Password: `medialab_2025`
+
 ## Project Structure
 
 - `src/main/java/com/docflow` - application source code
@@ -43,11 +48,6 @@ mvn test
 - `src/main/resources/fxml` - JavaFX views
 - `src/main/resources/css` - styling
 - `medialab/*.json` - persisted application data
-
-## Default Admin Login
-
-- Username: `medialab`
-- Password: `medialab_2025`
 
 ## Core Features
 
@@ -63,6 +63,11 @@ mvn test
 - Application state is loaded from JSON files on startup.
 - All changes are performed in-memory.
 - The complete state is persisted back to JSON on application shutdown.
+
+## Javadoc Coverage
+
+- `com.docflow.service.AuthService`
+- `com.docflow.service.WatchService`
 
 ## Notes
 
