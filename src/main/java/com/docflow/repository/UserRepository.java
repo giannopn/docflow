@@ -150,16 +150,12 @@ public class UserRepository {
             return;
         }
 
-        Set<String> adminCategories = new LinkedHashSet<>();
-        adminCategories.add("Multimedia");
-        adminCategories.add("Programming");
-
         Admin admin = new Admin(
                 DEFAULT_ADMIN_FIRST_NAME,
                 DEFAULT_ADMIN_LAST_NAME,
                 DEFAULT_ADMIN_USERNAME,
                 DEFAULT_ADMIN_PASSWORD,
-                adminCategories
+                Set.of()
         );
 
         usersByUsername.put(admin.getUsername(), admin);
