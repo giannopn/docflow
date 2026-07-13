@@ -2,6 +2,17 @@
 
 JavaFX document management application with role-based access, document versioning, and JSON persistence.
 
+## Download
+
+Download the latest macOS version from the
+[GitHub Releases page](https://github.com/giannopn/document-manager-app/releases/latest).
+
+The current build supports Apple Silicon Macs and includes Java and JavaFX, so
+no additional software is required.
+
+> The application is currently unsigned. If macOS blocks it, right-click
+> DocFlow in Applications and select **Open**.
+
 ## Tech Stack
 
 - Java 17
