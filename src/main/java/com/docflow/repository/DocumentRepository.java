@@ -12,7 +12,6 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -23,7 +22,6 @@ import java.util.Optional;
 
 public class DocumentRepository {
 
-    private static final String DATA_FOLDER = "medialab";
     private static final String DOCUMENTS_FILE = "documents.json";
 
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -32,7 +30,7 @@ public class DocumentRepository {
     private final Type listType = new TypeToken<List<Document>>() {}.getType();
 
     public DocumentRepository() {
-        this(Paths.get(DATA_FOLDER));
+        this(DataDirectory.resolve());
     }
 
     public DocumentRepository(Path baseDir) {

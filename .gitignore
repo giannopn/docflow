@@ -1,6 +1,7 @@
 ### IntelliJ IDEA ###
 out/
 target/
+dist/
 !**/src/main/**/out/
 !**/src/test/**/out/
 .kotlin
@@ -29,6 +30,29 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+._*
+
+### Windows OS ###
+Thumbs.db
+Desktop.ini
+
+### Local configuration ###
+.env
+.env.*
+!.env.example
+
+### Logs and JVM crash reports ###
+*.log
+hs_err_pid*
+replay_pid*
+
+### Release packages ###
+*.dmg
+*.pkg
+*.msi
+*.exe
+*.deb
+*.rpm
 
 .idea/
 *.iml

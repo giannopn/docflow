@@ -18,7 +18,6 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -31,7 +30,6 @@ import java.util.Set;
 
 public class UserRepository {
 
-    private static final String DATA_FOLDER = "medialab";
     private static final String USERS_FILE = "users.json";
 
     private static final String DEFAULT_ADMIN_FIRST_NAME = "Media";
@@ -44,7 +42,7 @@ public class UserRepository {
     private final Map<String, User> usersByUsername = new LinkedHashMap<>();
 
     public UserRepository() {
-        this(Paths.get(DATA_FOLDER));
+        this(DataDirectory.resolve());
     }
 
     public UserRepository(Path baseDir) {

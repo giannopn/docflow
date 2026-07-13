@@ -11,7 +11,6 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -21,7 +20,6 @@ import java.util.Set;
 
 public class CategoryRepository {
 
-    private static final String DATA_FOLDER = "medialab";
     private static final String CATEGORIES_FILE = "categories.json";
 
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -30,7 +28,7 @@ public class CategoryRepository {
     private final Type listType = new TypeToken<List<String>>() {}.getType();
 
     public CategoryRepository() {
-        this(Paths.get(DATA_FOLDER));
+        this(DataDirectory.resolve());
     }
 
     public CategoryRepository(Path baseDir) {

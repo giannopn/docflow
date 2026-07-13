@@ -5,7 +5,7 @@
 
     <groupId>com.docflow</groupId>
     <artifactId>document-manager-app</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -46,6 +46,7 @@
     </dependencies>
 
     <build>
+        <finalName>docflow</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -65,7 +66,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <mainClass>com.docflow.Main</mainClass>
+                    <mainClass>com.docflow.Launcher</mainClass>
                 </configuration>
             </plugin>
         </plugins>
