@@ -10,8 +10,9 @@ Download the latest macOS version from the
 The current build supports Apple Silicon Macs and includes Java and JavaFX, so
 no additional software is required.
 
-> The application is currently unsigned. If macOS blocks it, right-click
-> DocFlow in Applications and select **Open**.
+> The application is currently unsigned. If macOS blocks it, open
+> **System Settings → Privacy & Security**, scroll to **Security**, and click
+> **Open Anyway** for DocFlow.
 
 ## Tech Stack
 
