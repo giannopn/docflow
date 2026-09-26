@@ -1,94 +1,103 @@
-# Docflow - Document Manager App
+# DocFlow
 
-JavaFX document management application with role-based access, document versioning, and JSON persistence.
+A desktop document manager built with JavaFX. Organize documents by category,
+keep version history, and follow changes through a role-based interface for
+administrators, authors, and readers.
+
+<!-- Screenshot: add an image of the main window with demo documents at
+docs/images/docflow-main.png, then replace this comment with:
+![DocFlow main window showing document search and categories](docs/images/docflow-main.png)
+-->
+
+## Features
+
+- Role-based access to documents and categories.
+- Document creation, editing, and deletion for authorized users.
+- Version history: readers see the latest version; authors and administrators
+  can view the latest three versions.
+- Follow documents and receive update notifications when signing in.
+- Search by title, author, and category.
+- User and category management for administrators.
+- Local JSON storage with no database server required.
 
 ## Download
 
 Download the latest macOS version from the
 [GitHub Releases page](https://github.com/giannopn/docflow/releases/latest).
 
-The current build supports Apple Silicon Macs and includes Java and JavaFX, so
-no additional software is required.
+1. Download and open the release's `.dmg` file.
+2. Drag DocFlow into **Applications**.
+3. Launch DocFlow from **Applications**.
+
+The current build supports **Apple Silicon Macs** and includes Java and JavaFX.
+No separate runtime installation is required.
 
 > The application is currently unsigned. If macOS blocks it, open
 > **System Settings → Privacy & Security**, scroll to **Security**, and click
-> **Open Anyway** for DocFlow.
+> **Open Anyway** for DocFlow. Authenticate and confirm opening the app if prompted.
 
-## Tech Stack
+## Demo Login
 
-- Java 17
-- Maven
-- JavaFX
-- Gson
-- JUnit 5
-
-## Requirements
-
-- Java 17 or newer
-- Maven
-
-## Build
-
-```bash
-mvn clean compile
-```
-
-## Run
-
-```bash
-mvn javafx:run
-```
-
-## Test
-
-```bash
-mvn test
-```
-
-## Default Admin Login
+Use the default administrator account to sign in:
 
 - Username: `medialab`
 - Password: `medialab_2025`
 
-## Project Structure
+A fresh installation starts with this account and no documents or categories.
+Running from source includes the sample users, categories, and documents in
+`medialab/` so you can explore the app with demo data.
 
-- `src/main/java/com/docflow` - application source code
-- `src/main/java/com/docflow/model` - domain model
-- `src/main/java/com/docflow/repository` - JSON persistence
-- `src/main/java/com/docflow/service` - business logic
-- `src/main/java/com/docflow/controller` - JavaFX controllers
-- `src/main/resources/fxml` - JavaFX views
-- `src/main/resources/css` - styling
-- `medialab/*.json` - persisted application data
+## Run From Source
 
-## Core Features
+Development requires **JDK 17 or newer**, **Maven**, and Git to clone the repository.
+These tools are not required to use the packaged macOS app.
 
-- Role-based access (`SIMPLE_USER`, `AUTHOR`, `ADMIN`)
-- Document creation, editing, deletion
-- Versioning per document
-- Follow/unfollow documents and update notifications
-- Search by title, author, and category
-- Category and user management (admin)
+```bash
+git clone https://github.com/giannopn/docflow.git
+cd docflow
+mvn javafx:run
+```
 
-## Data Persistence
+Run these commands from the repository root to compile or execute the test suite:
 
-- Application state is loaded from JSON files on startup.
-- All changes are performed in-memory.
-- The complete state is persisted back to JSON on application shutdown.
+```bash
+mvn clean compile
+mvn test
+```
 
-## Javadoc Coverage
+The project uses Java 17, JavaFX, Gson for JSON serialization, Maven for builds,
+and JUnit 5 for tests.
 
-- `com.docflow.service.AuthService`
-- `com.docflow.service.WatchService`
+See the [packaging guide](docs/PACKAGING.md) to build a macOS installer.
 
-## Documentation
+## Architecture and Storage
 
-- [Assignment specification](docs/GUIDE.md)
-- [Implementation plan](docs/IMPLEMENTATION_PLAN.md)
-- [Packaging instructions](docs/PACKAGING.md)
+Source code is organized under `src/main/java/com/docflow`:
 
-## Notes
+| Layer | Responsibility |
+| --- | --- |
+| `model` | Users, roles, documents, and versions |
+| `repository` | JSON loading and saving |
+| `service` | Authentication, permissions, document operations, and notifications |
+| `controller` and `ui` | JavaFX interactions and shared styling |
 
+FXML views and CSS live in `src/main/resources`; tests mirror the production
+packages under `src/test/java`.
 
-- Passwords are stored in plain text JSON for assignment purposes only.
-- An `AUTO_LOGIN_AS_ADMIN` flag is available for development convenience.
+Data is loaded at startup, kept in memory during use, and saved when the
+application closes normally. Development and installed-app data are separate:
+
+| Run mode | Data location |
+| --- | --- |
+| From the repository root | `medialab/` |
+| Packaged macOS app | `~/Library/Application Support/DocFlow/` |
+
+The macOS installer does not include the repository's demo JSON files.
+
+## Limitations
+
+- Passwords are stored in plaintext for demonstration purposes. Use demo
+  credentials only; the authentication system is not intended for production use.
+- Unsaved changes can be lost if the application crashes or is force-quit.
+- The distributed installer currently targets macOS on Apple Silicon and is
+  not signed or notarized.
