@@ -5,7 +5,7 @@ JavaFX document management application with role-based access, document versioni
 ## Download
 
 Download the latest macOS version from the
-[GitHub Releases page](https://github.com/giannopn/document-manager-app/releases/latest).
+[GitHub Releases page](https://github.com/giannopn/docflow/releases/latest).
 
 The current build supports Apple Silicon Macs and includes Java and JavaFX, so
 no additional software is required.
@@ -81,7 +81,14 @@ mvn test
 - `com.docflow.service.AuthService`
 - `com.docflow.service.WatchService`
 
+## Documentation
+
+- [Assignment specification](docs/GUIDE.md)
+- [Implementation plan](docs/IMPLEMENTATION_PLAN.md)
+- [Packaging instructions](docs/PACKAGING.md)
+
 ## Notes
+
 
 - Passwords are stored in plain text JSON for assignment purposes only.
 - An `AUTO_LOGIN_AS_ADMIN` flag is available for development convenience.

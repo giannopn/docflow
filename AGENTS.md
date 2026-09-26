@@ -8,7 +8,8 @@ This is a Java 17 Maven project for a document manager app.
 - JavaFX controllers/UI bootstrap: `src/main/java/com/docflow/controller`, `src/main/java/com/docflow/ui`
 - UI assets: `src/main/resources/fxml` and `src/main/resources/css`
 - JSON data files: `medialab/documents.json`, `medialab/users.json`
-- Planning/spec docs: `GUIDE.md`, `IMPLEMENTATION_PLAN.md`
+- Planning/spec docs: `docs/GUIDE.md`, `docs/IMPLEMENTATION_PLAN.md`
+- Packaging instructions: `docs/PACKAGING.md`
 
 ## Build, Test, and Development Commands
 - `mvn clean compile`: compile all main sources.

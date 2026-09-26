@@ -216,4 +216,3 @@ JSON”_.
 [2] https://docs.oracle.com/javafx/2/get_started/jfxpub-get_started.htm
 [3] https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html
 ```
-

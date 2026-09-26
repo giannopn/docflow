@@ -10,7 +10,7 @@ Requirements on the build machine:
 - A JDK that provides `jpackage`
 - Maven
 
-Build the DMG:
+Build the DMG from the repository root:
 
 ```bash
 ./scripts/package-macos.sh

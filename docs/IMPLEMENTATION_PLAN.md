@@ -1,7 +1,7 @@
 # Document Manager Implementation Plan
 
 ## Summary
-Backend-first completion, then JavaFX integration, aligned with `GUIDE.md` and your clarifications.
+Backend-first completion, then JavaFX integration, aligned with [GUIDE.md](GUIDE.md) and your clarifications.
 
 ## Locked Decisions
 - Scope: Core-first, then full requirements closure.
