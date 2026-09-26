@@ -4,10 +4,9 @@ A desktop document manager built with JavaFX. Organize documents by category,
 keep version history, and follow changes through a role-based interface for
 administrators, authors, and readers.
 
-<!-- Screenshot: add an image of the main window with demo documents at
-docs/images/docflow-main.png, then replace this comment with:
-![DocFlow main window showing document search and categories](docs/images/docflow-main.png)
--->
+<img width="1392" height="924" alt="SCR-20260926-oisv" src="https://github.com/user-attachments/assets/c5b0c8b6-f14d-4abb-b5a0-5e0efc2ba769" />
+
+<img width="1392" height="924" alt="SCR-20260926-oknc" src="https://github.com/user-attachments/assets/ea8afe5f-0225-4a94-9594-5c716d06bcf4" />
 
 ## Features
 
